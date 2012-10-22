@@ -1,0 +1,1032 @@
+<project name="fmj" default="all" basedir=".">
+    <property name="project.name" value="fmj"/>
+    <property name="src" location="src"/>
+    <property name="javac.out" location="build/classes" />
+    <property name="cpp.out" location="build/obj" />
+    <property name="jar.out" location="build/jars" />
+    <property name="javadoc.out" location="build/doc" />
+    <property name="dist" location="build/dist/fmj" />
+    <property name="dist-zip" location="build/dist/zip" />
+
+    <property name="directx.sdk" location="C:\\Program Files\\Microsoft DirectX 9.0 SDK (February 2005)" />
+    <property name="directshow.sdk" location="${directx.sdk}\\Extras\\DirectShow" />
+    <property name="java.sdk" location="${JDK}" />
+    <!--property name="qtjava.dir" location="C:\\DevLibsMin\\qtjava\\"/-->
+    <property name="qtjava.dir" location="/home/ken/DevLibsMin/qtjava/"/>
+    <property name="retroweaver.home" location="/home/ken/prog/retroweaver-2.0"/>
+    <property file="fmj.larsontechnologies.com.properties"/>
+    <target name="all" depends="clean,build,jar,build-test,javadoc" />
+    <target name="jar-jitsi" depends="clean,build-jitsi,jar" />
+
+
+    <target name="help">
+        <!-- TODO list the helpful targets -->
+    </target>
+
+
+    <target name="build" description="compile java source">
+        <mkdir dir="${javac.out}" />
+        <javac debug="false" optimize="true" destdir="${javac.out}">
+            <compilerarg line="-source 1.5" />
+            <compilerarg line="-target 1.5" />
+            <src path="${src}"/>
+            <src path="src.apps"/>
+            <src path="src.capture"/>
+            <src path="src.ejmf"/>
+            <src path="src.ffmpeg-java"/>
+            <src path="src.fmjstudio"/>
+            <src path="src.gst"/>
+            <src path="src.rtp"/>
+            <src path="src.sip-communicator"/>
+            <src path="src.stubs"/>
+            <src path="src.sunibm.base"/>
+            <src path="src.sunibm.replace"/>
+            <src path="src.t4l"/>
+            <src path="src.theora-java"/>
+            <src path="src.utils"/>
+            <classpath>
+                <pathelement location="lib/ffmpeg-java.jar" />
+                <pathelement location="lib/gstreamer-java.jar" />
+                <pathelement location="lib/jdom.jar" />
+                <pathelement location="lib/jheora-patch.jar" />
+                <pathelement location="lib/jl1.0.jar" />
+                <pathelement location="lib/jna.jar" />
+                <pathelement location="lib/jogg-0.0.7.jar" />
+                <pathelement location="lib/jorbis-0.0.15.jar" />
+                <pathelement location="lib/jspeex.jar" />
+                <pathelement location="lib/lti-civil-no_s_w_t.jar" />
+                <pathelement location="lib/mp3spi1.9.4.jar" />
+                <pathelement location="lib/theora-java.jar" />
+                <pathelement location="lib/tritonus_share.jar" />
+                <pathelement location="lib/vorbisspi1.0.2.jar" />
+            </classpath>
+
+        </javac>
+
+        <copy todir="${javac.out}/net/sf/fmj/gui/controlpanel/images">
+            <fileset dir="${src}/net/sf/fmj/gui/controlpanel/images" includes="*.gif"/>
+        </copy>
+
+        <copy todir="${javac.out}/net/sf/fmj/ui/images">
+            <fileset dir="${src}.fmjstudio/net/sf/fmj/ui/images" includes="*.gif"/>
+            <fileset dir="${src}.fmjstudio/net/sf/fmj/ui/images" includes="*.png"/>
+        </copy>
+
+        <mkdir dir="${javac.out}/net/sf/fmj/ejmf/toolkit/gui/controls/skins/two/resources"/>
+        <copy todir="${javac.out}/net/sf/fmj/ejmf/toolkit/gui/controls/skins/two/resources">
+            <fileset dir="src.ejmf/net/sf/fmj/ejmf/toolkit/gui/controls/skins/two/resources" includes="*.png"/>
+        </copy>
+    </target>
+
+    <target name="build-jitsi" description="compile java source for jitsi">
+        <mkdir dir="${javac.out}"/>
+        <javac debug="false" optimize="true" destdir="${javac.out}">
+            <compilerarg line="-source 1.5"/>
+            <compilerarg line="-target 1.5"/>
+            <src path="${src}"/>
+            <src path="src.capture"/>
+            <src path="src.ejmf"/>
+            <src path="src.apps"/>
+            <src path="src.ffmpeg-java"/>
+            <src path="src.fmjstudio"/>
+            <src path="src.gst"/>
+            <src path="src.rtp"/>
+            <src path="src.sip-communicator"/>
+            <src path="src.stubs"/>
+            <src path="src.sunibm.base"/>
+            <src path="src.sunibm.replace"/>
+            <src path="src.t4l"/>
+            <src path="src.theora-java"/>
+            <src path="src.utils"/>
+            <exclude name="**/civil/**"/>
+            <exclude name="net/sf/fmj/media/cdp/GlobalCaptureDevicePlugger.java"/>
+            <exclude name="net/sf/fmj/ejmf/toolkit/gui/**"/>
+            <exclude name="net/java/**"/>
+            <exclude name="net/sf/fmj/apps/**"/>
+            <exclude name="net/sf/fmj/capture/**"/>
+            <exclude name="net/sf/fmj/ds/**"/>
+            <exclude name="net/sf/fmj/ffmpeg_java/**"/>
+            <exclude name="net/sf/fmj/gst/**"/>
+            <exclude name="net/sf/fmj/gui/**"/>
+            <exclude name="net/sf/fmj/test/**"/>
+            <exclude name="net/sf/fmj/theora_java/**"/>
+            <exclude name="net/sf/fmj/qt/**"/>
+            <exclude name="net/sf/fmj/ui/**"/>
+            <exclude name="net/sf/jdshow/**"/>
+            <exclude name="fi/iki/elonen/nanohttpd/**"/>
+        </javac>
+    </target>
+
+
+    <!-- Create a a jar of FMJ, excluding test classes -->
+    <target name="jar">
+        <mkdir dir="${jar.out}" />
+        <mkdir dir="build/classes.ds" />
+        <mkdir dir="build/classes.qt" />
+        <jar jarfile="${jar.out}/fmj.jar">
+            <fileset dir="${javac.out}">
+                <exclude name="net/sf/fmj/test/*" />
+            </fileset>
+            <fileset dir="${javac.out}.ds" />
+            <fileset dir="${javac.out}.qt" />
+        </jar>
+
+        <!-- for playback-only applet, no native stuff. -->
+        <jar jarfile="${jar.out}/fmj-applet.jar">
+            <fileset dir="${javac.out}">
+                <!-- we only include classes needed for playback, others are excluded. -->
+                <!-- TODO: might be easier to include files explicitly rather than exclude -->
+                <exclude name="net/sf/fmj/test/**" />
+                <exclude name="net/sf/fmj/capture/**" />
+                <exclude name="net/sf/fmj/media/protocol/civil/**" />
+                <exclude name="net/sf/fmj/gst/**" />
+                <exclude name="net/sf/fmj/ds/**" />
+                <exclude name="net/sf/fmj/qt/**" />
+                <exclude name="net/sf/fmj/ffmpeg_java/**" />
+                <exclude name="net/sf/fmj/theora_java/NativeOggParser" />
+                <exclude name="net/sf/fmj/ui/**" />
+                <exclude name="net/sf/fmj/apps/mediaserver/**" />
+                <exclude name="net/sf/fmj/apps/play/**" />
+                <exclude name="net/sf/fmj/apps/transcode/**" />
+                <exclude name="fi/iki/elonen/nanohttpd/**" />
+                <!-- no need for RTP support in applet: -->
+                <exclude name="net/sf/fmj/media/rtp/**" />
+                <exclude name="memetic/crypto/**" />
+                <exclude name="net/sf/fmj/media/protocol/rtp/**"/>
+                <exclude name="net/sf/fmj/media/datasink/rtp/**"/>
+                <exclude name="javax/media/rtp/**"/>
+                <exclude name="net/java/sip/communicator/impl/media/codec/**"/>
+                <exclude name="net/sf/fmj/media/codec/audio/alaw/Packetizer" />
+                <exclude name="net/sf/fmj/media/codec/audio/alaw/DePacketizer" />
+                <exclude name="net/sf/fmj/media/codec/audio/ulaw/Packetizer" />
+                <exclude name="net/sf/fmj/media/codec/audio/ulaw/DePacketizer" />
+                <!-- no need for any ibm/sun classes: -->
+                <exclude name="com/sun/media/codec/**"/>
+                <exclude name="com/sun/media/BasicCodec"/>
+                <exclude name="com/sun/media/BasicPlugIn"/>
+                <exclude name="com/sun/media/MimeManager"/>
+                <!-- leave in com.sun.media.format.* -->
+                <exclude name="com/ibm/**"/>
+                <!-- no need for reading/writing files: -->
+                <exclude name="net/sf/fmj/media/protocol/file/**"/>
+                <exclude name="net/sf/fmj/media/datasink/file/**"/>
+                <!-- no need for any multiplexing: -->
+                <exclude name="net/sf/fmj/media/multiplexer/**"/>
+                <!-- misc exclusions: -->
+                <exclude name="javax/media/bean/**"/>
+                <exclude name="net/sf/fmj/ejmf/toolkit/gui/controls/skins/saisai/**"/>
+
+            </fileset>
+
+        </jar>
+
+
+        <!-- EdenCity Applet -->
+        <jar jarfile="${jar.out}/fmj-applet1.jar">
+            <fileset dir="${javac.out}">
+
+                <include name="javax/media/Manager.class"/>
+                <include name="javax/media/CannotRealizeException.class"/>
+                <include name="javax/media/MediaException.class"/>
+                <include name="javax/media/IncompatibleSourceException.class"/>
+                <include name="javax/media/NoDataSinkException.class"/>
+                <include name="javax/media/protocol/DataSource.class"/>
+                <include name="javax/media/protocol/Controls.class"/>
+                <include name="javax/media/Controls.class"/>
+                <include name="javax/media/Duration.class"/>
+                <include name="net/sf/fmj/media/CloneableCaptureDevicePushBufferDataSource.class"/>
+                <include name="javax/media/protocol/CaptureDevice.class"/>
+                <include name="net/sf/fmj/media/CloneablePushBufferDataSource.class"/>
+                <include name="javax/media/protocol/SourceCloneable.class"/>
+                <include name="javax/media/protocol/PushBufferDataSource.class"/>
+                <include name="net/sf/fmj/media/CloneableCaptureDevicePullBufferDataSource.class"/>
+                <include name="net/sf/fmj/media/CloneablePullBufferDataSource.class"/>
+                <include name="javax/media/protocol/PullBufferDataSource.class"/>
+                <include name="net/sf/fmj/media/CloneableCaptureDevicePushDataSource.class"/>
+                <include name="net/sf/fmj/media/CloneablePushDataSource.class"/>
+                <include name="javax/media/protocol/PushDataSource.class"/>
+                <include name="net/sf/fmj/media/CloneableCaptureDevicePullDataSource.class"/>
+                <include name="net/sf/fmj/media/CloneablePullDataSource.class"/>
+                <include name="javax/media/protocol/PullDataSource.class"/>
+                <include name="net/sf/fmj/media/MergingCaptureDevicePushBufferDataSource.class"/>
+                <include name="net/sf/fmj/media/MergingPushBufferDataSource.class"/>
+                <include name="net/sf/fmj/media/MergingCaptureDevicePullBufferDataSource.class"/>
+                <include name="net/sf/fmj/media/MergingPullBufferDataSource.class"/>
+                <include name="net/sf/fmj/media/MergingCaptureDevicePushDataSource.class"/>
+                <include name="net/sf/fmj/media/MergingPushDataSource.class"/>
+                <include name="net/sf/fmj/media/MergingCaptureDevicePullDataSource.class"/>
+                <include name="net/sf/fmj/media/MergingPullDataSource.class"/>
+                <include name="javax/media/NoDataSourceException.class"/>
+                <include name="javax/media/protocol/URLDataSource.class"/>
+                <include name="net/sf/fmj/media/protocol/URLDataSource.class"/>
+                <include name="javax/media/Controller.class"/>
+                <include name="javax/media/Clock.class"/>
+                <include name="javax/media/control/FormatControl.class"/>
+                <include name="javax/media/Control.class"/>
+                <include name="javax/media/NoProcessorException.class"/>
+                <include name="javax/media/NoPlayerException.class"/>
+                <include name="javax/media/TimeBase.class"/>
+                <include name="net/sf/fmj/utility/LoggerSingleton.class"/>
+                <include name="javax/media/SystemTimeBase.class"/>
+
+                <include name="javax/media/Format.class"/>
+                <include name="javax/media/format/AudioFormat.class"/>
+                <include name="javax/media/format/VideoFormat.class"/>
+                <include name="javax/media/rtp/SendStreamListener.class"/>
+                <include name="javax/media/rtp/SessionListener.class"/>
+                <include name="javax/media/rtp/ReceiveStreamListener.class"/>
+                <include name="javax/media/rtp/RTPConnector.class"/>
+                <include name="javax/media/protocol/ContentDescriptor.class"/>
+                <include name="javax/media/protocol/FileTypeDescriptor.class"/>
+                <include name="javax/media/rtp/RTPManager.class"/>
+
+                <include name="net/sf/fmj/media/RegistryDefaults.class"/>
+                <include name="net/sf/fmj/registry/Registry.class"/>
+                <include name="net/sf/fmj/media/renderer/audio/JavaSoundUtils.class"/>
+                <include name="net/sf/fmj/media/renderer/audio/CustomEncoding.class"/>
+                <include name="net/sf/fmj/utility/FmjStartup.class"/>
+                <include name="net/sf/fmj/registry/RegistryContents.class"/>
+                <include name="net/sf/fmj/media/MimeTable.class"/>
+                <include name="net/sf/fmj/utility/PlugInUtility.class"/>
+                <include name="net/sf/fmj/media/renderer/video/SimpleAWTRenderer.class"/>
+                <include name="net/sf/fmj/media/renderer/video/JPEGRTPRenderer.class"/>
+                <include name="net/sf/fmj/media/renderer/audio/JavaSoundRenderer.class"/>
+                <include name="net/sf/fmj/media/renderer/audio/JavaSoundRenderer$PeakVolumeMeter.class"/>
+                <include name="javax/media/PlugInManager.class"/>
+                <include name="javax/media/pim/PlugInManager.class"/>
+                <include name="javax/media/Demultiplexer.class"/>
+                <include name="javax/media/PlugIn.class"/>
+                <include name="javax/media/MediaHandler.class"/>
+                <include name="net/sf/fmj/media/parser/RawPushBufferParser.class"/>
+                <include name="net/sf/fmj/media/AbstractDemultiplexer.class"/>
+                <include name="net/sf/fmj/media/AbstractPlugIn.class"/>
+                <include name="net/sf/fmj/media/AbstractControls.class"/>
+                <include name="javax/media/Track.class"/>
+                <include name="net/sf/fmj/utility/ControlCollection.class"/>
+                <include name="net/sf/fmj/utility/FormatUtils.class"/>
+                <include name="net/sf/fmj/media/parser/RawPushBufferParser$FRC.class"/>
+                <include name="javax/media/control/FrameRateControl.class"/>
+                <include name="javax/media/Owned.class"/>
+                <include name="net/sf/fmj/utility/PlugInInfo.class"/>
+                <include name="javax/media/pim/PlugInInfo.class"/>
+                <include name="javax/media/renderer/VideoRenderer.class"/>
+                <include name="javax/media/Renderer.class"/>
+                <include name="net/sf/fmj/media/AbstractVideoRenderer.class"/>
+                <include name="javax/media/control/FrameGrabbingControl.class"/>
+                <include name="net/sf/fmj/media/AbstractRenderer.class"/>
+                <include name="net/sf/fmj/media/renderer/video/SimpleAWTRenderer$AwtVideoComponent.class"/>
+                <include name="javax/media/format/RGBFormat.class"/>
+                <include name="net/sf/fmj/utility/FPSCounter.class"/>
+                <include name="javax/media/Codec.class"/>
+                <include name="net/sf/fmj/media/renderer/video/JVideoComponent.class"/>
+                <include name="net/sf/fmj/media/renderer/video/JPEGRTPRenderer$VideoFrameRateControl.class"/>
+                <include name="javax/media/ResourceUnavailableException.class"/>
+                <include name="javax/media/Buffer.class"/>
+                <include name="net/sf/fmj/media/codec/audio/ulaw/DePacketizer.class"/>
+                <include name="net/sf/fmj/media/AbstractDePacketizer.class"/>
+                <include name="net/sf/fmj/media/AbstractCodec.class"/>
+                <include name="javax/media/Effect.class"/>
+                <include name="javax/media/PackageManager.class"/>
+                <include name="javax/media/pm/PackageManager.class"/>
+                <include name="net/sf/fmj/media/codec/audio/gsm/DePacketizer.class"/>
+                <include name="net/sf/fmj/media/codec/audio/gsm/Decoder.class"/>
+                <include name="net/sf/fmj/media/codec/audio/gsm/GSMDecoderUtil.class"/>
+                <include name="javax/media/GainChangeEvent.class"/>
+
+                <include name="com/lti/utils/synchronization/CloseableThread.class"/>
+                <include name="com/lti/utils/synchronization/SynchronizedBoolean.class"/>
+
+            </fileset>
+
+        </jar>
+        <gzip src="${jar.out}/fmj-applet1.jar" destfile="${jar.out}/fmj-applet1.jar.gz" />
+
+
+
+        <!-- EdenCity Applet -->
+        <jar jarfile="${jar.out}/fmj-applet2.jar">
+            <fileset dir="${javac.out}">
+
+                <include name="net/sf/fmj/media/rtp/RTPSessionMgr.class"/>
+                <include name="javax/media/rtp/SessionManager.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPSessionMgr$RTCPTimerTask.class"/>
+                <include name="javax/media/rtp/OutputDataStream.class"/>
+                <include name="javax/media/rtp/RTPStream.class"/>
+                <include name="javax/media/rtp/rtcp/SenderReport.class"/>
+                <include name="javax/media/rtp/rtcp/Report.class"/>
+                <include name="javax/media/rtp/rtcp/ReceiverReport.class"/>
+                <include name="net/sf/fmj/media/rtp/RTCPSenderReport.class"/>
+                <include name="net/sf/fmj/media/rtp/RTCPReport.class"/>
+                <include name="net/sf/fmj/media/rtp/RTCPReceiverReport.class"/>
+                <include name="javax/media/rtp/event/SenderReportEvent.class"/>
+                <include name="javax/media/rtp/event/RemoteEvent.class"/>
+                <include name="javax/media/rtp/event/RTPEvent.class"/>
+                <include name="javax/media/MediaEvent.class"/>
+                <include name="javax/media/rtp/event/ReceiverReportEvent.class"/>
+                <include name="javax/media/rtp/Participant.class"/>
+                <include name="javax/media/rtp/event/SessionEvent.class"/>
+                <include name="javax/media/rtp/event/NewParticipantEvent.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPParticipant.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPRemoteParticipant.class"/>
+                <include name="javax/media/rtp/RemoteParticipant.class"/>
+                <include name="javax/media/rtp/ReceiveStream.class"/>
+                <include name="javax/media/rtp/event/ReceiveStreamEvent.class"/>
+                <include name="javax/media/rtp/event/StreamMappedEvent.class"/>
+                <include name="net/sf/fmj/media/rtp/RTCPHeader.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPDataSource.class"/>
+                <include name="javax/media/rtp/event/NewReceiveStreamEvent.class"/>
+                <include name="javax/media/rtp/event/ActiveReceiveStreamEvent.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPHeader.class"/>
+                <include name="javax/media/rtp/GlobalTransmissionStats.class"/>
+                <include name="javax/media/rtp/GlobalReceptionStats.class"/>
+                <include name="javax/media/protocol/SourceTransferHandler.class"/>
+                <include name="javax/media/rtp/LocalParticipant.class"/>
+                <include name="javax/media/protocol/PushBufferStream.class"/>
+                <include name="javax/media/protocol/SourceStream.class"/>
+                <include name="javax/media/format/UnsupportedFormatException.class"/>
+                <include name="javax/media/rtp/SendStream.class"/>
+                <include name="javax/media/rtp/event/SendStreamEvent.class"/>
+                <include name="javax/media/rtp/event/NewSendStreamEvent.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPSessionMgr$CheckStreamsTimeout.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPGlobalReceptionStats.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPGlobalTransmissionStats.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPLocalParticipant.class"/>
+                <include name="javax/media/rtp/rtcp/SourceDescription.class"/>
+                <include name="net/sf/fmj/media/rtp/SSRCGenerator.class"/>
+                <include name="javax/media/protocol/PushSourceStream.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPHandler.class"/>
+                <include name="net/sf/fmj/media/rtp/RTCPHandler.class"/>
+                <include name="javax/media/rtp/event/InactiveReceiveStreamEvent.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPVideoDataStream.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPDataStream.class"/>
+                <include name="javax/media/rtp/RTPControl.class"/>
+                <include name="javax/media/rtp/ReceptionStats.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPDataStream$RTPDataStreamBufferControl.class"/>
+                <include name="javax/media/control/BufferControl.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPDataStream$RTPDataStreamRateControl.class"/>
+                <include name="javax/media/control/BitRateControl.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPReceptionStats.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPBuffer.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPReceiveStream.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPSessionMgr$ReceiveStreamNotifier.class"/>
+                <include name="javax/media/rtp/event/ByeEvent.class"/>
+                <include name="javax/media/rtp/event/TimeoutEvent.class"/>
+                <include name="javax/media/ControllerListener.class"/>
+                <include name="net/sf/fmj/media/content/unknown/Handler.class"/>
+                <include name="net/sf/fmj/media/AbstractProcessor.class"/>
+                <include name="javax/media/Processor.class"/>
+                <include name="javax/media/Player.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/media/AbstractPlayer.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/media/AbstractController.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/media/AbstractClock.class"/>
+                <include name="javax/media/ClockStartedError.class"/>
+                <include name="javax/media/MediaError.class"/>
+                <include name="javax/media/StopTimeSetError.class"/>
+                <include name="javax/media/ClockStoppedException.class"/>
+                <include name="javax/media/ControllerEvent.class"/>
+                <include name="javax/media/ControllerClosedEvent.class"/>
+                <include name="javax/media/StopByRequestEvent.class"/>
+                <include name="javax/media/StopEvent.class"/>
+                <include name="javax/media/TransitionEvent.class"/>
+                <include name="javax/media/RestartingEvent.class"/>
+                <include name="javax/media/EndOfMediaEvent.class"/>
+                <include name="javax/media/DataStarvedEvent.class"/>
+                <include name="javax/media/StopAtTimeEvent.class"/>
+                <include name="javax/media/DeallocateEvent.class"/>
+                <include name="javax/media/PrefetchCompleteEvent.class"/>
+                <include name="javax/media/RealizeCompleteEvent.class"/>
+                <include name="javax/media/StartEvent.class"/>
+                <include name="javax/media/ControllerErrorEvent.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/media/AbstractController$2.class"/>
+                <include name="javax/media/NotRealizedError.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/media/AbstractController$1.class"/>
+                <include name="javax/media/NotPrefetchedError.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/media/AbstractController$3.class"/>
+                <include name="javax/media/StopTimeChangeEvent.class"/>
+                <include name="javax/media/RateChangeEvent.class"/>
+                <include name="javax/media/MediaTimeSetEvent.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/media/event/ManagedControllerErrorEvent.class"/>
+                <include name="javax/media/ResourceUnavailableEvent.class"/>
+                <include name="javax/media/DurationUpdateEvent.class"/>
+                <include name="javax/media/IncompatibleTimeBaseException.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/media/AbstractPlayer$1.class"/>
+                <include name="javax/media/ConfigureCompleteEvent.class"/>
+                <include name="javax/media/NotConfiguredError.class"/>
+                <include name="net/sf/fmj/media/AbstractProcessor$1.class"/>
+                <include name="javax/media/InternalErrorEvent.class"/>
+                <include name="net/sf/fmj/filtergraph/Node.class"/>
+                <include name="net/sf/fmj/filtergraph/DemuxNode.class"/>
+                <include name="javax/media/BadHeaderException.class"/>
+                <include name="javax/media/Time.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/media/ControllerEventQueue.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/media/StopTimeMonitor.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/controls/RateControl.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/controls/RateControlComponent.class"/>
+                <include name="net/sf/fmj/filtergraph/FilterGraphBuilder.class"/>
+                <include name="net/sf/fmj/filtergraph/RendererNode.class"/>
+                <include name="net/sf/fmj/filtergraph/CodecNode.class"/>
+                <include name="javax/media/Manager$BlockingRealizer.class"/>
+                <include name="net/sf/fmj/ejmf/toolkit/media/ThreadQueue.class"/>
+                <include name="net/sf/fmj/media/parser/RawPushBufferParser$PushBufferStreamTrack.class"/>
+                <include name="javax/media/protocol/BufferTransferHandler.class"/>
+                <include name="net/sf/fmj/media/AbstractTrack.class"/>
+                <include name="net/sf/fmj/filtergraph/InputPin.class"/>
+                <include name="net/sf/fmj/filtergraph/Pin.class"/>
+                <include name="net/sf/fmj/filtergraph/OutputPin.class"/>
+                <include name="net/sf/fmj/filtergraph/FilterGraphBuilder$FormatAtDepth.class"/>
+                <include name="net/sf/fmj/codegen/FormatTraceUtils.class"/>
+                <include name="net/sf/fmj/media/SleepHelper.class"/>
+                <include name="net/sf/fmj/filtergraph/Link.class"/>
+                <include name="net/sf/fmj/filtergraph/MuxNode.class"/>
+                <include name="net/sf/fmj/filtergraph/FilterGraph.class"/>
+                <include name="net/sf/fmj/filtergraph/FilterGraphPrinter.class"/>
+                <include name="net/sf/fmj/filtergraph/FilterGraphProcessor.class"/>
+                <include name="javax/media/GainControl.class"/>
+                <include name="net/sf/fmj/media/content/unknown/Handler$TrackThread.class"/>
+                <include name="javax/media/Prefetchable.class"/>
+                <include name="net/sf/fmj/media/renderer/video/JPEGRTPRenderer$JPEGRTPFrame.class"/>
+                <include name="net/sf/fmj/media/codec/video/jpeg/RFC2035.class"/>
+                <include name="net/sf/fmj/utility/ArrayUtility.class"/>
+                <include name="net/sf/fmj/media/rtp/SocketOutputStream.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPSocketAdapter.class"/>
+                <include name="net/sf/fmj/media/rtp/RTCPSenderInfo.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPSessionMgr$SessionNotifier.class"/>
+                <include name="net/sf/fmj/media/rtp/RTPSessionMgr$RemoteNotifier.class"/>
+
+                <include name="net/sf/fmj/media/rtp/RTPAudioDataStream.class"/>
+                <include name="net/sf/fmj/filtergraph/CodecFormatPair.class"/>
+                <include name="net/sf/fmj/media/codec/audio/ulaw/Decoder.class"/>
+                <include name="net/sf/fmj/media/AudioFormatCompleter.class"/>
+                <include name="net/sf/fmj/media/renderer/audio/JavaSoundGainControl.class"/>
+                <include name="net/sf/fmj/media/AbstractGainControl.class"/>
+                <include name="net/sf/fmj/media/renderer/audio/JavaSoundRenderer$JavaSoundRendererBufferControl.class"/>
+                <include name="net/sf/fmj/media/renderer/audio/JavaSoundRenderer$FPC.class"/>
+                <include name="javax/media/control/FrameProcessingControl.class"/>
+                <include name="net/sf/fmj/media/codec/audio/ulaw/MuLawDecoderUtil.class"/>
+
+                <include name="org/rubycoder/gsm/InvalidGSMFrameException.class"/>
+                <include name="org/rubycoder/gsm/GSMDecoder.class"/>
+
+            </fileset>
+
+        </jar>
+        <gzip src="${jar.out}/fmj-applet2.jar" destfile="${jar.out}/fmj-applet2.jar.gz" />
+
+
+        <!-- jar, excluding classes that are in JMF.  Resulting jar is to be used with JMF. -->
+        <jar jarfile="${jar.out}/fmj-nojmf.jar">
+            <fileset dir="${javac.out}">
+                <exclude name="net/sf/fmj/test/*" />
+
+                <exclude name="javax/**"/>
+                <exclude name="com/ibm/**"/>
+                <exclude name="com/sun/**"/>
+            </fileset>
+            <fileset dir="${javac.out}.ds">
+            </fileset>
+            <fileset dir="${javac.out}.qt">
+            </fileset>
+
+        </jar>
+
+    </target>
+
+	<!--target name="jar-eclipse" description="jar the output of eclipse, used for quick testing">
+		<mkdir dir="${jar.out}" />
+		<jar jarfile="${jar.out}/fmj-eclipse.jar">
+			<fileset dir="build/classes.eclipse">
+				<exclude name="net/sf/fmj/test/*" />
+			</fileset>
+        	<zipfileset src="lib/jdom.jar" prefix="" />
+        	<zipfileset src="lib/mp3spi1.9.4.jar" prefix="" />
+        	<zipfileset src="lib/jl1.0.jar" prefix="" />
+        	<zipfileset src="lib/vorbisspi1.0.2.jar" prefix="" />
+        	<zipfileset src="lib/tritonus_share.jar" prefix="" />
+		</jar>
+		<copy file="${jar.out}/fmj-eclipse.jar" tofile="/home/ken/Desktop/m/server/server/default/deploy/mediaserver.sar/jmf.jar"/>
+		<copy file="${jar.out}/fmj-eclipse.jar" tofile="/home/ken/Desktop/m/examples/lib/mscra/lib/jmf.jar"/>
+		<copy file="${jar.out}/fmj-eclipse.jar" tofile="/home/ken/Desktop/m/examples/lib/mediara/lib/jmf.jar"/>
+
+	</target-->
+			
+    <!-- java -cp release\retroweaver-<version>.jar;lib\asm-2.2.jar;lib\asm-commons-2.2.jar net.sourceforge.retroweaver.Weaver -jar input.jar output.jar -->
+
+    <target name="retroweave-fmj-applet-jar">
+        <mkdir dir="${jar.out}/1_4"/>
+
+        <java classname="net.sourceforge.retroweaver.Weaver">
+            <arg line="-jar ${jar.out}/fmj-applet.jar ${jar.out}/1_4/fmj-applet.jar"/>
+            <classpath>
+                <pathelement location="${retroweaver.home}/release/retroweaver-all-2.0.jar"/>
+                <pathelement location="${retroweaver.home}/lib/asm-3.0.jar"/>
+                <pathelement location="${retroweaver.home}/lib/asm-commons-3.0.jar"/>
+                <pathelement location="${retroweaver.home}/lib/asm-util-3.0.jar"/>
+            </classpath>
+        </java>
+
+        <java classname="net.sourceforge.retroweaver.Weaver">
+            <arg line="-jar lib/theora-java.jar ${jar.out}/1_4/theora-java.jar"/>
+            <classpath>
+                <pathelement location="${retroweaver.home}/release/retroweaver-all-2.0.jar"/>
+                <pathelement location="${retroweaver.home}/lib/asm-3.0.jar"/>
+                <pathelement location="${retroweaver.home}/lib/asm-commons-3.0.jar"/>
+                <pathelement location="${retroweaver.home}/lib/asm-util-3.0.jar"/>
+            </classpath>
+        </java>
+
+        <java classname="net.sourceforge.retroweaver.Weaver">
+            <arg line="-jar lib/jheora-patch.jar ${jar.out}/1_4/jheora-patch.jar"/>
+            <classpath>
+                <pathelement location="${retroweaver.home}/release/retroweaver-all-2.0.jar"/>
+                <pathelement location="${retroweaver.home}/lib/asm-3.0.jar"/>
+                <pathelement location="${retroweaver.home}/lib/asm-commons-3.0.jar"/>
+                <pathelement location="${retroweaver.home}/lib/asm-util-3.0.jar"/>
+            </classpath>
+        </java>
+    </target>
+
+
+
+    <!-- clean the slate -->
+    <target name="clean">
+        <delete dir="build/classes"/>
+        <delete dir="build/classes.ds"/>
+        <delete dir="build/classes.qt"/>
+        <delete dir="build/dist"/>
+        <delete dir="build/doc"/>
+        <delete dir="build/jars"/>
+    </target>
+
+
+    <!-- build the test classes -->
+    <target name="build-test" depends="build">
+        <mkdir dir="${javac.out}.test"/>
+        <javac debug="true" optimize="true" destdir="${javac.out}.test">
+            <src path="src.test"/>
+            <src path="src.sunibm.replace"/>
+            <compilerarg line="-source 1.5" />
+            <compilerarg line="-target 1.5" />
+            <classpath>
+                <pathelement location="${javac.out}" />
+                <pathelement location="lib/jdom.jar" />
+                <pathelement location="lib/junit.jar" />
+                <pathelement location="lib/lti-civil-no_s_w_t.jar" />
+            </classpath>
+        </javac>
+    </target>
+
+
+    <!-- run the tests -->
+    <target name="run-tests" description="run unit tests"  depends="build-test">
+        <junit printsummary="yes" dir="." showoutput="yes" fork="yes" haltonfailure="yes">
+            <formatter type="plain"/>
+            <test name="net.sf.fmj.test.compat.AllCompatabilityTests"/>
+            <test name="net.sf.fmj.test.functional.AllFunctionalTests"/>
+            <test name="net.sf.fmj.test.misc.AllMiscTests"/>
+
+            <classpath>
+                <pathelement location="${javac.out}.test" />
+                <pathelement location="${javac.out}" />
+                <pathelement location="lib/jdom.jar" />
+                <pathelement location="lib/junit.jar" />
+                <pathelement location="lib/lti-civil-no_s_w_t.jar" />
+                <pathelement location="lib/jl1.0.jar" />
+                <pathelement location="lib/tritonus_share.jar" />
+                <pathelement location="lib/mp3spi1.9.4.jar" />
+                <pathelement location="lib/jorbis-0.0.15.jar" />
+                <pathelement location="lib/jogg-0.0.7.jar" />
+                <pathelement location="lib/vorbisspi1.0.2.jar" />
+
+            </classpath>
+        </junit>
+
+
+    </target>
+
+
+    <!-- run the registry editor GUI -->
+    <target name="run-registry" depends="build">
+        <java classname="net.sf.fmj.ui.FmjRegistry" fork="true">
+            <classpath>
+                <pathelement location="${javac.out}" />
+                <pathelement location="lib/jdom.jar" />
+                <pathelement location="lib/lti-civil-no_s_w_t.jar" />
+                <pathelement location="lib/jl1.0.jar" />
+                <pathelement location="lib/tritonus_share.jar" />
+                <pathelement location="lib/mp3spi1.9.4.jar" />
+                <pathelement location="lib/jorbis-0.0.15.jar" />
+                <pathelement location="lib/jogg-0.0.7.jar" />
+                <pathelement location="lib/vorbisspi1.0.2.jar" />
+                <pathelement location="lib/gstreamer-java.jar" />
+                <pathelement location="lib/jna.jar" />
+                <pathelement location="lib/jspeex.jar" />
+                <pathelement location="lib/ffmpeg-java.jar" />
+                <pathelement location="lib/theora-java.jar" />
+                <pathelement location="lib/jheora-patch.jar" />
+            </classpath>
+        </java>
+    </target>
+
+
+    <target name="javadoc" depends="build">
+        <javadoc destdir="${javadoc.out}" packagenames="*" overview="${src}/overview.html" verbose="no" useexternalfile="yes">
+            <arg value="-quiet"/>
+            <fileset dir="${src}" includes="**/*.java" excludes="com/sun/**"/>
+            <fileset dir="src.utils" includes="**/*.java"/>
+            <fileset dir="src.ejmf" includes="**/*.java"/>
+            <fileset dir="src.capture" includes="**/*.java"/>
+            <fileset dir="src.rtp" includes="**/*.java"/>
+            <fileset dir="src.gst" includes="**/*.java"/>
+            <fileset dir="src.sip-communicator" includes="**/*.java"/>
+            <fileset dir="src.ffmpeg-java" includes="**/*.java"/>
+            <fileset dir="src.theora-java" includes="**/*.java"/>
+            <fileset dir="src.t4l" includes="**/*.java"/>
+            <fileset dir="src.apps" includes="**/*.java"/>
+            <fileset dir="src.fmjstudio" includes="**/*.java"/>
+            <classpath>
+                <pathelement location="${javac.out}" />
+                <pathelement location="lib/jdom.jar" />
+                <pathelement location="lib/junit.jar" />
+                <pathelement location="lib/lti-civil-no_s_w_t.jar" />
+                <pathelement location="lib/jl1.0.jar" />
+                <pathelement location="lib/tritonus_share.jar" />
+                <pathelement location="lib/mp3spi1.9.4.jar" />
+                <pathelement location="lib/jorbis-0.0.15.jar" />
+                <pathelement location="lib/jogg-0.0.7.jar" />
+                <pathelement location="lib/vorbisspi1.0.2.jar" />
+                <pathelement location="lib/gstreamer-java.jar" />
+                <pathelement location="lib/jna.jar" />
+                <pathelement location="lib/jspeex.jar" />
+                <pathelement location="lib/ffmpeg-java.jar" />
+                <pathelement location="lib/theora-java.jar" />
+                <pathelement location="lib/jheora-patch.jar" />
+            </classpath>
+        </javadoc>
+    </target>
+
+
+    <target name="timestamp">
+        <tstamp />
+        <echo message="build=${DSTAMP}-${TSTAMP}"/>
+    </target>
+
+    <target name="dist" description="Creates the packaged distribution" depends="timestamp,clean,build,build-ds,build-qt,javadoc,jar">
+
+        <mkdir dir="${dist}/.." />
+        <mkdir dir="${dist}" />
+        <copy todir="${dist}" file="README"/>
+        <copy todir="${dist}" file="LICENSE"/>
+        <copy todir="${dist}" file="version-history.txt"/>
+        <copy todir="${dist}" file="logging.properties"/>
+        <copy todir="${dist}" file="build/jars/fmj.jar"/>
+        <copy todir="${dist}" file="build/jars/fmj-applet.jar"/>
+        <copy todir="${dist}" file="build/jars/fmj-nojmf.jar"/>
+
+        <!-- add build info to jars: -->
+        <echo message="build=${DSTAMP}-${TSTAMP}${line.separator}"  append="false" file="build/fmj.build.properties"/>
+
+        <jar update="true" jarfile="${dist}/fmj.jar">
+            <fileset file="build/fmj.build.properties"/>
+        </jar>
+        <jar update="true" jarfile="${dist}/fmj-applet.jar">
+            <fileset file="build/fmj.build.properties"/>
+        </jar>
+        <jar update="true" jarfile="${dist}/fmj-nojmf.jar">
+            <fileset file="build/fmj.build.properties"/>
+        </jar>
+
+        <mkdir dir="${dist}/lib" />
+        <copy todir="${dist}/lib" file="lib/jdom.jar"/>
+        <copy todir="${dist}/lib" file="lib/lti-civil-no_s_w_t.jar"/>
+        <copy todir="${dist}/lib" file="lib/jl1.0.jar" />
+        <copy todir="${dist}/lib" file="lib/tritonus_share.jar" />
+        <copy todir="${dist}/lib" file="lib/mp3spi1.9.4.jar" />
+        <copy todir="${dist}/lib" file="lib/jorbis-0.0.15.jar" />
+        <copy todir="${dist}/lib" file="lib/jogg-0.0.7.jar" />
+        <copy todir="${dist}/lib" file="lib/vorbisspi1.0.2.jar" />
+        <copy todir="${dist}/lib" file="lib/gstreamer-java.jar" />
+        <copy todir="${dist}/lib" file="lib/jna.jar" />
+        <copy todir="${dist}/lib" file="lib/jspeex.jar" />
+        <copy todir="${dist}/lib" file="lib/ffmpeg-java.jar" />
+        <copy todir="${dist}/lib" file="lib/theora-java.jar" />
+        <copy todir="${dist}/lib" file="lib/jheora-patch.jar" />
+
+
+        <mkdir dir="${dist}/native" />
+        <mkdir dir="${dist}/native/linux-amd64" />
+        <mkdir dir="${dist}/native/linux-x86" />
+        <mkdir dir="${dist}/native/win32-x86" />
+        <copy todir="${dist}/native/linux-amd64" file="nativelib/linux-amd64/libcivil.so"/>
+        <copy todir="${dist}/native/linux-x86" file="nativelib/linux-x86/libcivil.so"/>
+        <copy todir="${dist}/native/win32-x86" file="nativelib/win32-x86/civil.dll"/>
+        <!-- no native mac library since it uses quicktime -->
+
+        <copy todir="${dist}/native/win32-x86" file="nativelib/win32-x86/jdshow.dll"/>
+
+
+        <!-- sh/batch files -->
+
+        <copy tofile="${dist}/fmjstudio-linux-amd64.sh" file="sh/linux/amd64/fmjstudio.sh" />
+        <copy tofile="${dist}/fmjplay-linux-amd64.sh" file="sh/linux/amd64/fmjplay.sh" />
+        <copy tofile="${dist}/fmjtranscode-linux-amd64.sh" file="sh/linux/amd64/fmjtranscode.sh" />
+        <copy tofile="${dist}/fmjregistry-linux-amd64.sh" file="sh/linux/amd64/fmjregistry.sh" />
+
+        <copy tofile="${dist}/fmjstudio-linux-x86.sh" file="sh/linux/x86/fmjstudio.sh" />
+        <copy tofile="${dist}/fmjplay-linux-x86.sh" file="sh/linux/x86/fmjplay.sh" />
+        <copy tofile="${dist}/fmjtranscode-linux-x86.sh" file="sh/linux/x86/fmjtranscode.sh" />
+        <copy tofile="${dist}/fmjregistry-linux-x86.sh" file="sh/linux/x86/fmjregistry.sh" />
+
+        <copy tofile="${dist}/fmjstudio.bat" file="sh/win32/x86/fmjstudio.bat" />
+        <copy tofile="${dist}/fmjplay.bat" file="sh/win32/x86/fmjplay.bat" />
+        <copy tofile="${dist}/fmjtranscode.bat" file="sh/win32/x86/fmjtranscode.bat" />
+        <copy tofile="${dist}/fmjregistry.bat" file="sh/win32/x86/fmjregistry.bat" />
+
+        <copy tofile="${dist}/fmjstudio-macosx-universal.sh" file="sh/macosx/universal/fmjstudio.sh" />
+        <copy tofile="${dist}/fmjplay-macosx-universal.sh" file="sh/macosx/universal/fmjplay.sh" />
+        <copy tofile="${dist}/fmjtranscode-macosx-universal.sh" file="sh/macosx/universal/fmjtranscode.sh" />
+        <copy tofile="${dist}/fmjregistry-macosx-universal.sh" file="sh/macosx/universal/fmjregistry.sh" />
+
+
+
+        <chmod perm="ugo+x">
+            <fileset dir="${dist}" includes="*.sh" />
+        </chmod>
+
+        <mkdir dir="${dist}/doc"/>
+        <mkdir dir="${dist}/doc/javadoc"/>
+        <copy todir="${dist}/doc/javadoc">
+            <fileset dir="build/doc"/>
+        </copy>
+
+        <mkdir dir="${dist}/doc/general"/>
+        <copy todir="${dist}/doc/general">
+            <fileset dir="." includes="*.html"/>
+            <fileset dir="." includes="*.css"/>
+        </copy>
+
+        <!-- source -->
+        <mkdir dir="${dist}/src"/>
+        <copy todir="${dist}/src"><fileset dir="${src}" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.utils"/>
+        <copy todir="${dist}/src.utils"><fileset dir="src.utils" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.capture"/>
+        <copy todir="${dist}/src.capture"><fileset dir="src.capture" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.ejmf"/>
+        <copy todir="${dist}/src.ejmf"><fileset dir="src.ejmf" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.gst"/>
+        <copy todir="${dist}/src.gst"><fileset dir="src.gst" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.sip-communicator"/>
+        <copy todir="${dist}/src.sip-communicator"><fileset dir="src.sip-communicator" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.examples.rtp"/>
+        <copy todir="${dist}/src.examples.rtp"><fileset dir="src.examples.rtp" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.ffmpeg-java"/>
+        <copy todir="${dist}/src.ffmpeg-java"><fileset dir="src.ffmpeg-java" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.theora-java"/>
+        <copy todir="${dist}/src.theora-java"><fileset dir="src.theora-java" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.rtp"/>
+        <copy todir="${dist}/src.rtp"><fileset dir="src.rtp" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.stubs"/>
+        <copy todir="${dist}/src.stubs"><fileset dir="src.stubs" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.ds"/>
+        <copy todir="${dist}/src.ds"><fileset dir="src.ds" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.test"/>
+        <copy todir="${dist}/src.test"><fileset dir="src.test" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.qt"/>
+        <copy todir="${dist}/src.qt"><fileset dir="src.qt" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.t4l"/>
+        <copy todir="${dist}/src.t4l"><fileset dir="src.t4l" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.apps"/>
+        <copy todir="${dist}/src.apps"><fileset dir="src.apps" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.fmjstudio"/>
+        <copy todir="${dist}/src.fmjstudio"><fileset dir="src.fmjstudio" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.sunibm.base"/>
+        <copy todir="${dist}/src.sunibm.base"><fileset dir="src.sunibm.base" excludes="**/CVS"/></copy>
+
+        <mkdir dir="${dist}/src.sunibm.replace"/>
+        <copy todir="${dist}/src.sunibm.replace"><fileset dir="src.sunibm.replace" excludes="**/CVS"/></copy>
+
+        <copy todir="${dist}" file="build.xml"/>
+
+        <!-- end source -->
+
+        <mkdir dir="${dist}/applet.example"/>
+        <copy todir="${dist}/applet.example"><fileset dir="applet.example" excludes="**/CVS"/></copy>
+
+
+
+        <mkdir dir="${dist}/samplemedia"/>
+        <copy todir="${dist}/samplemedia">
+            <fileset dir="samplemedia"/>
+        </copy>
+
+        <!-- zip/tar: -->
+
+        <delete dir="${dist-zip}" />
+        <mkdir dir="${dist-zip}" />
+
+        <zip zipfile="${dist-zip}/fmj-${DSTAMP}-${TSTAMP}.zip">
+            <zipfileset dir="${dist}">
+            </zipfileset>
+        </zip>
+
+        <tar longfile="gnu" destfile="${dist-zip}/fmj-${DSTAMP}-${TSTAMP}.tar.gz" compression="gzip">
+              <tarfileset dir="${dist}/.." mode="755">
+                <include name="fmj/*.sh"/>
+              </tarfileset>
+              <tarfileset dir="${dist}/..">
+                <include name="fmj/**"/>
+                <exclude name="fmj/*.sh"/>
+              </tarfileset>
+        </tar>
+
+    </target>
+
+    <!-- requires commons-net.jar -->
+    <target name="sf-upload" description="upload zipped build to sourcforge">
+          <ftp server="upload.sourceforge.net"
+               remotedir="incoming"
+               userid="anonymous"
+               password=""
+               depends="no"
+               binary="yes">
+            <fileset dir="${dist-zip}"/>
+          </ftp>
+    </target>
+
+    <!-- requires commons-net.jar -->
+    <target name="lti-ftp-upload" description="upload applets/media to fmj.larsontechnologies.com">
+
+          <ftp server="www.larsontechnologies.com"
+               remotedir="fmj/applet.example"
+               userid="${lti.ftp.user}"
+               password="${lti.ftp.pass}"
+               depends="no"
+               binary="yes">
+            <fileset dir="applet.example"/>
+          </ftp>
+
+          <ftp server="www.larsontechnologies.com"
+               remotedir="fmj"
+               userid="${lti.ftp.user}"
+               password="${lti.ftp.pass}"
+               depends="no"
+               binary="yes">
+            <fileset file="build/jars/fmj-applet.jar"/>
+          </ftp>
+
+          <!--ftp server="www.larsontechnologies.com"
+               remotedir="fmj"
+               userid="${lti.ftp.user}"
+               password="${lti.ftp.pass}"
+               depends="no"
+               binary="yes">
+            <fileset dir="website.lti"/>
+          </ftp-->
+          <!-- uncomment these when libraries or media change - this is slow -->
+          <!--ftp server="www.larsontechnologies.com"
+               remotedir="fmj/lib"
+               userid="${lti.ftp.user}"
+               password="${lti.ftp.pass}"
+               depends="no"
+               binary="yes">
+            <fileset dir="lib"/>
+          </ftp>
+          <ftp server="www.larsontechnologies.com"
+               remotedir="fmj/samplemedia"
+               userid="${lti.ftp.user}"
+               password="${lti.ftp.pass}"
+               depends="no"
+               binary="yes">
+            <fileset dir="samplemedia"/>
+          </ftp-->
+
+          <!-- retroweaver jars: -->
+          <!--ftp server="www.larsontechnologies.com"
+               remotedir="fmj"
+               userid="${lti.ftp.user}"
+               password="${lti.ftp.pass}"
+               depends="no"
+               binary="yes">
+            <fileset file="build/jars/1_4/fmj-applet.jar"/>
+          </ftp>
+          <ftp server="www.larsontechnologies.com"
+               remotedir="fmj/lib"
+               userid="${lti.ftp.user}"
+               password="${lti.ftp.pass}"
+               depends="no"
+               binary="yes">
+            <fileset file="build/jars/1_4/theora-java.jar"/>
+            <fileset file="build/jars/1_4/jheora-patch.jar"/>
+            <fileset file="${retroweaver.home}/release/retroweaver-rt-2.0.jar"/>
+          </ftp-->
+    </target>
+
+
+    <!-- DirectShow targets -->
+    <target name="build-ds" depends="build">
+        <mkdir dir="${javac.out}.ds" />
+        <javac debug="true" optimize="true" destdir="${javac.out}.ds">
+            <compilerarg line="-source 1.5" />
+            <compilerarg line="-target 1.5" />
+            <src path="src.ds"/>
+            <classpath>
+                <pathelement location="${javac.out}" />
+
+            </classpath>
+
+        </javac>
+
+    </target>
+
+    <target name="javah-jdshow" depends="build-ds">
+        <exec dir="." executable="javah" failonerror="true">
+            <arg line="-d src.ds/native -classpath ${javac.out};${javac.out}.ds" />
+            <arg line="net.sf.jdshow.Com" />
+            <arg line="net.sf.jdshow.IUnknown" />
+            <arg line="net.sf.jdshow.IVideoWindow" />
+            <arg line="net.sf.jdshow.IGraphBuilder" />
+            <arg line="net.sf.jdshow.IMediaControl" />
+            <arg line="net.sf.jdshow.JAWTUtils" />
+            <arg line="net.sf.jdshow.WindowlessVMR" />
+            <arg line="net.sf.jdshow.WindowedRendering" />
+            <arg line="net.sf.jdshow.IMediaSeeking" />
+
+        </exec>
+    </target>
+
+
+
+    <target name="compile-jdshow-dll">
+        <echo message="${JDK}"/>
+        <mkdir dir="${cpp.out}" />
+        <exec dir="${cpp.out}" executable="cl" failonerror="true" >
+            <arg line="/LD" />
+            <arg line="/GX" />
+            <arg line="/o jdshow.dll" />
+            <arg line="/I &quot;${java.sdk}/include&quot;" />
+            <arg line="/I &quot;${java.sdk}/include/win32&quot;" />
+            <arg line="/I &quot;${directshow.sdk}/include&quot;" />
+            <arg line="/I &quot;${directx.sdk}/include&quot;" />
+            <arg line="-I src.ds/native" />
+
+            <arg path="src.ds/native/IMediaSeeking.cpp" />
+            <arg path="src.ds/native/WindowedRendering.cpp" />
+            <arg path="src.ds/native/WindowlessVMR.cpp" />
+            <arg path="src.ds/native/JAWTUtils.cpp" />
+            <arg path="src.ds/native/Com.cpp" />
+            <arg path="src.ds/native/IGraphBuilder.cpp" />
+            <arg path="src.ds/native/IMediaControl.cpp" />
+            <arg path="src.ds/native/IUnknown.cpp" />
+            <arg path="src.ds/native/IVideoWindow.cpp" />
+            <arg path="src.ds/native/Utils.cpp" />
+
+            <arg line="&quot;${directshow.sdk}/Lib/x86/quartz.lib&quot;" />
+            <arg line="&quot;${directshow.sdk}/Lib/x86/strmiids.lib&quot;" />
+            <arg line="ole32.lib" />
+            <!-- the following needed for jawt: -->
+            <!--arg line="user32.lib" />
+            <arg line="gdi32.lib" /-->
+            <arg line="&quot;${java.sdk}/lib/jawt.lib&quot;"/>
+
+        </exec>
+        <!--copy file="${cpp.out}/${project.name}.dll" todir="bin/win32/x86"/-->
+        <copy todir="nativelib/win32-x86" file="${cpp.out}/jdshow.dll"/>
+
+    </target>
+
+    <!-- Quicktime -->
+
+    <target name="build-qt" depends="build">
+        <mkdir dir="${javac.out}.qt" />
+        <javac debug="true" optimize="true" destdir="${javac.out}.qt">
+            <compilerarg line="-source 1.5" />
+            <compilerarg line="-target 1.5" />
+
+            <src path="src.qt"/>
+            <classpath>
+                <pathelement location="${javac.out}" />
+                <pathelement location="${qtjava.dir}/QTJava.zip" />
+            </classpath>
+
+        </javac>
+
+    </target>
+
+</project>

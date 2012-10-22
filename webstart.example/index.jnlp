@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0+" codebase="http://fmj.sourceforge.net/webstart.example" href="index.jnlp">
+ <information>
+  <title>FMJ Studio</title>
+  <vendor>FMJ</vendor>
+  <homepage href="http://fmj.sourceforge.net"/>
+  <description>FMJ Studio</description>
+  <description kind="short">FMJ Studio</description>
+ </information>
+  <security>
+     <all-permissions/>
+  </security>
+ <resources>
+  	<jar href="jmf.jar"/>
+  	
+  	<jar href="jdom.jar"/>
+	<jar href="gstreamer-java.jar"/>       
+	<jar href="tritonus_share.jar"/> 
+	<jar href="speex.jar"/>
+	<jar href="lti-civil-no_s_w_t.jar"/> 
+	<jar href="ffmpeg-java.jar"/> 
+	<jar href="theora-java.jar"/> 
+	<jar href="jheora-patch.jar"/>
+	<jar href="jna.jar"/>  
+	<jar href="mp3spi1.9.4.jar"/>
+	<jar href="jl1.0.jar"/> 
+	<jar href="vorbisspi1.0.2.jar"/>
+	<jar href="jorbis-0.0.15.jar"/>
+	<jar href="jogg-0.0.7.jar"/> 
+
+ </resources>
+ 
+ 
+ <!-- these resources vary by OS.  We have the SWT jar, and a native jar with JNI dll/so/jnilib files -->
+ <!-- see http://lopica.sourceforge.net/os.html for OS designations -->
+  <resources os="Windows" arch="x86"> 
+    <j2se version="1.5+" href="http://java.sun.com/products/autodl/j2se"/>
+ 	<nativelib href="native-win32.jar"/>
+ </resources>
+ <resources os="Linux" arch="i386"> 
+    <j2se version="1.5+" href="http://java.sun.com/products/autodl/j2se"/>
+ 	<nativelib href="native-linux-x86.jar"/>
+ </resources>
+  <resources os="Linux" arch="amd64"> 
+    <j2se version="1.5+" href="http://java.sun.com/products/autodl/j2se"/>
+ 	<nativelib href="native-linux-x86_64.jar"/>
+ </resources>
+ <resources os="Mac OS X"> 
+ 	<j2se version="1.5+"/>
+ 	<nativelib href="native-macosx.jar"/>
+ </resources> 
+ 
+ <application-desc main-class="net.sf.fmj.ui.FmjStudio">
+
+ </application-desc>
+</jnlp>

@@ -1,0 +1,9 @@
+To run:
+
+make run
+
+or 
+
+java ejmf.examples.mixer.MixerMain N 
+
+where N is number of tracks.

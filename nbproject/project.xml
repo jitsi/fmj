@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.java.j2seproject</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
+            <name>fmj</name>
+            <minimum-ant-version>1.6.5</minimum-ant-version>
+            <source-roots>
+                <root id="src.src.gst.dir"/>
+                <root id="src.src.ds.dir"/>
+                <root id="src.src.stubs.dir"/>
+                <root id="src.src.test.dir"/>
+                <root id="src.src.rtp.dir"/>
+                <root id="src.src.capture.dir"/>
+                <root id="src.src.ejmf.dir"/>
+                <root id="src.dir"/>
+            </source-roots>
+            <test-roots/>
+        </data>
+    </configuration>
+</project>

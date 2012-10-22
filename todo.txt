@@ -1,0 +1,446 @@
+how is it that the Format subclasses are serializable without zero-param constructors?
+does Java do some kind of magic with these?
+Do serializable classes need to be binary-compatible with JMF in their serialized form? seems like a good idea, FMJ implements this.
+
+Serialization problems: eclipse generates inline fields in some cases (as an optimization) which messes up serialization - makes
+it incompatible with the classes in the reference impl jar.
+
+Incompatible classes:
+
+beware of cloning issues (like size).
+field == vs equals.
+rm FormatUtils tracing and CGUtils when done.
+
+mysteries:
+where does Format.copy get called?  from clone?
+encodingCode? - order of calls in equals is relevant.
+static initializers
+intersects wierdness
+encoding code seems like it would have probs with conflicts.
+
+optimization - all the matching done by the Manager, directly or indirectly, seems slow.
+
+
+
+I have to use file:// prefix for files with FMJ, but JMF will find the file without it.
+
+ejmf author emails: ?
+Rob Gordon <rgordon@pcisys.net>
+Steve Talley <stephen.talley@Central>
+http://blogs.sun.com/roller/page/talley/
+?
+stephen.talley@sun.com
+talley@boulder.Central
+
+
+The more I think about JFFMPEG, the more I think that by extending BasicCodec, they possibly use these native buffers which are internal 
+sun classes. They never create these buffers, which means it is up to the Player to create them.  So this codec probably only
+uses native buffers when used with the sun player.  So if I have my own player, can I use these codecs?  Perhaps with a normal buffer.
+Now, if my player creates some different kind of native buffer that has the same functionality and contracts as Sun's, I could use their codec 
+with my JMF and use native buffers.  But that would require me to of course provide the same BasicCodec classes to subclass from.  
+So there appears to be no standard way to use a native buffer (not specified by the main API).  If JFFMPEG were rewritten to be
+independent of these classes, then it could not use native buffers, since it is the Player that must provide them.
+
+How does the system locate CaptureDevices?  There is a manager to get the capture device info.  I think a CaptureDevice is generally a DataSource, 
+so you get the CaptureDeviceInfo from the CaptureDeviceManager, then get the MediaLocator from the CaptureDeviceInfo, then
+call Manager.createDataSource with the MediaLocator.  The Format has to be get/set through a FormatControl, I suppose.
+
+-------
+
+Generic player
+will need a parser (e.g. QuicktimeParser)
+
+renderers and parsers do not appear to be located through the manager.
+So a parser, as used by Sun, is an implementation detail.  Does not appear to be a javax.media... Parser interface.
+
+thru manager:
+protocol (DataSource)
+codecs?
+content (Handler)
+
+It is confusing because you have the file format (mov)
+Then the demux
+Then you have the codec(s) (audio, video)
+Then you have the renderer - this should be generic.
+
+JFFMPEG has codecs, and demux.
+So we need to find a video we can play with JMF/JFFMPEG.
+That leaves the actual Player, Renderer, and 
+content - this is where we need the unknown handler
+protocol - the URLDataSource takes care of this for now.
+where does the parser fit in?
+how is the demux located?
+
+Ok, looking at JFFMPEG, you have to register:
+mime types
+codecs
+demux's
+
+plug ins are managed by the pluginmanager, not the manager.
+	
+ok, so we put everything together using the plugin manager.
+
+prefix.content.unknown.Handler
+
+the handler (player) will be given the datasource.
+
+from the datasource, determine content type
+
+(right, we are building a graph)
+
+from the content type, find a ... parser?...
+
+find a demux using content type (demux is parser)
+
+for each stream type coming out of the demux:
+
+using the format, find a codec that has an output format that matches a renderer
+
+may have to create a graph of codecs to do this
+
+Sun's unknown handler is:
+com.sun.media.content.unknown.Handler
+
+Ok, so once we use JFFMPEG, then we only need the player, and the renderer.  The demux and codec are provided by JFFMPEG
+The player only needs to link everything up.  
+
+
+JFFMPEG doesn't work with the stream provided by URL data source.  It needs to be seekable.
+What is mpeg4t?
+
+FOBS/FMJ has a handler: 
+ com.omnividea.media.content.unknown.Handler
+Not really implemented, though.
+
+
+FOBS problems
+- 64-bit linux build
+- JavaDecoder/NativeDecoder assume that the size is set when getting input/output formats (JavaDecoder doesn't seem to have this problem in CVS version)
+- Parser requires that the DataSource be the FOBS DataSource.  Should support other DataSources.  FOBS DataSource does not appear to be implemented fully.
+- com.omnividea.media.protocol.DataSource has hard-coded:
+    public String getContentType() {
+        return "video.ffmpeg";
+    }
+- FOBS handler gets an NPE because videoTrack is not set before syncStart.  This appears to be because it is a Processor, a subclass of Player, which has the method configure().
+
+
+5/22/06
+
+Initial civil integration is there, a lot of rough spots.
+correct native civil library needs to be in the library path
+TODO: need a browser for capture devices
+TODO: support hotplugging of capture devices
+
+5/24/06
+Sun appears to have an internal mime manager.  Is this what is edited in their registry app?
+
+5/31/06
+
+http://tritonus.org/
+Sun's MP3 plugin.
+
+We could extend our sound renderer to handle any format that javasound handles.
+But what would the demux do? which demux would we use?
+
+So a the unknown handler would get a standard data source (file), and then look for a demux with the right content
+type.  So we could create a demux with the content type for WAV, producing raw audio output.
+The trick is that javasound uses normal input streams, and jmf uses its own stream interfaces with Buffers.
+The demux would use an AudioInputStream.
+Actually, we may want the codec to do the work, so that the decoding will work even if WAV audio is embedded in another container format.
+
+
+There are more than a few gotchas here.
+1. if a codec is going to convert between audio formats using java sound, you have the problem that java sound is stream and not buffer oriented.  
+SO the codec has to take incoming buffers and put them into a fabricated InputStream that returns the buffer data.  
+A single input buffer may correspond to no output buffer, and the codec is forced to return OUTPUT_NOT_FILLED.  
+The filter graph needs to be able to handle this.  Not sure what the JMF filter graph does.  Especially once the input is empty, and 
+then there is probably a relatively big output buffer awaiting.
+2. Where is the right place to support AU/MP3/OGG, when using javasound SPIs?  demux? codec? renderer?
+3. How are all the buffer sizes to be established - with audio there is no particular buffer size when coming from a file.
+
+I guess what has been confusing me also is whether WAV or AU is a "container" format - what should the demux do with it.
+I'm thinking now that the demux needs to provide the raw data via the tracks, but reads enough of it to determine the exact format, and perhaps does not
+pass the header info to the caller of track.read.
+
+What is readFrame supposed to do if it encounters an exception, like IOException?
+
+
+6/29/06:
+
+Some audio files don't playback if JMF is in the classpath.
+MP3 - tries to use JFFMPEG.
+.au
+
+
+There is a conflict between com.ibm.media.parser.video.MpegParser and 
+
+MP3 with JMF in classpath:
+
+Filter graph:
+	audio.mpeg
+	com.ibm.media.parser.video.MpegParser
+		mpeglayer3, 44100.0 Hz, 16-bit, Mono, LittleEndian, Signed, 8000.0 frame rate, FrameSize=16384 bits
+		net.sourceforge.jffmpeg.AudioDecoder
+			LINEAR, 44100.0 Hz, 16-bit, Mono, LittleEndian, Signed
+			com.sun.media.renderer.audio.JavaSoundRenderer
+			
+WITHOUT:
+
+Filter graph:
+	audio.mpeg
+	net.sf.fmj.media.parser.JavaSoundParser
+		MPEG1L3, 44100.0 Hz, Mono, 38.28125 frame rate
+		net.sf.fmj.media.codec.JavaSoundCodec
+			LINEAR, 44100.0 Hz, 16-bit, Mono, LittleEndian, Signed, 44100.0 frame rate, FrameSize=16 bits
+			com.sun.media.renderer.audio.JavaSoundRenderer
+						
+			
+AU with JMF in classpath:
+
+Filter graph:
+	audio.basic
+	com.sun.media.parser.audio.AuParser
+		ULAW, 8000.0 Hz, 8-bit, Mono, Signed, FrameSize=8 bits
+		com.sun.media.renderer.audio.SunAudioRenderer	
+		
+		
+WITHOUT:
+
+Filter graph:
+	audio.basic
+	net.sf.fmj.media.parser.JavaSoundParser
+		ULAW, 8000.0 Hz, 8-bit, Mono, 8000.0 frame rate, FrameSize=8 bits
+		net.sf.fmj.media.codec.JavaSoundCodec
+			LINEAR, 8000.0 Hz, 16-bit, Mono, LittleEndian, Signed, 8000.0 frame rate, FrameSize=16 bits
+			com.sun.media.renderer.audio.JavaSoundRenderer		
+			
+10/23/06
+
+One of the things that makes JMF/FMJ programming tricky, is assumptions in the JMF architecture about when formats are known.
+
+There is kind of a chicken-and-egg problem with media: you often need to know the formats before you can build your filter graph, but you often don't know
+the formats until you start reading data.  That makes it hard to build the filter graph correctly.
+
+JMF's unknown handler calls start on the DataSource during the realization process.  It then reads 1 frame, then calls stop.  It must do this to get certain info.
+Then, when actually starting a clip, it calls start again during prefetch.
+getStreams is called after connect, but before start.
+
+FMJ seems to call start twice.
+we start the data source during realize
+and we start the demux when building the filter graph, also during realize.  The RawBufferParser starts the DataSource from there.
+
+The contracts in JMF are very hard to know.  Who is supposed to call start on the data source?
+
+Also, what order can things be called on a Track or Stream?  For example, can I get the format before/after connect, open?
+
+CIVIL: it would be nice to be able to get the format without reading a frame.
+
+5/30/07
+
+Processor sort of works.
+Still hangs at the end running Example5_4Modified
+Processes at media speed, not as fast as possible.
+
+July 2 2007
+How would something like subtitles be handled in JMF/FMJ?  Seems like something that could be a different "track" with a different format.
+How about DVD navigation?
+How about playlists, CD indexes, DVD indexes?  JMF seems to be oriented towards playback of a single multi-track media element, but has no awareness
+of structured media like DVDs, with chapters and such.
+
+July 10 2007
+TODO:
+- RTP transmit/transcode wizard: format selection dlg should allow multiple formats
+- transmit JPEG/RTP
+- get at bits of native players
+  see: http://www.onjava.com/pub/a/onjava/2005/06/01/kgpjava_part2.html?page=2
+  see: http://lists.apple.com/archives/QuickTime-java/2006/Mar/msg00081.html
+- use jdshow for lti-civil
+
+Aug 24 2007
+What is wrong with FMJ:
+- it is awkward to have plugins that span multiple functions, for example a combination DataSource, Demultiplexer and Codec.
+There are many cases when wrapping native libraries where it is hard to extract these into their elements, so it would be nice
+not to hack it to wrap a larger entity like this.  
+Actually, for a demux/parser it is not so tricky, since the demux just produces the decoded data.
+However, for a multiplexer this will be more complex, since generally the calling code tells the filter graph
+what the input to the muliplexer should be, for example mpeg video.
+- there needs to be a general clarification of vague parts of the spec.  There are TODOs littered
+around the code that point these out.  For example:
+  - when a failure occurs in opening/starting a demux, who is responsible for the cleanup?
+  - what happens when both the EOM and discard bits are set in a buffer.  Does that discard the EOM?
+  
+Directshow capture:
+http://msdn2.microsoft.com/en-us/library/ms867162.aspx
+
+
+Sep 11 2007
+To get FMJ to work with JMF in the classpath (JMF first), there are a few issues:
+1. the FMJ registry defaults are not there - done
+2. relative file URLs not supported - done
+3. safexmas.mov uses a heavyweight component that paints over the url drop down
+
+Not a problem with FMJ, but noticed that playing something like internet radio doesn't work well with JMF, because it is sending lots of caching progress events, which never seem to stop...
+
+TODO: Files to work on with FMJ ahead in classpath:
+streaming ogg/mp3
+
+
+	
+
+TODO: getting 403 from 
+	//prefs.recentUrls.add("http://upload.wikimedia.org/wikipedia/commons/d/d0/Apollo_15_liftoff_from_inside_LM.ogg"); // Apollo 15 movie from wikimedia
+	
+
+Sep 12 2007
+
+Running with FMJ ahead in classpath:
+file:///home/ken/Desktop/4harmonic.mpg
+No audio plays, jmf.log:
+
+## Here's the completed flow graph:
+  net.sf.fmj.ffmpeg_java.FFMPEGParser@44323274
+     connects to: net.sf.fmj.media.renderer.video.SimpleAWTRenderer@f5d8d75
+     format: RGB, 320x240, FrameRate=25.0, 24-bit, Masks=1:2:3, PixelStride=3, LineStride=960
+  net.sf.fmj.ffmpeg_java.FFMPEGParser@44323274
+     connects to: com.sun.media.renderer.audio.JavaSoundRenderer@57f5b4d1
+     format: LINEAR, 32000.0 Hz, 16-bit, Mono
+
+
+$$ Profile: graph building: 64 ms
+
+$$ Profile: realize, post graph building: 16 ms
+
+!! DataLine not supported: LINEAR, 32000.0 Hz, 16-bit, Mono
+XX   Unable to handle format: LINEAR, 32000.0 Hz, 16-bit, Mono
+
+This works if we remove all JMF plugins/packages from registry.
+
+It is starting to become clear that some of the JMF classes have some serious limitations, and that ultimately, we 
+only want to use the ones that have no FMJ counterpart.  Need to divide JMF plugins into good bad and ugly...
+
+
+TODO: http://www.archive.org/download/bunny_goes_down_2006/bunny_goes_down_2006_64kb.mp4 plays back slowly.
+
+Something to try:
+rtsp://ia301238.us.archive.org:554/0/items/DIA40/DIA40_64kb.mp4
+
+http://www.archive.org/download/DIA40/DIA40_64kb.mp4
+slowly - constanly reopening http stream, to see, promote URLDataSource: logger.finer("Full content type: " + conn.getContentType());
+
+Plays, timing is bad:
+http://ia300129.us.archive.org/3/items/salmat/salmat.flv
+
+TODO: safexmas.mov plays twice as fast as it should.
+
+Sep 25 2007
+Using AVTransmit2:
+JMF's stack with FMJ: RawBufferSourceStream read never gets called
+
+JMF appears to call setInputFormat on the mux for lots of possible input formats, to determine available input formats.
+
+TODO:
+
+playback of last bit of au twice
+
+preview wizard
+receive wizard?
+
+RTP reception doesnt' work second time.  Is something not cleaning up?
+loop has problems
+
+type in location, then click load, then it gives 2 errors if error.
+preview wizard
+offer alaw and speex
+jpeg packetizer
+
+
+
+data sink for Internet radio streaming.
+m3u/playlists
+cd audio
+auto-loop in fmj studio
+support /dev/video7
+ip cameras
+ip server
+
+player:
+transcode wizard
+maintain aspect ratio
+full screen
+snapshot
+plugin viewer
+capture control
+transmission stats
+
+controls (frame grabbing controls)
+wrap native codecs for processing
+synchronization
+implement java codecs for easy ones (jpeg, etc).
+
+controls, graphical controls
+
+details of format in capture urls
+
+native buffers
+
+Sep 27 2007
+It does appear that FMJ's unknown handler will break data into chunks before feeding it to the renderer.  It will take a big 1k buffer and 
+pass in offset 0 len 500 then offset 500 len 500, or something like that.  Observed when sending 1k RTP audio packets, and seeing how
+it calls the java sound renderer.
+
+
+Sep 29 2007
+When FMJ requests a URL, here are the params:
+INFO:   HDR: 'User-Agent' = 'Java/1.5.0_07'
+INFO:   HDR: 'Accept' = 'text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2'
+INFO:   HDR: 'Content-type' = 'application/x-www-form-urlencoded'
+INFO:   HDR: 'Host' = 'localhost:8090'
+INFO:   HDR: 'Connection' = 'keep-alive'
+
+Oct 8 2007
+JMF's reflection-based loading mechanism is suboptimal for applets, because it then tries to load lots of nonexistant classes from the web server, that are not in the jar.
+
+Oct 10 2007
+javasound demuxes need to enforce their specific formats
+still need to deal with the fact that most sound demuxes need to rewrite their header at the end
+need a way of merging formats so that if a less specific one is set, the merged format is the result.
+
+Oct 11 2007
+test FmjTranscode with JMF in classpath...
+
+
+Oct 21 2007
+Top issues:
+suboptimal filter graphs
+unspecified formats in filter graphs (negotiation with mux)
+civil crash
+audio mux hangs
+playback restart freeze
+
+Oct 22 2007
+review of JMF javadoc, things that FMJ doesn't really use yet:
+
+
+
+prefetching
+CachingControl,ExtendedCachingControl
+should a codec block rather than return flags that call it again?
+Drainable?
+Prefetchable
+DataSinkListener, DataSinkEvent events
+
+
+RateConfiguration,RateConfigureable
+
+Mux:
+"If a Multiplexer implements the Clock interface, it can be used by a Player as the master time base for synchronization. In this case, the Multiplexer should update the media time and time-base time as it processes the media."
+
+Oct 29 2007
+suboptimal filter graphs fixed.
+Still need to deal with things like image scaling conversions, and the full set of supported mux input formats.
+
+Nov 11 2007
+Need YUV/RGB conversions before implementing ffmpeg encoding
+
+Mar 10 2008
+Use MemoryImageSource for more efficiency.

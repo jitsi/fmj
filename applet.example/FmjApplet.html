@@ -1,0 +1,43 @@
+<html>
+<!-- 
+   Example of how to use an FMJ player in an applet - version for use with a build. 
+   Only pure-Java features are supported in this example, where we assume no special permissions. 
+   This applet won't run by loading this html using file:// in your browser, unless you grant the applet
+   file read permissions.  Better to serve it up using a web server.
+   
+   Troubleshooting:
+   Set the FMJ logging level to fine, by editing the JRE's logging.properties:
+   After:
+      .level= INFO
+   Add:
+      fmj.level=FINE
+   And then change:
+      java.util.logging.ConsoleHandler.level = INFO
+   to:
+      java.util.logging.ConsoleHandler.level = FINE
+      
+   Restart the browser.
+   
+   Then, open the Java console.  If you don't know how to open the browser Java console, here is a 
+   helper plugin for Firefox:
+   https://addons.mozilla.org/en-US/firefox/addon/141
+   
+   
+   Note: retroweaver-rt-2.0.jar is only needed for 1.4 compatibility, if using retrowoven jars.
+   To use it, add ../lib/retroweaver-rt-2.0.jar to the archive path below.
+
+-->
+<head></head>
+<body>
+
+	<applet 
+  		archive="../fmj-applet.jar,../lib/jogg-0.0.7.jar,../lib/jorbis-0.0.15.jar,../lib/theora-java.jar,../lib/jheora-patch.jar,../lib/mp3spi1.9.4.jar,../lib/jl1.0.jar,../lib/vorbisspi1.0.2.jar,../lib/tritonus_share.jar"
+		code="net.sf.fmj.apps.applet.FmjApplet.class" 
+		width=320 height=280> <!-- movie is 320x240, leave some room for transport bar. -->
+
+			<param name=MEDIA value=../samplemedia/Apollo_15_liftoff_from_inside_LM.ogg>
+
+	</applet>
+
+</body>
+</html>

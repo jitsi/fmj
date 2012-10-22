@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src.capture"/>
+	<classpathentry kind="src" path="src.ejmf"/>
+	<classpathentry kind="src" path="src.gst"/>
+	<classpathentry kind="src" path="src.sip-communicator"/>
+	<classpathentry kind="src" path="src.examples.rtp"/>
+	<classpathentry kind="src" path="src.ffmpeg-java"/>
+	<classpathentry kind="src" path="src.theora-java"/>
+	<classpathentry kind="src" path="src.t4l"/>
+	<classpathentry kind="src" path="src.apps"/>
+	<classpathentry kind="src" path="src.fmjstudio"/>
+	<classpathentry kind="src" path="src.sunibm.base"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jdom.jar"/>
+	<classpathentry kind="lib" path="lib/junit.jar"/>
+	<classpathentry kind="lib" path="lib/gstreamer-java.jar"/>
+	<classpathentry kind="lib" path="lib/jna.jar"/>
+	<classpathentry kind="lib" path="lib/tritonus_share.jar"/>
+	<classpathentry kind="lib" path="lib/jspeex.jar"/>
+	<classpathentry kind="lib" path="lib/lti-civil-no_s_w_t.jar"/>
+	<classpathentry kind="lib" path="lib/ffmpeg-java.jar"/>
+	<classpathentry kind="lib" path="lib/theora-java.jar"/>
+	<classpathentry kind="lib" path="lib/jheora-patch.jar"/>
+	<classpathentry kind="src" path="src.rtp"/>
+	<classpathentry kind="src" path="src.stubs"/>
+	<classpathentry kind="lib" path="lib/mp3spi1.9.4.jar"/>
+	<classpathentry kind="lib" path="lib/jl1.0.jar"/>
+	<classpathentry kind="lib" path="lib/vorbisspi1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jorbis-0.0.15.jar"/>
+	<classpathentry kind="lib" path="lib/jogg-0.0.7.jar"/>
+	<classpathentry kind="src" path="src.ds"/>
+	<classpathentry kind="src" path="src.utils"/>
+	<classpathentry kind="output" path="build/classes.eclipse"/>
+</classpath>

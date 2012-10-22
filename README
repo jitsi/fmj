@@ -1,0 +1,406 @@
+README for FMJ
+
+FMJ supports movie and audio file playback, as well as viewing of
+video from a capture device, on Windows, Mac OS X, and
+Linux.  
+
+--------------------------------------------------------------------
+Requirements: Java 5
+
+--------------------------------------------------------------------
+Applications
+
+Run the .sh/.bat for your platform.  There are several apps included: 
+fmjstudio,
+fmjplay, 
+fmjtranscode, and
+fmjregistry.
+
+fmjstudio lets you play media, and has dropdowns already
+for the sample media included with FMJ.  If you have a video camera
+installed on your system, you should be able to view it using the
+appropriate tool button.
+
+fmjplay is a no-frills player.  Requires the media parameter as a 
+URL as a command-line argument.  Files must begin with file://
+
+fmjtranscode is a command-line transcoding application.  Run it with no 
+arguments to get example usage.  
+
+fmjregistry is similar to the JMF JMFRegistry app.  It is NOT 
+necessary to run this app to view the samples.  It is useful if
+you are using external codecs, etc., which need to be registered
+(example, JFFMPEG). In particular, FMJStudio can do dynamic capture
+device detection, so there is no need to do this in the registry.
+
+There is an example of how to use FMJ in an applet in applet.example. 
+Please read the comments in the HTML files.
+
+--------------------------------------------------------------------
+External, Native Libraries
+
+FMJ can take advantage of a number of native, dynamic libraries, if they 
+are present, and in your library path.  
+
+1. ffmpeg
+2. ogg/vorbis/theora
+3. gstreamer
+
+In general, you may sometimes have
+to set your library path explicitly, for example on *nix systems, something 
+like:
+export LD_LIBRARY_PATH=/usr/local/lib
+
+Here are instructions on how to get and build these libraries, if you do 
+not have them.  The instructions are for *nix systems, it is certainly possible
+to build them on Windows systems, but you'll have to look online for how to do 
+that.
+
+-------------------------------------
+ffmpeg:
+
+Note: mmx is disabled in this example, as it has caused problems in the past.
+
+Step 1:
+Get ffmpeg sources from http://ffmpeg.mplayerhq.hu/
+
+Step 2: build/install ffmpeg
+
+./configure --disable-mmx --enable-shared
+make
+sudo make install
+
+-------------------------------------
+theora:
+
+Step 1:
+Get ogg, vorbis, theora sources from http://www.theora.org/
+
+This library was built/tested with:
+    * libtheora-1.0alpha7
+    * libogg-1.1.3
+    * libvorbis-1.1.2
+
+
+Step 2: build/install ogg, vorbis, theora, by running the standard build 
+procedure in each of the 3 directories:
+
+./configure
+make
+sudo make install
+
+-------------------------------------
+gstreamer:
+
+Available from http://gstreamer.freedesktop.org/
+
+
+--------------------------------------------------------------------
+Troubleshooting:
+
+---
+Cannot find a DataSource for: civil...
+
+WARNING: net.sf.fmj not found in PackageManager.getContentPrefixList() and PackageManager.getProtocolPrefixList(); is JMF ahead of FMJ in the classpath?
+
+WARNING: javax.media.Manager is JMF's implementation, not FMJ's; is JMF ahead of FMJ in the classpath?
+
+One very common problem is to have JMF ahead of FMJ in the classpath.  If this is the case, then 
+you will be using the JMF registry, in which case nothing from FMJ will be registered.  The
+FMJ apps will generally work (that is, you'll be able to open and play media, etc.), but anything
+that requires FMJ will not work.  The FMJ apps will output a warning to the logger (which generally
+goes to the console) if this is the case.
+
+To aid with troubleshooting, it is recommended that you change your logging.properties (in the current
+dir of FMJ) to use debug-level logging.  To do so, change
+fmj.level=INFO
+
+to
+fmj.level=FINE
+
+---
+WARNING: java.lang.UnsatisfiedLinkError: [...]\jdshow.dll: Can't find dependent libraries
+java.lang.UnsatisfiedLinkError: [...]\jdshow.dll: Can't find dependent libraries
+
+jawt.dll probably is not in your PATH.  See Platform-specific notes for Windows:
+
+---
+On Windows, when trying to play media: net.sf.jdshow.ComException: hr=-2146697203 
+
+This is a Windows error pertaining to the URL or path specified.  See http://support.microsoft.com/kb/234292
+
+In particular, Windows is pickier than FMJ about slashes in the URL.
+
+For example, the following URL does not work with Windows (when DirectShow is being used for the playback):
+file:///F:\safexmas.mov
+
+But, remove one forward slash from the URL, like this:
+file://F:\safexmas.mov
+
+And it will work, assuming everything else is correct.
+
+---
+
+ java.lang.UnsatisfiedLinkError: /tmp/jna44845.so: /lib64/tls/libc.so.6: version `GLIBC_2.4' not found (required by /tmp/jna44845.so)
+ 
+ (NOTE: you will only get this error for the first JNA-based plugin that is loaded, the other ones will fail with a different exception, which by default does not get logged)
+ 
+ This is because JNA was built on a newer system than yours.  You'll have to build JNA from scratch.  We are currently using the jnalib-v3 branch of JNA.
+ 
+ svn checkout https://jna.dev.java.net/svn/jna/branches/jnalib-v3 jna --username yourjavanetusername
+ 
+ -- problems with jdshow on windows
+ 
+ If you wish to eliminate the usage of jdshow for windows playback, in case it is causing problems for you:
+ 
+To disable jdshow, you can either remove jdshow.dll from your library path, or you can remove this code from RegistryDefaults.java:
+contentPrefixList.add("net.sf.fmj.ds");
+Or you can run the registry tool, remove net.sf.fmj.ds from the content prefix list, and then run FMJ studio.  
+This stores your registry settings in a file .fmj.registry.xml.  
+The danger of doing this is that this will now override any future changes to RegistryDefaults, 
+so you might want to delete that file if RegistryDefaults is changed in CVS.
+ 
+ 
+
+--------------------------------------------------------------------
+Platform-specific notes:
+
+Windows: 
+
+For movie playback (as well as capture), requires DirectShow to be installed.  
+If you get an error that jawt.dll cannot be found, find it in your JRE 
+directory and copy it to somewhere in your PATH (perhaps the current
+directory).
+
+---
+From whome:
+I edited fmjstudio.bat file and put JRE/bin folder to path variable. Doing so I did not have to copy jawt.dll file to the app folder.
+
+[ fmjstudio.bat ]
+rem jawt.dll must be found from path
+set path=%path%;C:\Program Files\Java\jre1.5.0_07\bin
+
+java -classpath fmj.jar...[etc]
+---
+
+Linux:
+
+Movie playback is not yet implemented.  Movie playback will work 
+for some movies (including the sample(s)) if JMF is added to 
+the classpath.  It is sufficient to add jmf.jar (cross-platform)
+version to the classpath.
+
+Native playback is planned for Linux but development has not yet started.
+
+--------------------------------------------------------------------
+Using FMJ with JMF.
+
+There are many cases where the plug-ins and other functionality of FMJ/JMF can be used with the other. 
+This can be useful to work around bugs and missing functionality in either.
+
+There are 2 ways to do this:
+1. Using FMJ alongside JMF (JMF is ahead in the classpath - fmj-nojmf.jar is intended for this)
+2. Using JMF alongside FMJ (FMJ is ahead in the classpath - JMF cannot be installed).
+
+
+One example is using lti-civil capture devices with JMF.
+
+lti-civil does not contain any JMF-related code.  So to use lti-civil with JMF you need at least part of FMJ (the civil DataSource and any classes it requires).  The easiest way to do this is to put JMF ahead of FMJ in the classpath (which is generally true anyway if JMF is actually installed), and then add "net.sf.fmj" to your protocol prefix list in the JMF registry.  You can also add this at runtime by doing something like:
+
+		final Vector v = PackageManager.getProtocolPrefixList();
+		
+			if (!v.contains("net.sf.fmj"))
+				v.add("net.sf.fmj");
+		
+
+		PackageManager.setProtocolPrefixList(v);
+
+This will allow you to create a player/processor using "civil:/0" as the URL.
+
+--------------------------------------------------------------------
+Directories.
+Not all directories are in the release, some are only in CVS.
+
+Directory                 Description
+src                       Main source folder for FMJ
+src.capture               JavaSound and LTI-CIVIL capture DataSources
+src.ejmf                  Source borrowed and adapted from the EJMF book (with permission)
+src.sip-communicator      Source borrowed from the SIP-Communicator project (speex and ilbc RTP codecs)    
+src.examples.rtp
+src.ffmpeg-java           Demux that uses the ffmpeg-java subproject
+src.theora-java           Demuxes that use the theora-java subproject
+src.rtp                   RTP manager implementation
+src.stubs                 Stubbed implementations of sun/ibm internal JMF classes that can be useful to get JMF-dependent projects to compile
+src.ds                    DirectShow Player
+src.utils                 LTI utils classes
+src.examples.ejmf         Examples from the EJMF book
+src.examples.jmf          Examples from the JMF website
+src.examples.jmf.guide    Examples from the JMF guide
+src.experimental          Experimental FMJ source.  Not used yet.
+src.qt                    Quicktime (QTJ) Player
+src.qtfile                MOV file atom parsing (from Chris Adamson).  Not used.
+src.sunibm.replace        Replacements for sun/ibm internal JMF classes that are implemented by extending the FMJ equivalents.  
+                          Not generally needed unless you want to play classpath tricks.  Needed to compile/run unit tests.
+src.sunibm.base           Implementations of internal sun/ibm base classes that are often used (unfortunately) by many JMF-based 
+                          projects.
+src.test                  Unit tests
+src.apps                  Assorted applications, including
+                          - FmjMediaServer: fi.iki.elonen.nanohttpd.NanoHTTPD, and media server which can be used to stream media, transcoded media, and live captured media.
+                          - FmjPlay: a simple barebones media player (much simpler than FMJStudio)
+                          - FmjTranscode: a transcoder application
+                          - FmjApplet: a media applet
+src.fmjstudio             FmjStudio and FmjRegistry applications
+src.t4l                   Source from com.t4l, contributed by Jeremy Wood
+
+applet.example            example of how to use FMJ in an applet
+build                     build output directory
+lib                       jars that FMJ uses or depends on
+nativelib                 native libraries (JNI) that FMJ uses
+nbproject                 NetBeans project.  Note that you have to replace build.xml with build.netbeans.xml to use NetBeans
+samplemedia               Sample media files
+sh                        shell/.bat files to launch FMJ studio and the registry editor.
+website                   old website
+website2                  old website
+website3                  website
+webstart.example          Example of launching FMJ studio with Java webstart (not working yet).
+
+--------------------------------------------------------------------
+Joining the development team
+
+- Download the FMJ release, play around with FMJStudio
+- Get a sourceforge user account.
+- Get the FMJ source code from CVS.
+- Subscribe to the fmj-devel mailing list
+- Review some of the documents and links on the FMJ website, particularly those pertaining to roadmap and status.
+- Do you have a particular project that you would like to get working with FMJ, or particular goals to achieve?  
+  This is a good place to start.  See if it works with FMJ (without JMF), and perhaps report your findings to 
+  the fmj-devel mailing list, and the team will likely have ideas on where to start.
+- Do you have any particular area of interest or expertise?  This is also very relevant, as there are many 
+  different tasks to be done, all the way from native library wrapping, porting codecs from C, to GUI work, 
+  testing, optimization and improvement across the board.  For example, are you interested in playback, transcoding, streaming,
+  applets, RTP, live audio and video capture?  Do you have experience with image rendering, javasound, general Java 
+  architecture and design, media formats, ffmpeg, directshow, quicktime, gstreamer, theora, native coding, JNI, JNA,
+  etc, etc, etc... Please don't be intimidated by the long list of complicated technologies that FMJ integrates with,
+  nobody on the team is an expert in all of these.  There is an optimal niche for everyone, regardless of 
+  breadth and depth of experience.  And even without any particular multimedia experience, there are interesting tasks to be done.
+  
+  
+--------------------------------------------------------------------
+Contributors
+
+Note: not everyone who has contributed is included here.  If you 
+have contributed and have been overlooked here, don't take it 
+personally, just let the team know and you'll be added.
+
+Thanks also to others for submitting patches, bug reports, and
+feedback.
+
+Thanks also to other open-source projects, books, and examples from 
+which source has been borrowed/adapted, like SIP-Communicator,
+EJMF, and others.
+
+Name:     Ken Larson (kenlars99)
+Role:     Developer
+Areas:    Project leader
+Location: USA and Germany
+
+Name:     Warren Bloomer (stormboy)
+Role:     Developer
+Areas:    FMJStudio, FMJRegistry, audio/video renderers.
+Location: Australia
+    
+Name:     Andrew Rowley (zzalsar4)
+Role:     Developer
+Areas:    RTP 
+Location: England
+
+Name:     Christian Vincenot (sgt_sagara)
+Role:     Developer
+Areas:    RTP 
+Location: France
+
+Name:     Andrey Kuprianov (andreyvk)
+Role:     Web designer and administrator
+Location: Russia and Thailand
+
+Name:     Stephan Goetter (turms)
+Role:     Developer
+Areas:    ffmpeg-java
+Location: Germany
+
+Name:     Jeremy Wood
+Role:     Developer
+Areas:    JPEG encoding/decoding, buffer/image conversion, optimization
+
+Name:     Damian Minkov
+Role:     Developer (SIP-Communicator)
+Areas:    SIP-Communicator RTP Codecs
+
+
+
+--------------------------------------------------------------------
+Supported Formats
+
+Native wrapper playback:
+
+Wrapper for          OS             Formats
+DirectShow           Windows        Pretty much anything!
+Quicktime for Java   Mac OS X       Pretty much anything!
+GStreamer            Any            Pretty much anything!
+
+Native wrapper processing an playback:
+Wrapper for          OS             Formats
+ffmpeg               Any            Pretty much anything!
+
+
+Pure Java processing and playback:
+Container                  Decode, Encode
+ Format
+ 
+RTP
+ JPEG/RTP                  D,E
+ ULAW/RTP                  D,E
+ ALAW/RTP                  D,E
+ SPEEX/RTP                 D,E
+ ILBC/RTP                  D,E
+WAV
+ LINEAR (PCM)              D,E
+AU
+ LINEAR (PCM)              D,E
+ ULAW                      D,?
+AIFF
+ LINEAR (PCM)              D,E
+ 
+multpart/x-mixed-replace
+ JPEG                      D,E
+ GIF                       D,E (encoding only with Java 6+)
+ PNG                       D,E
+ 
+ogg
+ VORBIS                    D
+ THEORA                    D
+ 
+mp3
+ mp3                       D
+ 
+
+Assorted pure Java codecs:
+Audio resampling
+Video scaling
+
+Capture:
+Type     Technology                     OS
+Audio    JavaSound                      All
+Video    LTI-CIVIL,DirectShow           Windows
+         LTI-CIVIL,V4L2                 Linux
+         LTI-CIVIL,Quicktime for Java   Mac OS X
+
+
+
+Note: FMJ and JMF can use each others' plugins, assuming the classpath and
+registry is set appropriately.
+
+For JMF supported formats, see:
+http://java.sun.com/products/java-media/jmf/2.1.1/formats.html
+
+

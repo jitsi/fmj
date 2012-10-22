@@ -1,0 +1,391 @@
+June 14 2006
+
+Initial release.
+
+June 22 2006
+kenlars99 Fixed a bug with spaces in a URL
+
+June 27 2006
+kenlars99 Implemented MIME types load/save from XML registry file, and MIME type in registry GUI.
+kenlars99 Implemented details pane in registry GUI.
+
+kenlars99 Improved 1.4 compatibility
+kenlars99 Improved JMF compatibility for JFFMPEG
+
+
+Sep 5 2006
+kenlars99 Migrated from println and printStackTrace to Java logging.
+kenlars99 Cleaned up javadocs
+kenlars99 removed user settings panel from registry app since it is not used anyway.
+
+Sep 7 2006
+
+kenlars99 Improve logging
+
+2nd Release
+
+Oct 23 2006
+kenlars99 CIVIL capture now is a PushDataSource instead of a customized data source requiring a special handler.
+          It can now be processed by the "Unknown" handler.  This paves the way for using it in processing instead
+          of just playback.
+kenlars99 PlayerPanel now accepts a URL as a command-line argument.
+kenlars99 corrected wrong rgb values for civil video input.
+kenlars99 javasound:/ url can be used to get audio from the audio system.  TODO: format selection.  Also, can only be played back
+          through the javasound renderer, so it is not super-useful right now.
+
+Oct 30 2006
+kenlars99 support ordinal locators for video capture, for example civil:0 will be the first capture source.
+
+Dec 4 2006
+kenlars99 added small utility to check classpath for FMJ ahead of JMF.  This logs warnings to detect a frequent cause of "no player"/"no datasource" exceptions
+          for civil: datasources
+
+3rd Release
+
+Dec 12 2006
+kenlars99 support RTP/JPEG streams.
+kenlars99 support rtp:// URLs
+
+4th Release (fmj-20061212-0649)
+
+kenlars99 fix CPU usage problem when receiving RTP.
+
+Apr 17 2007
+
+craignicol fix nanosecond conversion factor in Time.java
+stormboy various, including auto-load of media when selected from dropdown
+
+Apr 24 2007
+kenlars99 fixes to work with FOBS4JMF
+
+May 1 2007
+craignicol Use QT swing rather than AWT components
+
+May 24 2007
+kenlars99 add support for gain control
+kenlars99 bring in latest lti-civil with QTJ capture improvements
+
+5th Release 20070524-1754
+
+May 25 2007
+kenlars99 - from lti-civil - add /dev/video0 thru /dev/video3 to v4l returned capture devices.
+
+kenlars99 - fixed [ 1681320 ] NullPointerException thrown by AudioCodec
+kenlars99 - fixed [ 1611466 ] Player: close()+deallocate() throws NullPointerException
+
+May 29 2007
+kenlars99 - wrote file datasink, fixes to Manager to build data sinks properly.
+
+May 30 2007
+kenlars99 - wrote audio mux classes - wav, au, aiff.  aiff doesn't seem to be working,
+and main problem is header is set with wrong length (Integer.MAX_INT).
+kenlars99 - initial implementation of Processor.  Still buggy.
+
+May 31 2007
+kenlars99 - created gstreamer-java player, integrated for linux.
+
+June 1 2007
+kenlars99 - added RTP data sink.
+
+June 2 2007
+kenlars99 - filter graph building and processing much improved - including support for transmission of RTP (using Sun's RTP stack).
+kenlars99 - wrote depacketizer for ulaw.
+
+June 3 2007
+kenlars99 - get ULAW Packetizer working.
+
+June 5 2007
+kenlars99 - live mp3 and ogg http streams working.
+kenlars99 - out of memory exception when playing compressed audio fixed.
+
+6th release fmj-20070605-1659
+
+June 14 2007
+kenlars99 - get ulaw and alaw encoder, decoder, packetizer, depacketizer working
+kenlars99 - get audio sample rate converter working
+kenlars99 - add items to fmj studio menu (open file, etc).
+
+June 15 2007
+kenlars99 - get rate converter working better
+kenlars99 - get RTP transmission wizard at least partially working
+
+June 16 2007
+kenlars99 - RTP transmission wizard improvements
+kenlars99 - PlayerPanel: load/save FMJ studio preferences with recent URLs
+kenlars99 - PlayerPanel: add status bar, and auto-play option.
+
+June 17 2007
+kenlars99 - PlayerPanel: hourglass when loading new media.
+kenlars99 - PlayerPanel: blank url on startup
+kenlars99 - PlayerPanel: ignore controller state changes from old players.
+kenlars99 - PlayerPanel: auto-loop ability
+
+June 18 2007
+kenlars99 - lti-civil - added dynamic linux capture device detection, up to /dev/video15
+kenlars99 - lti-civil = fixed major problem with not being able to open linux capture devices twice.
+
+7th release fmj-20070618-1117
+
+Jun 19 2007
+kenlars99 - lti-civil - switch to V4L2
+kenlars99 - added ilbc rtp support from sip-communicator
+
+July 5 2007
+kenlars99 - lti-civil - attempt to dispose DirectShow filter graph properly
+kenlars99 - about box in FMJ studio
+
+July 7 2007
+kenlars99 - lti-civil - migrate to latest swtutils
+kenlars99 - lti-civil - require Java 1.5 to compile (use generics)
+kenlars99 - lti-civil - migrate to lti-civil-noswt.jar to build
+kenlars99 - fix bugs loading after using capture device browser
+kenlars99 - support civil:/0, etc, in addition to civil:0
+kenlars99 - fix DirectShow URL problems
+
+release fmj-20070706-0728
+
+July 9 2007
+kenlars99 - lti-civil - rename lti-civil-noswt.jar to lti-civil-no_s_w_t.jar because Mac OS X thinks SWT is active if swt is in the classpath at all as a string.
+
+July 10 2007
+kenlars99 -lti-civil - fixed JVM crash on linux after opening the same capture device a number of times, cleaned up a few things in the process
+
+
+July 11 2007
+kenlars99 - lti-civil - better exception handling if CaptureObserver called from native thread throws an exception.  It used to crash the JVM, now it logs.
+
+release fmj-20070711-1315
+
+July 13 2007
+kenlars99 - add formatSupported to RTPSessionMgr for JMF compatibility.  Make RTPSyncBufferMux use it to check formats.
+kenlars99 - improve filter graph building to be more similar to JMF
+
+Aug 6 2007
+kenlars99 - JavaSound DataSource now implements CaptureDevice interface
+
+Aug 10 2007
+kenlars99 - improvements to JavaSound datasource - now correctly uses buffer transfer handler.
+
+Aug 17 2007 - switch to LGPL
+
+Aug 21 2007
+kenlars99 - add ffmpeg-java, with demux
+kenlars99 - more RTP compatibility with JMF, and more robust exception handling and logging
+kenlars99 - move to experimental JNA jar to support ffmpeg-java
+
+Aug 23 2007
+kenlars99 - Move to Java 1.5, start using annotations, etc.
+kenlars99 - add ffmpeg-theora, with demux
+
+release fmj-20070823-1047
+
+Aug 24 2007
+kenlars99 - created QTParser - a QTJ-based demux.
+
+Aug 27 2007
+kenlars99 - improved audio quality of RateConverter when converting from a higher sample rate to a lower one.
+
+Aug 28 2007
+kenlars99 - FFMPEGParser now supports mpg files
+kenlars99 - added pure java ogg/theora/vorbis parser.
+
+Release fmj-20070828-1154
+
+Sep 3 2007
+kenlars99 - support multipart/x-mixed-replace m-jpeg streams.  This allows many webcams which stream MJPG to be displayed.
+            example: http://towercam.uu.edu/axis-cgi/mjpg/video.cgi
+
+kenlars99 - improve FFMPEGParser frame rate and frame time calculation
+kenlars99 - create pseudo-protocol httpauth.  This can be used to access http streams which require authentication, without creating
+            a custom datasource.
+            For example:
+            http://myipcameraimage.com/cam
+            with username "user" and password "pass" would become
+            httpauth:user:pass@//myipcameraimage.com/cam
+
+Sep 7 2007
+kenlars99 - get applets working, provide an example in applet.example
+kenlars99 - handle getting text/plain as the wrong content type from a web server
+kenlars99 - assorted bug fixes
+
+Sep 11 2007
+kenlars99 - improve timing of playback, most importantly, eliminating slowdown when playing civil captured video.
+kenlars99 - added sleep to RTPSyncBufferMux
+
+Sep 12 2007
+kenlars99 - zero-based timestamps for civil capture source makes it jmf-compatible.
+kenlars99 - defaulting tracks to enabled allows fmj parsers (java ogg) to work with jmf.
+kenlars99 - enable JMF logging in FMJStudio, if FMJ is ahead in classpath
+kenlars99 - applet now works even if JMF is installed.
+kenlars99 - ContentDescriptor strings now made JMF-compliant by using _ instead of -.  Now MJPEG streams
+			show content type multipart.x_mixed_replace and the right demux is found in JMF.
+
+
+Sep 13 2007
+kenlars99 - Improve quality when resampling from a lower to a higher rate
+
+Sep 14 2007
+kenlars99 improve image conversions to avoid copying data
+
+Release fmj-20070914-1234
+
+Sep 15 2007
+kenlars99 remove jffmpeg
+
+Sep 16 2007
+kenlars99, Stephan Goetter ffmpeg-java-20070916-0351 supports windows
+
+Sep 18 2007
+Stephan Goetter ffmpeg-java demux now dynamically determines supported content types.
+
+Sep 19 2007
+kenlars99 - lti-civil- get start after stop working for directshow capture
+
+Sep 20 2007
+kenlars99 - lti-civil- get Mac OSX capture working on PPC.
+
+Sep 27 2007
+kenlars99 - fix bug in alaw encoder/packetizer that was using "ALAW" instead of "alaw".  This caused an NPE when trying to transmit RTP using JMF.
+kenlars99 - fix flaw in ulaw encoder that was causing noise.
+kenlars99 - fix clicks in rtp audio playback
+kenlars99 - log version # and whether JMF is in classpath
+kenlars99 - don't include sun/ibm replacement classes in build
+
+Release fmj-20070928-0700
+
+Sep 27 2007
+kenlars99 - include correct version of lti-civil for sept 19/20 fixes above.
+
+Release fmj-20070928-0938
+
+Oct 2 2007
+kenlars99 - added JPEG encoder/decoder from Jeremy Wood (t4l)
+kenlars99 - use JPEGFormat instead of VideoFormat("jpeg")
+kenlars99 - add missing JPEG renderer
+kenlars99 - add multipart/x-mixed-replace mux, which can be used to stream jpeg images the way some webcams do
+
+Oct 5 2007
+kenlars99/Stephan Goetter - do not set media time to zero explicitly before starting playback.
+Stephan Goetter - many FFMPEGParser improvements
+kenlars99 - added GIF/PNG encoder/decoder
+kenlars99 - media server and transcode applications now support specific formats by passing in parameters like LINEAR:44100:16:2
+Stephan Goetter - improve FFMPEGParser timing
+
+Oct 8 2007
+kenlars99 - allow registry to be loaded using properties file instead of xml, and allow loading registry from resource (for applets)
+kenlars99 - streamline applets to not hit the server as much
+kenlars99 - clean up registry default configuration.
+kenlars99 - fix Manager.createRealizedPlayer
+kenlars99 - add .sh/.bat files for fmjplay and fmjtranscode
+kenlars99 - add timestamps to multiper/x-mixed-replaced streams
+
+Oct 10 2007
+kenlars99 - improve javadoc
+kenlars99 - fix bugs when transcoding from an A/V movie to just an audio AU file
+
+Oct 11 2007
+kenlars99 - Improvements and correctness in RTP SimpleSocketInputStream
+kenlars99 - get JPEGDecoder working
+kenlars99 - fix endian problem in javasound renderer when rendering ulaw (sounded very noisy)
+kenlars99 - FmjTranscode can now render
+
+Oct 15 2007
+bigdugong - RTP stack update. Implementation of some missing features (like participant timeout, dynamic RTCP minimum delay computation,
+			RFC-compliant BYE transmission, Timer reconsideration algorithm, etc) and correction of some algorithms (RTCP delay especially,
+			SSRC generation, ...) conforming to the RFC-3550
+
+Oct 16 2007
+kenlars99 - implement Manager.createMergingDataSource();
+
+Oct 17 2007
+kenlars99 - defined and added (nonstandard) XML movie format (.xmv), for testing.
+kenlars99 - added render: data sink, for testing
+
+Oct 18 2007
+kenlars99 - add merge: protocol, and support multiple output formats in FmjTranscode
+kenlars99 - support Manager.createCloneableDataSource for PushBufferDataSource and PullBufferDataSource
+
+Oct 19 2007
+onots/kenlars99 - civil CaptureDevicePlugger now indicates correct formats.
+kenlars99 - support Manager.createRealizedProcessor(ProcessorModel)
+kenlars99 - lti-civil - include directshow error codes in exceptions
+
+Oct 20 2007
+turms - added 8- and 16-bit formats to renderer
+
+Oct 21 2007
+kenlars99 - correctly negotiate mux input formats.
+
+Nov 4 2007
+kenlars99 - protocol handler for res: protocol, loads from Java resource.
+
+Nov 9 2007
+kenlars99 - unknown handler adds controls from datasource and renderers
+kenlars99 avoid classloader problems by getting Java classes in native code called from Java, not from a native thread.
+
+Nov 14 2007
+bigdugong - adding checks for RTP unmapped streams
+bigdugong - adding RTP ActiveReceiveStreamEvent and InactiveReceiveStreamEvent support
+
+Jan 17 2008
+kenlars99 - gstreamer handler now rejects data sources with no locator
+kenlars99 - more handling of relative file URLs.
+kenlars99 - migrate to gstreamer-java-0.5 and jna-r433.jar
+kenlars99 - gstreamer handler now detects and handles EOM
+
+Feb 18 2008
+kenlars99 - switched to native L&F
+kenlars99 - got progress slider working for qtj
+
+Feb 19 2008
+kenlars99 - make FMJ studio's control panel usable by handlers as default control
+kenlars99 - handle playing audio-only media with QTJ
+kenlars99 - detect QT EOM
+kenlars99 - get volume control working for QT
+
+Mar 10 2008
+kenlars99 - QTJ handler - fix missing video in mpeg videos
+
+Mar 17 2008
+kenlars99 - refactor some classes from net.sf.fmj.ui.controlpanel to net.sf.fmj.gui.controlpanel to make it easier to exclude net.sf.fmj.ui from the applet jar
+
+Jun 21 2008
+Werner Dittman - Patch to avoid unnecessarily opening local ports
+
+Jun 23 2008
+kenlars99 - use open-source base 64 lib from http://iharder.sourceforge.net
+Werner Dittman - Migrate away from internal Sun classes in JpegEncoder
+
+July 8 2008
+kenlars99 - remove sun-specific javasound workaround for buggy javazoom code.
+
+July 9 2008
+Martin Harvan (kane77) - GSM encoding, decoding, RTP
+
+August 20 2008
+Martin Harvan (kane77) - Changes in Jpeg/RTP encoder and decoder to support correctly various parameters
+
+October 6 2008
+mgodehardt - added jmf like scaling option to net.sf.fmj.media.renderer.video.SimpleAWTRenderer
+mgodehardt - net.sf.fmj.media.CloneablePushBufferDataSource fixed OutOfMemoryException Bug
+mgodehardt - net.sf.fmj.media.protocol.civil.DataSource completed getSupportedFormats and setFormat
+mgodehardt - net.sf.fmj.media.protocol.javasound.DataSource dynamic buffer allocation based on framerate for lowest latency
+mgodehardt - net.sf.fmj.media.codec.audio.ulaw.Packetizer adjusted packet size as specified by RFC 3551
+
+October 23 2008
+mgodehardt - net.sf.fmj.media.protocol.javasound.DataSource has now a BufferControl and reads direct from TargetDataLine
+mgodehardt - FMJ Registry Editor, Cpature Device Panel now showing OutputFormats
+mgodehardt - Capture Device Formats changed to be jmf compatible, javasound Capture Device extended to offer more Capture Devices
+
+November 21 2008
+mgodehardt - rtp audio (ulaw) and rtp video (jpeg) transmission and reception now working flawless, added some examples
+             under src.test\net.sf\fmj\rtp (rtpaudio, rtpvideo and rtpreceive), RTP and RTCP are now conform to RFC 3550/RFC3551
+
+December 8 2008
+mgodehardt - net.sf.fmj.media.renderer.audio.JavaSoundUtils, MPEG and VORBIS are now referenced by reflection, class is now loadable
+             without mp3 and vorbis jar file
+
+January 18 2009
+mgodehardt - net.sf.fmj.media.multiplexer.audio.AUMux, length of audio data was 0xffffffff (-1), some programs like microsoft mediaplayer
+             are not able to play them, added to writeFooter data length writing at the end of the recording, some changes were made to
+             net.sf.fmj.media.content.unknown.Handler, close was never called on the nodes of the filter graph at the end.
