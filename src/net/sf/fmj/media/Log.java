@@ -33,6 +33,12 @@ public class Log
             logger.fine((str!=null ? str.toString() : "null"));
     }
 
+    public static synchronized void info(Object str)
+    {
+        if (isEnabled && logger.isLoggable(Level.INFO))
+            logger.info((str!=null ? str.toString() : "null"));
+    }
+
     public static synchronized void decrIndent()
     {
         indent--;

@@ -692,18 +692,18 @@ public class RTPSourceStream extends BasicSourceStream implements
     private void printStats()
     {
         String cn = this.getClass().getCanonicalName()+" ";
-        Log.comment(cn+"Total packets added: " + nbAdd);
-        Log.comment(cn+"Times reset() called: " + nbReset);
-        Log.comment(cn+"Times append() called: " + nbAppend);
-        Log.comment(cn+"Times insert() called: " + nbInsert);
-        Log.comment(cn+"Times cutByHalf() called: " + nbCutByHalf);
-        Log.comment(cn+"Times grow() called: " + nbGrow);
-        Log.comment(cn+"Times prepend() called: " + nbPrepend);
-        Log.comment(cn+"Times removeAt() called: " + nbRemoveAt);
-        Log.comment(cn+"Packets dropped: " + nbDrop);
-        Log.comment(cn+"Times replenish finished:" + nbReplenishFinished);
-        Log.comment(cn+"Times read() while empty:" + nbReadWhileEmpty);
-        Log.comment(cn+"Times replenish started:" + nbReplenishStart);
+        Log.info(cn+"Total packets added: " + nbAdd);
+        Log.info(cn+"Times reset() called: " + nbReset);
+        Log.info(cn+"Times append() called: " + nbAppend);
+        Log.info(cn+"Times insert() called: " + nbInsert);
+        Log.info(cn+"Times cutByHalf() called: " + nbCutByHalf);
+        Log.info(cn+"Times grow() called: " + nbGrow);
+        Log.info(cn+"Times prepend() called: " + nbPrepend);
+        Log.info(cn+"Times removeAt() called: " + nbRemoveAt);
+        Log.info(cn+"Packets dropped: " + nbDrop);
+        Log.info(cn+"Times replenish finished:" + nbReplenishFinished);
+        Log.info(cn+"Times read() while empty:" + nbReadWhileEmpty);
+        Log.info(cn+"Times replenish started:" + nbReplenishStart);
         //Log.comment(this);
         //new Throwable().printStackTrace();
     }
