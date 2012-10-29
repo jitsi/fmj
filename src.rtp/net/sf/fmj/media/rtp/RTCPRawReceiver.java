@@ -101,16 +101,16 @@ public class RTCPRawReceiver extends PacketFilter
     @Override
     public Packet handlePacket(Packet p)
     {
-        stats.update(0, 1);
-        stats.update(11, 1);
-        stats.update(1, p.length);
+        stats.update(OverallStats.PACKETRECD, 1);
+        stats.update(OverallStats.RTCPRECD, 1);
+        stats.update(OverallStats.BYTESRECD, p.length);
         RTCPPacket result;
         try
         {
             result = parse(p);
         } catch (BadFormatException e)
         {
-            stats.update(13, 1);
+            stats.update(OverallStats.BADRTCPPACKET, 1);
             return null;
         }
         return result;

@@ -149,63 +149,63 @@ public class OverallStats implements GlobalReceptionStats
     {
         switch (which)
         {
-        case 0: // '\0'
+        case PACKETRECD: // '\0'
             numPackets += num;
             break;
 
-        case 1: // '\001'
+        case BYTESRECD: // '\001'
             numBytes += num;
             break;
 
-        case 2: // '\002'
+        case BADRTPPACKET: // '\002'
             numBadRTPPkts += num;
             break;
 
-        case 3: // '\003'
+        case LOCALCOLL: // '\003'
             numLocalColl += num;
             break;
 
-        case 4: // '\004'
+        case REMOTECOLL: // '\004'
             numRemoteColl += num;
             break;
 
-        case 5: // '\005'
+        case PACKETSLOOPED: // '\005'
             numPktsLooped += num;
             break;
 
-        case 6: // '\006'
+        case TRANSMITFAILED: // '\006'
             numTransmitFailed += num;
             break;
 
-        case 11: // '\013'
+        case RTCPRECD: // '\013'
             numRTCPRecd += num;
             break;
 
-        case 12: // '\f'
+        case SRRECD: // '\f'
             numSRRecd += num;
             break;
 
-        case 13: // '\r'
+        case BADRTCPPACKET: // '\r'
             numBadRTPPkts += num;
             break;
 
-        case 14: // '\016'
+        case UNKNOWNTYPE: // '\016'
             numUnknownTypes += num;
             break;
 
-        case 15: // '\017'
+        case MALFORMEDRR: // '\017'
             numMalformedRR += num;
             break;
 
-        case 16: // '\020'
+        case MALFORMEDSDES: // '\020'
             numMalformedSDES += num;
             break;
 
-        case 17: // '\021'
+        case MALFORMEDBYE: // '\021'
             numMalformedBye += num;
             break;
 
-        case 18: // '\022'
+        case MALFORMEDSR: // '\022'
             numMalformedSR += num;
             break;
         }

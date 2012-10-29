@@ -101,27 +101,27 @@ public class RTPStats implements ReceptionStats
     {
         switch (which)
         {
-        case 0: // '\0'
+        case PDULOST: // '\0'
             numLost++;
             break;
 
-        case 1: // '\001'
+        case PDUPROCSD: // '\001'
             numProc++;
             break;
 
-        case 2: // '\002'
+        case PDUMISORD: // '\002'
             numMisord++;
             break;
 
-        case 3: // '\003'
+        case PDUINVALID: // '\003'
             numInvalid++;
             break;
 
-        case 4: // '\004'
+        case PDUDUP: // '\004'
             numDup++;
             break;
 
-        case 8:
+        case PDUDROP:
             PDUDrop++;
             break;
         }
@@ -131,23 +131,23 @@ public class RTPStats implements ReceptionStats
     {
         switch (which)
         {
-        case 0: // '\0'
+        case PDULOST: // '\0'
             numLost = numLost + amount;
             break;
 
-        case 5: // '\005'
+        case PAYLOAD: // '\005'
             payload = amount;
             break;
 
-        case 7: // '\007'
+        case QSIZE: // '\007'
             qSize = amount;
             break;
 
-        case 8: // '\b'
+        case PDUDROP: // '\b'
             PDUDrop = amount;
             break;
 
-        case 9: // '\t'
+        case ADUDROP: // '\t'
             ADUDrop = amount;
             break;
         }
@@ -155,7 +155,7 @@ public class RTPStats implements ReceptionStats
 
     public synchronized void update(int which, String name)
     {
-        if (which == 6)
+        if (which == ENCODE)
             encodeName = name;
     }
 }

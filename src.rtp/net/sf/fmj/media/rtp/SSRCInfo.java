@@ -112,7 +112,7 @@ public abstract class SSRCInfo implements Report
         newpartsent = false;
         lastsr = false;
         wrapped = false;
-        probation = 2;
+        probation = INITIALPROBATION;
         wassender = false;
         currentformat = null;
         payloadType = -1;
@@ -166,7 +166,7 @@ public abstract class SSRCInfo implements Report
         newpartsent = false;
         lastsr = false;
         wrapped = false;
-        probation = 2;
+        probation = INITIALPROBATION;
         wassender = false;
         currentformat = null;
         payloadType = -1;

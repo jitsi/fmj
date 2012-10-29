@@ -15,98 +15,112 @@ public class RTPSourceStream extends BasicSourceStream implements
 {
     class PktQue
     {
-        int FUDGE;
-
-        int DEFAULT_AUD_PKT_SIZE;
-
-        int DEFAULT_MILLISECS_PER_PKT;
-
-        int DEFAULT_PKTS_TO_BUFFER;
-
-        int MIN_BUF_CHECK;
-
-        int BUF_CHECK_INTERVAL;
+        private final int FUDGE = 5;
+        private final int DEFAULT_AUD_PKT_SIZE = 256;
+        private final int DEFAULT_MILLISECS_PER_PKT = 30;
+        // damencho increase packets to buffer was 30
+        private final int DEFAULT_PKTS_TO_BUFFER = 90;
+        private final int MIN_BUF_CHECK = 10000;
+        private final int BUF_CHECK_INTERVAL = 7000;
 
         int pktsEst;
 
-        int framesEst;
+        int framesEst = 0;
 
-        int fps;
+        int fps = 15;
 
-        int pktsPerFrame;
+        int pktsPerFrame = DEFAULT_VIDEO_RATE;
 
-        int sizePerPkt;
+        /**
+         * This seems to be a heuristic value estinating the average size of
+         * packets in bytes.
+         */
+        int sizePerPkt = DEFAULT_AUD_PKT_SIZE;
 
-        int maxPktsToBuffer;
+        int maxPktsToBuffer = 0;
 
-        int sockBufSize;
+        private int sockBufSize = 0;
 
-        int tooMuchBufferingCount;
+        //unused?
+        int tooMuchBufferingCount = 0;
 
-        long lastPktSeq;
+        long lastPktSeq = 0L;
 
-        long lastCheckTime;
+        long lastCheckTime = 0L;
 
-        Buffer fill[];
+        /**
+         * Contains the <tt>Buffer</tt>s added to the the queue
+         */
+        private Buffer fill[];
 
-        Buffer free[];
+        /**
+         * Contains free (as in "spare") buffers that will be reused. When
+         * adding an element to the queue, one of these buffers is used. When
+         * removing an element from the queue (done in different places), it
+         * is released and added to <tt>free</tt>.
+         *
+         * It would follow that the number of elements in both arrays is always
+         * <tt>size</tt>, but I am not certain.
+         */
+        private Buffer free[];
 
-        int headFill;
-
-        int tailFill;
-
-        int headFree;
-
-        int tailFree;
+        //Used as pointers in the 'fill' and 'free' arrays
+        private int headFill;
+        private int tailFill;
+        private int headFree;
+        private int tailFree;
 
         protected int size;
 
-        public PktQue(int i)
+        public PktQue(int size)
         {
-            FUDGE = 5;
-            DEFAULT_AUD_PKT_SIZE = 256;
-            DEFAULT_MILLISECS_PER_PKT = 30;
-            // damencho increase packets to buffer was 30
-            DEFAULT_PKTS_TO_BUFFER = 90;
-            MIN_BUF_CHECK = 10000;
-            BUF_CHECK_INTERVAL = 7000;
-            framesEst = 0;
-            fps = 15;
-            pktsPerFrame = DEFAULT_VIDEO_RATE;
-            sizePerPkt = DEFAULT_AUD_PKT_SIZE;
-            maxPktsToBuffer = 0;
-            sockBufSize = 0;
-            tooMuchBufferingCount = 0;
-            lastPktSeq = 0L;
-            lastCheckTime = 0L;
-            allocBuffers(i);
+            allocBuffers(size);
         }
 
+        /**
+         * Inserts <tt>buffer</tt> in it's proper place in the queue according
+         * to it's sequence number. The elements are always kept in ascending
+         * order of sequence numbers.
+         *
+         * Note: no check is performed here to see if the queue is full.
+         * Note: This could potentially be slow in the case when <tt>insert</tt>
+         * is used
+         * @see PktQue#insert(javax.media.Buffer)
+         *
+         * @param buffer The <tt>Buffer</tt> to add
+         */
         public synchronized void addPkt(Buffer buffer)
         {
-            long l = -1L;
-            long l1 = -1L;
-            long l2 = buffer.getSequenceNumber();
-            if (moreFilled())
+            long firstSN = NOT_SPECIFIED;
+            long lastSN = NOT_SPECIFIED;
+            long bufferSN = buffer.getSequenceNumber();
+            if (fillNotEmpty())
             {
-                l = fill[headFill].getSequenceNumber();
+                firstSN = fill[headFill].getSequenceNumber();
                 int i = tailFill - 1;
                 if (i < 0)
                     i = size - 1;
-                l1 = fill[i].getSequenceNumber();
+                lastSN = fill[i].getSequenceNumber();
             }
-            if (l == -1L && l1 == -1L)
+
+            if (firstSN == NOT_SPECIFIED && lastSN == NOT_SPECIFIED)
                 append(buffer);
-            else if (l2 < l)
+            else if (bufferSN < firstSN)
                 prepend(buffer);
-            else if (l < l2 && l2 < l1)
+            else if (firstSN < bufferSN && bufferSN < lastSN)
                 insert(buffer);
-            else if (l2 > l1)
+            else if (bufferSN > lastSN)
                 append(buffer);
-            else
+            else //only if (bufferSN == firstSN) || (bufferSN == lastSN)?
                 returnFree(buffer);
         }
 
+        /**
+         * Initialize the arrays used to store the queue <tt>Buffer</tt>s and
+         * the 'free' <tt>Buffers</tt>
+         *
+         * @param i the size of the arrays
+         */
         private void allocBuffers(int i)
         {
             fill = new Buffer[i];
@@ -120,6 +134,9 @@ public class RTPSourceStream extends BasicSourceStream implements
             tailFree = size - 1;
         }
 
+        /**
+         * Adds <tt>buffer</tt> to the end of the queue.
+         */
         private synchronized void append(Buffer buffer)
         {
             fill[tailFill] = buffer;
@@ -153,7 +170,12 @@ public class RTPSourceStream extends BasicSourceStream implements
             size = i;
         }
 
-        public synchronized void dropFirstPkt()
+        /**
+         * Removes the first element (the one with the least sequence number)
+         * from <tt>fill</tt> and releases it to be reused (adds it to
+         * <tt>free</tt>)
+         */
+        private synchronized void dropFirstPkt()
         {
             // System.out.println("Drop first packet!");
             Buffer buffer = get();
@@ -161,7 +183,11 @@ public class RTPSourceStream extends BasicSourceStream implements
             returnFree(buffer);
         }
 
-        public synchronized void dropMpegPkt()
+        /**
+         * Removes an element from the queue and releases it to be reused. The
+         * element is chosen in a way specific to mpeg.
+         */
+        private synchronized void dropMpegPkt()
         {
             int i = headFill;
             int j = -1;
@@ -190,9 +216,15 @@ public class RTPSourceStream extends BasicSourceStream implements
             removeAt(i);
         }
 
+        /**
+         * Removes an element from the queue and releases it to be reused. Also
+         * increases the number of discarded packets in <tt>stats</tt>.
+         *
+         * Note that it blocks until the queue is non-empty.
+         */
         public void dropPkt()
         {
-            while (!moreFilled())
+            while (!fillNotEmpty())
                 try
                 {
                     wait();
@@ -210,6 +242,11 @@ public class RTPSourceStream extends BasicSourceStream implements
                 dropFirstPkt();
         }
 
+        /**
+         * Returns the first element of the queue.
+         *
+         * @return the first element of the queue.
+         */
         private synchronized Buffer get()
         {
             Buffer buffer = fill[headFill];
@@ -220,14 +257,24 @@ public class RTPSourceStream extends BasicSourceStream implements
             return buffer;
         }
 
+        /**
+         * Returns the sequence number of the first element of the queue, or
+         * -1 if the queue is empty.
+         *
+         * @return the sequence number of the first element of the queue, or
+         * -1 if the queue is empty.
+         */
         public synchronized long getFirstSeq()
         {
-            if (!moreFilled())
-                return -1L;
+            if (!fillNotEmpty())
+                return NOT_SPECIFIED;
             else
                 return fill[headFill].getSequenceNumber();
         }
 
+        /**
+         * Returns one of the saved 'free' (spare) <tt>Buffer</tt>s.
+         */
         public synchronized Buffer getFree()
         {
             Buffer buffer = free[headFree];
@@ -238,9 +285,16 @@ public class RTPSourceStream extends BasicSourceStream implements
             return buffer;
         }
 
+        /**
+         * Returns the first element of the queue.
+         *
+         * Note that it blocks until the queue is not empty.
+         *
+         * @return the first element of the queue.
+         */
         public synchronized Buffer getPkt()
         {
-            while (!moreFilled())
+            while (!fillNotEmpty())
                 try
                 {
                     wait();
@@ -250,43 +304,58 @@ public class RTPSourceStream extends BasicSourceStream implements
             return get();
         }
 
-        private synchronized void grow(int i)
+        /**
+         * Resizes the queue to <tt>newSize</tt>. Creates new arrays and copies
+         * the necessary elements from the old ones.
+         *
+         * @param newSize Resizes the queue to <tt>newSize</tt>
+         */
+        private synchronized void grow(int newSize)
         {
-            Buffer abuffer[] = new Buffer[i];
-            Buffer abuffer1[] = new Buffer[i];
+            Buffer newFill[] = new Buffer[newSize];
+            Buffer newFree[] = new Buffer[newSize];
             int j1 = totalPkts();
             int k1 = totalFree();
             int j = headFill;
             for (int l = 0; j != tailFill; l++)
             {
-                abuffer[l] = fill[j];
+                newFill[l] = fill[j];
                 if (++j >= size)
                     j = 0;
             }
 
             headFill = 0;
             tailFill = j1;
-            fill = abuffer;
+            fill = newFill;
             j = headFree;
             for (int i1 = 0; j != tailFree; i1++)
             {
-                abuffer1[i1] = free[j];
+                newFree[i1] = free[j];
                 if (++j >= size)
                     j = 0;
             }
 
             headFree = 0;
             tailFree = k1;
-            for (int k = i - size; k > 0; k--)
+            for (int k = newSize - size; k > 0; k--)
             {
-                abuffer1[tailFree] = new Buffer();
+                newFree[tailFree] = new Buffer();
                 tailFree++;
             }
 
-            free = abuffer1;
-            size = i;
+            free = newFree;
+            size = newSize;
         }
 
+        /**
+         * Inserts <tt>buffer</tt> in the correct place in the queue, so that
+         * the order is preserved. The order is by ascending sequence numbers.
+         *
+         * Note: This could potentially be slow, since all the elements 'bigger'
+         * than <tt>buffer</tt> are moved.
+         *
+         * @param buffer the <tt>Buffer</tt> to insert
+         */
         private synchronized void insert(Buffer buffer)
         {
             int i;
@@ -316,6 +385,15 @@ public class RTPSourceStream extends BasicSourceStream implements
             }
         }
 
+        /**
+         * This method is called every time before a <tt>Buffer</tt> is added to
+         * the queue. It decides whether the queue should be resized and by how
+         * much, and does it (by calling either <tt>grow</tt> or
+         * <tt>cutByHalf</tt>).
+         *
+         * @param buffer the <tt>Buffer</tt> which is about to be added
+         * @param rtprawreceiver used to access the 'socket buffer'?
+         */
         public void monitorQueueSize(Buffer buffer,
                 RTPRawReceiver rtprawreceiver)
         {
@@ -332,7 +410,7 @@ public class RTPSourceStream extends BasicSourceStream implements
                     byte abyte0[] = (byte[]) buffer.getData();
                     int k = buffer.getOffset();
                     int k1 = abyte0[k + 2] & 7;
-                    if (k1 < 3 && (buffer.getFlags() & 0x800) != 0)
+                    if (k1 < 3 && (buffer.getFlags() & Buffer.FLAG_RTP_MARKER) != 0)
                     {
                         pktsPerFrame = (pktsPerFrame + pktsEst) / 2;
                         pktsEst = 0;
@@ -344,7 +422,7 @@ public class RTPSourceStream extends BasicSourceStream implements
                     pktsPerFrame = 300;// 800;
                     fps = 15;
                 }
-                if ((buffer.getFlags() & 0x800) != 0)
+                if ((buffer.getFlags() & Buffer.FLAG_RTP_MARKER) != 0)
                 {
                     pktsPerFrame = (pktsPerFrame + pktsEst) / 2;
                     pktsEst = 0;
@@ -416,7 +494,11 @@ public class RTPSourceStream extends BasicSourceStream implements
                 {
                     rtprawreceiver.setRecvBufSize(l1);
                     if (rtprawreceiver.getRecvBufSize() < l1)
+                    {
+                        //BufferControlImpl.NOT_SPECIFIED happens to be
+                        //0x7fffffff
                         sockBufSize = 0x7fffffff;
+                    }
                     else
                         sockBufSize = l1;
 
@@ -429,30 +511,36 @@ public class RTPSourceStream extends BasicSourceStream implements
                     sizePerPkt = DEFAULT_AUD_PKT_SIZE;
                 if (bc != null)
                 {
-                    int j;
+                    int ms;
                     if (RTPSourceStream.mpegAudio.matches(format))
-                        j = sizePerPkt / 4;
+                        ms = sizePerPkt / 4;
                     else
-                        j = DEFAULT_MILLISECS_PER_PKT;
-                    int j1 = (int) (bc.getBufferLength() / j);
-                    threshold = (int) (bc.getMinimumThreshold() / j);
-                    if (threshold <= j1 / 2)
-                        ;
-                    threshold = j1 / 2;
-                    if (j1 > size)
+                        ms = DEFAULT_MILLISECS_PER_PKT;
+                    int approxNbPacketsInBc = (int) (bc.getBufferLength() / ms);
+                    //threshold = (int) (bc.getMinimumThreshold() / ms);
+                    //if (threshold <= bcMs / 2)
+                    //    ;
+                    threshold = approxNbPacketsInBc / 2;
+                    if (approxNbPacketsInBc > size)
                     {
-                        grow(j1);
-                        Log.comment("RTP audio buffer size: " + size
-                                + " pkts, " + j1 * sizePerPkt + " bytes.\n");
+                        grow(approxNbPacketsInBc);
+                        Log.comment("Growing packet queue to"
+                            + approxNbPacketsInBc + "\nRTP audio buffer size: "
+                            + size + " pkts, "
+                            + approxNbPacketsInBc * sizePerPkt + " bytes.\n");
                     }
-                    int i2 = (j1 * sizePerPkt) / 2;
-                    if (rtprawreceiver != null && i2 > sockBufSize)
+                    int approxHalfBcBytes = (approxNbPacketsInBc * sizePerPkt) / 2;
+                    if (rtprawreceiver != null && approxHalfBcBytes > sockBufSize)
                     {
-                        rtprawreceiver.setRecvBufSize(i2);
-                        if (rtprawreceiver.getRecvBufSize() < i2)
+                        rtprawreceiver.setRecvBufSize(approxHalfBcBytes);
+                        if (rtprawreceiver.getRecvBufSize() < approxHalfBcBytes)
+                        {
+                            //BufferControlImpl.NOT_SPECIFIED happens to be
+                            //0x7fffffff
                             sockBufSize = 0x7fffffff;
+                        }
                         else
-                            sockBufSize = i2;
+                            sockBufSize = approxHalfBcBytes;
                         Log.comment("RTP audio socket buffer size: "
                                 + rtprawreceiver.getRecvBufSize() + " bytes.\n");
                     }
@@ -460,16 +548,35 @@ public class RTPSourceStream extends BasicSourceStream implements
             }
         }
 
-        private boolean moreFilled()
+        /**
+         * Return <tt>true</tt> if there are elements in the queue,
+         * <tt>false</tt> if the queue is empty.
+         *
+         * @return Return <tt>true</tt> if there are elements in the queue,
+         * <tt>false</tt> if the queue is empty.
+         */
+        private boolean fillNotEmpty()
         {
             return headFill != tailFill;
         }
 
+        /**
+         * Return <tt>true</tt> if there are no more 'free' <tt>Buffer</tt>s.
+         *
+         * Note: Should be equivalent to the queue being full.
+         *
+         * @return <tt>true</tt> if there are no more 'free' <tt>Buffer</tt>s.
+         */
         private boolean noMoreFree()
         {
             return headFree == tailFree;
         }
 
+        /**
+         * Adds <tt>buffer</tt> to the beginning of the queue.
+         *
+         * @param buffer the <tt>Buffer</tt> to add.
+         */
         private synchronized void prepend(Buffer buffer)
         {
             if (headFill == tailFill)
@@ -510,14 +617,26 @@ public class RTPSourceStream extends BasicSourceStream implements
             returnFree(buffer);
         }
 
+        /**
+         * Empties the queue, effectively dropping all packets
+         */
         public synchronized void reset()
         {
-            for (; moreFilled(); returnFree(get()))
-                ;
+            for (; fillNotEmpty(); returnFree(get()))
+            {
+                //consider packets dropped
+                if(stats != null)
+                    stats.update(RTPStats.PDUDROP);
+            }
             tooMuchBufferingCount = 0;
             notifyAll();
         }
 
+        /**
+         * Returns (releases) <tt>buffer</tt> to the <tt>free</tt> queue.
+         *
+         * @param buffer the <tt>Buffer</tt> to return
+         */
         private synchronized void returnFree(Buffer buffer)
         {
             free[tailFree] = buffer;
@@ -526,12 +645,22 @@ public class RTPSourceStream extends BasicSourceStream implements
                 tailFree = 0;
         }
 
+        /**
+         * Returns the number of element in the <tt>free</tt> queue
+         *
+         * @return the number of element in the <tt>free</tt> queue
+         */
         public int totalFree()
         {
             return tailFree < headFree ? size - (headFree - tailFree)
                     : tailFree - headFree;
         }
 
+        /**
+         * Returns the number of elements in the queue.
+         *
+         * @return the number of elements in the queue.
+         */
         public int totalPkts()
         {
             return tailFill < headFill ? size - (headFill - tailFill)
@@ -539,47 +668,45 @@ public class RTPSourceStream extends BasicSourceStream implements
         }
     }
 
+    private static final int DEFAULT_AUDIO_RATE = 8000;
+    private static final int DEFAULT_VIDEO_RATE = 15;
+    private static final int NOT_SPECIFIED = -1;
+
     private DataSource dsource;
 
-    private Format format;
+    private Format format = null;
 
-    BufferTransferHandler handler;
+    BufferTransferHandler handler = null;
 
-    boolean started;
+    boolean started = false;
 
-    boolean killed;
+    boolean killed = false;
 
-    boolean replenish;
+    boolean replenish = true;
 
     PktQue pktQ;
 
     Object startReq;
 
-    private RTPMediaThread thread;
+    private RTPMediaThread thread = null;
 
-    private boolean hasRead;
+    private boolean hasRead = false;
 
-    private int DEFAULT_AUDIO_RATE;
+    private BufferControlImpl bc = null;
 
-    private int DEFAULT_VIDEO_RATE;
+    private long lastSeqRecv = NOT_SPECIFIED;
 
-    private BufferControlImpl bc;
+    private long lastSeqSent = NOT_SPECIFIED;
 
-    private long lastSeqRecv;
+    private BufferListener listener = null;
 
-    private long lastSeqSent;
+    private int threshold = 0;
 
-    private static final int NOT_SPECIFIED = -1;
+    private boolean prebuffering = false;
 
-    private BufferListener listener;
+    private boolean prebufferNotice = false;
 
-    private int threshold;
-
-    private boolean prebuffering;
-
-    private boolean prebufferNotice;
-
-    private boolean bufferWhenStopped;
+    private boolean bufferWhenStopped = true;
     static AudioFormat mpegAudio = new AudioFormat("mpegaudio/rtp");
     static VideoFormat mpegVideo = new VideoFormat("mpeg/rtp");
     // damencho
@@ -590,30 +717,24 @@ public class RTPSourceStream extends BasicSourceStream implements
 
     public RTPSourceStream(DataSource datasource)
     {
-        format = null;
-        handler = null;
-        started = false;
-        killed = false;
-        replenish = true;
         startReq = new Object();
-        thread = null;
-        hasRead = false;
-        DEFAULT_AUDIO_RATE = 8000;
-        DEFAULT_VIDEO_RATE = 15;
-        bc = null;
-        lastSeqRecv = -1L;
-        lastSeqSent = -1L;
-        listener = null;
-        threshold = 0;
-        prebuffering = false;
-        prebufferNotice = false;
-        bufferWhenStopped = true;
         dsource = datasource;
         datasource.setSourceStream(this);
         pktQ = new PktQue(4);
         createThread();
     }
 
+    /**
+     * Adds <tt>buffer</tt> to the queue.
+     *
+     * In case the queue is full: if <tt>buffer</tt>'s sequence number comes
+     * before the sequence numbers of the <tt>Buffer</tt>s in the queue, nothing
+     * is done. Otherwise, a packet is dropped using PktQue.dropPkt()
+     *
+     * @param buffer the buffer to add
+     * @param flag unused
+     * @param rtprawreceiver used to access the 'socket buffer'?
+     */
     public void add(Buffer buffer, boolean flag, RTPRawReceiver rtprawreceiver)
     {
         if (!started && !bufferWhenStopped)
@@ -622,36 +743,37 @@ public class RTPSourceStream extends BasicSourceStream implements
         if (lastSeqRecv - buffer.getSequenceNumber() > 256L)
             pktQ.reset();
         lastSeqRecv = buffer.getSequenceNumber();
-        boolean flag1 = false;
+        boolean almostFull = false;
         synchronized (pktQ)
         {
             pktQ.monitorQueueSize(buffer, rtprawreceiver);
             if (pktQ.noMoreFree())
             {
                 long l = pktQ.getFirstSeq();
-                if (l != -1L && buffer.getSequenceNumber() < l)
+                if (l != NOT_SPECIFIED && buffer.getSequenceNumber() < l)
                     return;
                 pktQ.dropPkt();
             }
         }
         if (pktQ.totalFree() <= 1)
-            flag1 = true;
-        Buffer buffer1 = pktQ.getFree();
+            almostFull = true;
+        Buffer freeBuffer = pktQ.getFree();
 
-        byte abyte0[] = (byte[]) buffer.getData();
-        byte abyte1[] = (byte[]) buffer1.getData();
-        if (abyte1 == null || abyte1.length < abyte0.length)
-            abyte1 = new byte[abyte0.length];
-        System.arraycopy(abyte0, buffer.getOffset(), abyte1,
+        byte bufferData[] = (byte[]) buffer.getData();
+        byte freeBufferData[] = (byte[]) freeBuffer.getData();
+        if (freeBufferData == null || freeBufferData.length < bufferData.length)
+            freeBufferData = new byte[bufferData.length];
+        System.arraycopy(bufferData, buffer.getOffset(), freeBufferData,
                 buffer.getOffset(), buffer.getLength());
-        buffer1.copy(buffer);
-        buffer1.setData(abyte1);
-        if (flag1)
-            buffer1.setFlags(buffer1.getFlags() | 0x2000 | 0x20);
+        freeBuffer.copy(buffer);
+        freeBuffer.setData(freeBufferData);
+        if (almostFull) //with this packet added, the queue will be full
+            freeBuffer.setFlags(freeBuffer.getFlags() |
+                    Buffer.FLAG_BUF_OVERFLOWN | Buffer.FLAG_NO_DROP);
         else
-            buffer1.setFlags(buffer1.getFlags() | 0x20);
+            freeBuffer.setFlags(freeBuffer.getFlags() | Buffer.FLAG_NO_DROP);
 
-        pktQ.addPkt(buffer1);
+        pktQ.addPkt(freeBuffer);
         synchronized (pktQ)
         {
             if (started && prebufferNotice && listener != null
@@ -667,6 +789,7 @@ public class RTPSourceStream extends BasicSourceStream implements
             }
             if (replenish && (format instanceof AudioFormat))
             {
+                //delay the call to notifyAll until the queue is 'replenished'
                 if (pktQ.totalPkts() >= pktQ.size / 2)
                 {
                     replenish = false;
@@ -727,6 +850,13 @@ public class RTPSourceStream extends BasicSourceStream implements
         }
     }
 
+    /**
+     * Pops an element off the queue and copies it to <tt>buffer</tt>. The data
+     * and header arrays of <tt>buffer</tt> are reused.
+     *
+     * @param buffer The <tt>Buffer</tt> object to copy an element of the queue
+     * to.
+     */
     public void read(Buffer buffer)
     {
         if (pktQ.totalPkts() == 0)
@@ -734,14 +864,14 @@ public class RTPSourceStream extends BasicSourceStream implements
             buffer.setDiscard(true);
             return;
         }
-        Buffer buffer1 = pktQ.getPkt();
-        lastSeqSent = buffer1.getSequenceNumber();
-        Object obj = buffer.getData();
-        Object obj1 = buffer.getHeader();
-        buffer.copy(buffer1);
-        buffer1.setData(obj);
-        buffer1.setHeader(obj1);
-        pktQ.returnFree(buffer1);
+        Buffer bufferFromQueue = pktQ.getPkt();
+        lastSeqSent = bufferFromQueue.getSequenceNumber();
+        Object bufferData = buffer.getData();
+        Object bufferHeader = buffer.getHeader();
+        buffer.copy(bufferFromQueue);
+        bufferFromQueue.setData(bufferData);
+        bufferFromQueue.setHeader(bufferHeader);
+        pktQ.returnFree(bufferFromQueue);
         synchronized (pktQ)
         {
             hasRead = true;
@@ -750,7 +880,7 @@ public class RTPSourceStream extends BasicSourceStream implements
                 if (pktQ.totalPkts() > 0)
                     pktQ.notifyAll();
                 else
-                    replenish = true;
+                    replenish = true; //start to replenish when the queue empties
             } else
             {
                 pktQ.notifyAll();
@@ -758,10 +888,13 @@ public class RTPSourceStream extends BasicSourceStream implements
         }
     }
 
+    /**
+     * Resets the queue, dropping all packets.
+     */
     public void reset()
     {
         pktQ.reset();
-        lastSeqSent = -1L;
+        lastSeqSent = NOT_SPECIFIED;
     }
 
     public void run()

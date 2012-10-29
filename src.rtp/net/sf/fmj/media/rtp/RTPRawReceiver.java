@@ -11,27 +11,21 @@ import net.sf.fmj.media.rtp.util.*;
 
 public class RTPRawReceiver extends PacketFilter
 {
-    private OverallStats stats;
+    private OverallStats stats = null;
 
-    private boolean recvBufSizeSet;
+    private boolean recvBufSizeSet = false;
 
     public DatagramSocket socket;
 
-    private RTPConnector rtpConnector;
+    private RTPConnector rtpConnector = null;
 
     public RTPRawReceiver()
     {
-        stats = null;
-        recvBufSizeSet = false;
-        rtpConnector = null;
     }
 
     public RTPRawReceiver(DatagramSocket datagramsocket,
             OverallStats overallstats)
     {
-        stats = null;
-        recvBufSizeSet = false;
-        rtpConnector = null;
         setSource(new UDPPacketReceiver(datagramsocket, 2000));
         stats = overallstats;
     }
@@ -39,9 +33,6 @@ public class RTPRawReceiver extends PacketFilter
     public RTPRawReceiver(int i, String s, OverallStats overallstats)
             throws UnknownHostException, IOException, SocketException
     {
-        stats = null;
-        recvBufSizeSet = false;
-        rtpConnector = null;
         UDPPacketReceiver udppacketreceiver;
         setSource(udppacketreceiver = new UDPPacketReceiver(i & -2, s, -1,
                 null, 2000, null));
@@ -51,9 +42,6 @@ public class RTPRawReceiver extends PacketFilter
 
     public RTPRawReceiver(RTPConnector rtpconnector, OverallStats overallstats)
     {
-        stats = null;
-        recvBufSizeSet = false;
-        rtpConnector = null;
         try
         {
             setSource(new RTPPacketReceiver(rtpconnector.getDataInputStream()));
@@ -68,9 +56,6 @@ public class RTPRawReceiver extends PacketFilter
     public RTPRawReceiver(RTPPushDataSource rtppushdatasource,
             OverallStats overallstats)
     {
-        stats = null;
-        recvBufSizeSet = false;
-        rtpConnector = null;
         setSource(new RTPPacketReceiver(rtppushdatasource));
         stats = overallstats;
     }
@@ -80,9 +65,6 @@ public class RTPRawReceiver extends PacketFilter
             DatagramSocket datagramsocket) throws UnknownHostException,
             IOException, SocketException
     {
-        stats = null;
-        recvBufSizeSet = false;
-        rtpConnector = null;
         stats = overallstats;
         UDPPacketReceiver udppacketreceiver = new UDPPacketReceiver(
                 sessionaddress.getDataPort(),
@@ -130,15 +112,15 @@ public class RTPRawReceiver extends PacketFilter
     @Override
     public Packet handlePacket(Packet packet)
     {
-        stats.update(0, 1);
-        stats.update(1, packet.length);
+        stats.update(OverallStats.PACKETRECD, 1);
+        stats.update(OverallStats.BYTESRECD, packet.length);
         RTPPacket rtppacket;
         try
         {
             rtppacket = parse(packet);
         } catch (BadFormatException badformatexception)
         {
-            stats.update(2, 1);
+            stats.update(OverallStats.BADRTPPACKET, 1);
             return null;
         }
         if (!recvBufSizeSet)
@@ -146,26 +128,29 @@ public class RTPRawReceiver extends PacketFilter
             recvBufSizeSet = true;
             switch (rtppacket.payloadType)
             {
-            case 14: // '\016'
-            case 26: // '\032'
-            case 34: // '"'
-            case 42: // '*'
+            case 14: // '\016'  //MPA
+            case 26: // '\032'  //JPEG
+            case 34: // '"'     //H263
+            case 42: // '*'     //Unassigned?
                 setRecvBufSize(64000);
                 break;
 
-            case 31: // '\037'
+            case 31: // '\037'  //H261
                 setRecvBufSize(0x1f400);
                 break;
 
-            case 32: // ' '
+            case 32: // ' '     //MPV
                 setRecvBufSize(0x1f400);
                 break;
 
             default:
+                //all dynamic
                 if (rtppacket.payloadType >= 96 && rtppacket.payloadType <= 127)
                     setRecvBufSize(64000);
                 break;
             }
+            //Note: for assigned payload types not explicitly specified above
+            //setRecvBufSize is not called (PCMA, PCMU, G72{2,9}, GSM)
         }
         return rtppacket;
     }

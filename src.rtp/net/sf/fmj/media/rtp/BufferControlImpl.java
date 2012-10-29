@@ -158,14 +158,6 @@ public class BufferControlImpl implements BufferControl
         }
     }
 
-    private long currBuffer;
-    private long currThreshold;
-    private long defBuffer;
-    private long defThreshold;
-    private long maxBuffer;
-    private long maxThreshold;
-    BufferControlPanel controlComp;
-    boolean threshold_enabled;
     private static final int AUDIO_DEFAULT_BUFFER = 250;
     private static final int AUDIO_DEFAULT_THRESHOLD = 125;
     private static final int AUDIO_MAX_BUFFER = 4000;
@@ -175,25 +167,22 @@ public class BufferControlImpl implements BufferControl
     private static final int VIDEO_MAX_BUFFER = 4000;
     private static final int VIDEO_MAX_THRESHOLD = 0;
     private static final int NOT_SPECIFIED = 0x7fffffff;
-    private int bufValue;
-    private int threshValue;
-    private boolean inited;
-    private Vector sourcestreamlist;
+
+    private long currBuffer = NOT_SPECIFIED;
+    private long currThreshold = NOT_SPECIFIED;
+    private long defBuffer = NOT_SPECIFIED;
+    private long defThreshold = NOT_SPECIFIED;
+    private long maxBuffer = NOT_SPECIFIED;
+    private long maxThreshold = NOT_SPECIFIED;
+    BufferControlPanel controlComp = null;
+    boolean threshold_enabled = true;
+    private int bufValue = NOT_SPECIFIED;
+    private int threshValue = NOT_SPECIFIED;
+    private boolean inited = false;
+    private Vector sourcestreamlist = new Vector(1);
 
     public BufferControlImpl()
     {
-        currBuffer = 0x7fffffffL;
-        currThreshold = 0x7fffffffL;
-        defBuffer = 0x7fffffffL;
-        defThreshold = 0x7fffffffL;
-        maxBuffer = 0x7fffffffL;
-        maxThreshold = 0x7fffffffL;
-        controlComp = null;
-        threshold_enabled = true;
-        bufValue = 0x7fffffff;
-        threshValue = 0x7fffffff;
-        inited = false;
-        sourcestreamlist = new Vector(1);
     }
 
     protected void addSourceStream(RTPSourceStream s)
@@ -228,31 +217,41 @@ public class BufferControlImpl implements BufferControl
     {
         if (f instanceof AudioFormat)
         {
-            defBuffer = defBuffer != 0x7fffffffL ? currBuffer : 250L;
-            defThreshold = defThreshold != 0x7fffffffL ? currThreshold : 125L;
-            maxBuffer = maxBuffer != 0x7fffffffL ? maxBuffer : 4000L;
-            maxThreshold = maxThreshold != 0x7fffffffL ? maxThreshold : 2000L;
-            currBuffer = currBuffer != 0x7fffffffL ? currBuffer : defBuffer;
-            currThreshold = currThreshold != 0x7fffffffL ? currThreshold
-                    : defThreshold;
+            defBuffer = (defBuffer != NOT_SPECIFIED)
+                    ? currBuffer : AUDIO_DEFAULT_BUFFER;
+            defThreshold = (defThreshold != NOT_SPECIFIED)
+                    ? currThreshold : AUDIO_DEFAULT_THRESHOLD;
+            maxBuffer = (maxBuffer != NOT_SPECIFIED)
+                    ? maxBuffer : AUDIO_MAX_BUFFER;
+            maxThreshold = (maxThreshold != NOT_SPECIFIED)
+                    ? maxThreshold : AUDIO_MAX_THRESHOLD;
+            currBuffer = (currBuffer != NOT_SPECIFIED)
+                    ? currBuffer : defBuffer;
+            currThreshold = (currThreshold != NOT_SPECIFIED)
+                    ? currThreshold : defThreshold;
         }
         if (f instanceof VideoFormat)
         {
-            defBuffer = defBuffer != 0x7fffffffL ? currBuffer : 135L;
-            defThreshold = defThreshold != 0x7fffffffL ? currThreshold : 0L;
-            maxBuffer = maxBuffer != 0x7fffffffL ? maxBuffer : 4000L;
-            maxThreshold = maxThreshold != 0x7fffffffL ? maxThreshold : 0L;
-            currBuffer = currBuffer != 0x7fffffffL ? currBuffer : defBuffer;
-            currThreshold = currThreshold != 0x7fffffffL ? currThreshold
-                    : defThreshold;
+            defBuffer = (defBuffer != NOT_SPECIFIED)
+                    ? currBuffer : VIDEO_DEFAULT_BUFFER;
+            defThreshold = (defThreshold != NOT_SPECIFIED)
+                    ? currThreshold : VIDEO_DEFAULT_THRESHOLD;
+            maxBuffer = (maxBuffer != NOT_SPECIFIED)
+                    ? maxBuffer : VIDEO_MAX_BUFFER;
+            maxThreshold = (maxThreshold != NOT_SPECIFIED)
+                    ? maxThreshold : VIDEO_MAX_THRESHOLD;
+            currBuffer = (currBuffer != NOT_SPECIFIED)
+                    ? currBuffer : defBuffer;
+            currThreshold = (currThreshold != NOT_SPECIFIED)
+                    ? currThreshold : defThreshold;
         }
-        if (currBuffer == -2L)
+        if (currBuffer == MAX_VALUE)
             currBuffer = maxBuffer;
-        if (currBuffer == -1L)
+        if (currBuffer == DEFAULT_VALUE)
             currBuffer = defBuffer;
-        if (currThreshold == -2L)
+        if (currThreshold == MAX_VALUE)
             currThreshold = maxThreshold;
-        if (currThreshold == -1L)
+        if (currThreshold == DEFAULT_VALUE)
             currThreshold = defThreshold;
         if (controlComp != null)
         {
@@ -274,9 +273,9 @@ public class BufferControlImpl implements BufferControl
             currBuffer = time;
             return time;
         }
-        if (time == -1L)
+        if (time == DEFAULT_VALUE)
             time = defBuffer;
-        if (time == -2L)
+        if (time == MAX_VALUE)
             time = maxBuffer;
         if (time < currThreshold)
             return currBuffer;
@@ -307,9 +306,9 @@ public class BufferControlImpl implements BufferControl
             currThreshold = t;
             return t;
         }
-        if (t == -1L)
+        if (t == DEFAULT_VALUE)
             t = defThreshold;
-        if (t == -2L)
+        if (t == MAX_VALUE)
             t = maxThreshold;
         if (t > currBuffer)
             return currThreshold;

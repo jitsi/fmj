@@ -22,7 +22,8 @@ public class RTPReceiver extends PacketFilter
 
     private boolean setpriority;
 
-    private boolean mismatchprinted;
+    //boris grozev: this always stays 'false' and can be removed
+    private boolean mismatchprinted = false;
 
     private String content;
 
@@ -34,7 +35,9 @@ public class RTPReceiver extends PacketFilter
 
     static final int SEQ_MOD = 0x10000;
     static final int MIN_SEQUENTIAL = 2;
-    private boolean initBC;
+
+    //BufferControl initialized
+    private boolean initBC = false;
     public String controlstr;
     private int errorPayload;
 
@@ -43,10 +46,8 @@ public class RTPReceiver extends PacketFilter
         lastseqnum = -1;
         rtcpstarted = false;
         setpriority = false;
-        mismatchprinted = false;
         content = "";
         probationList = new SSRCTable();
-        initBC = false;
         controlstr = "javax.media.rtp.RTPControl";
         errorPayload = -1;
         cache = ssrccache;
@@ -125,8 +126,9 @@ public class RTPReceiver extends PacketFilter
             {
                 return null;
             }
-        } else if (rtppacket.base instanceof Packet)
-            rtppacket.base.toString();
+        }
+        //else if (rtppacket.base instanceof Packet)
+        //    rtppacket.base.toString();
         if (ssrcinfo == null)
             if (rtppacket.base instanceof UDPPacket)
                 ssrcinfo = cache.get(rtppacket.ssrc,
@@ -138,6 +140,8 @@ public class RTPReceiver extends PacketFilter
         {
             return null;
         }
+
+        //update lastHeardFrom fields in the cache for csrc's
         for (int i = 0; i < rtppacket.csrc.length; i++)
         {
             SSRCInfo ssrcinfo1 = null;
@@ -163,9 +167,9 @@ public class RTPReceiver extends PacketFilter
             ssrcinfo.initsource(rtppacket.seqnum);
             ssrcinfo.payloadType = rtppacket.payloadType;
         }
-        int j = rtppacket.seqnum - ssrcinfo.maxseq;
-        if (ssrcinfo.maxseq + 1 != rtppacket.seqnum && j > 0)
-            ssrcinfo.stats.update(0, j - 1);
+        int diff = rtppacket.seqnum - ssrcinfo.maxseq;
+        if (ssrcinfo.maxseq + 1 != rtppacket.seqnum && diff > 0)
+            ssrcinfo.stats.update(RTPStats.PDULOST, diff - 1);
         if (ssrcinfo.wrapped)
             ssrcinfo.wrapped = false;
         boolean flag = false;
@@ -181,42 +185,43 @@ public class RTPReceiver extends PacketFilter
             {
                 ssrcinfo.probation = 1;
                 ssrcinfo.maxseq = rtppacket.seqnum;
-                ssrcinfo.stats.update(2);
+                ssrcinfo.stats.update(RTPStats.PDUMISORD);
             }
-        } else if (j < 3000)
+        } else if (diff < MAX_DROPOUT)
         {
             if (rtppacket.seqnum < ssrcinfo.baseseq)
             {
                 /*
                  * Vincent Lucas: Without any lost, the seqnum cycles when
-                 * passing from 65535 to 0. Thus, j is equal to -65535. But if
-                 * there have been some occurrences of loss, j may be -65534,
-                 * -65533, etc. On the other hand, if j is too close to 0 i.e.
+                 * passing from 65535 to 0. Thus, diff is equal to -65535. But if
+                 * there have been some occurrences of loss, diff may be -65534,
+                 * -65533, etc. On the other hand, if diff is too close to 0 i.e.
                  * -1, -2, etc., it may correspond to a desequenced packet. This
                  * is why it is a sound choice to differentiate between a cycle
                  * and a desequence on the basis of a value in between the two
                  * cases i.e. -65535 / 2.
                  */
-                if (j < -65535 / 2)
+                if (diff < -65535 / 2)
                 {
                     ssrcinfo.cycles += 0x10000;
                     ssrcinfo.wrapped = true;
                 }
             }
             ssrcinfo.maxseq = rtppacket.seqnum;
-        } else if (j <= 65436)
+        } else if (diff <= (65536 - MAX_MISORDER))
         {
-            ssrcinfo.stats.update(3);
+            ssrcinfo.stats.update(RTPStats.PDUINVALID);
             if (rtppacket.seqnum == ssrcinfo.lastbadseq)
                 ssrcinfo.initsource(rtppacket.seqnum);
             else
                 ssrcinfo.lastbadseq = rtppacket.seqnum + 1 & 0xffff;
         } else
         {
-            ssrcinfo.stats.update(4);
+            //boris grozev: The case of diff==0 is caught in diff<MAX_DROPOUT
+            //and doesn't end up here. Is this the way it's supposed to work?
+            ssrcinfo.stats.update(RTPStats.PDUDUP);
         }
-        boolean flag1 = cache.sm.isUnicast();
-        if (flag1)
+        if (cache.sm.isUnicast())
             if (!rtcpstarted)
             {
                 cache.sm.startRTCPReports(((UDPPacket) rtppacket.base).remoteAddress);
@@ -243,8 +248,9 @@ public class RTPReceiver extends PacketFilter
             } else if (!cache.sm
                     .isSenderDefaultAddr(((UDPPacket) rtppacket.base).remoteAddress))
                 cache.sm.addUnicastAddr(((UDPPacket) rtppacket.base).remoteAddress);
+
         ssrcinfo.received++;
-        ssrcinfo.stats.update(1);
+        ssrcinfo.stats.update(RTPStats.PDUPROCSD);
         if (ssrcinfo.probation > 0)
         {
             probationList.put(ssrcinfo.ssrc, rtppacket.clone());
