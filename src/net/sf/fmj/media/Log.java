@@ -1,95 +1,36 @@
 package net.sf.fmj.media;
 
-import java.io.*;
+import java.util.logging.*;
 
 /**
  * A public static class to generate and write to fmj.log.
  */
 public class Log
 {
-    public static boolean isEnabled = true;
-    private static DataOutputStream log = null;
-    public static String fileName = "fmj.log";
+    public static boolean isEnabled = false; /* The default JMF value is false. */
     private static int indent = 0;
+
+    /**
+     * The Logger instance to be used.
+     */
+    private static Logger logger = Logger.getLogger(Log.class.getName());
 
     static
     {
-        // This is to guard against the log file being opened twice at
-        // the same time.
-        synchronized (fileName)
-        {
-            // Check so we won't run this twice.
-            if (isEnabled && log == null)
-            {
-                isEnabled = false; /* The default JMF value is false. */
+        // Check the registry file to see if logging is turned on.
+        Object llog = com.sun.media.util.Registry.get("allowLogging");
 
-                // Check the registry file to see if logging is turned on.
-                Object llog = com.sun.media.util.Registry.get("allowLogging");
+        if ((llog != null) && (llog instanceof Boolean))
+            isEnabled = ((Boolean) llog).booleanValue();
 
-                if ((llog != null) && (llog instanceof Boolean))
-                    isEnabled = ((Boolean) llog).booleanValue();
-
-                if (isEnabled)
-                {
-                    isEnabled = false;
-                    try
-                    {
-                        String dir;
-                        Object ldir = com.sun.media.util.Registry
-                                .get("secure.logDir");
-                        if (ldir != null && ldir instanceof String
-                                && !("".equals(ldir)))
-                            dir = (String) ldir;
-                        else
-                            dir = System.getProperty("user.dir");
-
-                        String file = null;
-                        OutputStream out = null;
-                        /*
-                         * If the log file cannot be written, one may still make
-                         * use of the log on the standard out/err.
-                         */
-                        if (dir != null)
-                        {
-                            file = dir + File.separator + fileName;
-                            if (new File(file).canWrite())
-                                out = new FileOutputStream(file);
-                        }
-                        if (out == null)
-                        {
-                            file = null;
-                            out = System.err;
-                        }
-                        log = new DataOutputStream(out);
-                        if (log != null)
-                        {
-                            System.err.println("Open log file: " + file);
-                            isEnabled = true;
-                            writeHeader();
-                        }
-                    } catch (Exception e)
-                    {
-                        System.err.println("Failed to open log file: " + e);
-                    }
-                }
-
-            } // Don't need to run this twice.
-        } // synchronized (fileName)
+        if (isEnabled)
+            writeHeader();
     }
-
-    static boolean errorWarned = false;
 
     public static synchronized void comment(Object str)
     {
-        if (isEnabled)
-        {
-            try
-            {
-                log.writeBytes("## " + str + "\n");
-            } catch (IOException e)
-            {
-            }
-        }
+        if (isEnabled && logger.isLoggable(Level.FINE))
+            logger.fine((str!=null ? str.toString() : "null"));
     }
 
     public static synchronized void decrIndent()
@@ -99,31 +40,18 @@ public class Log
 
     public static synchronized void dumpStack(Throwable e)
     {
-        if (isEnabled)
+        if (isEnabled && logger.isLoggable(Level.FINE))
         {
-            e.printStackTrace(new PrintWriter(log, true));
-            write("");
-        } else
-            e.printStackTrace();
+            for(StackTraceElement s : e.getStackTrace())
+                logger.fine(s.toString());
+        }
     }
 
     public static synchronized void error(Object str)
     {
-        if (isEnabled)
+        if (isEnabled && logger.isLoggable(Level.SEVERE))
         {
-            if (!errorWarned)
-            {
-                System.err
-                        .println("An error has occurred.  Check " + fileName + " for details.");
-                errorWarned = true;
-            }
-
-            try
-            {
-                log.writeBytes("XX " + str + "\n");
-            } catch (IOException e)
-            {
-            }
+            logger.severe((str!=null ? str.toString() : "null"));
         } else
         {
             System.err.println(str);
@@ -142,15 +70,8 @@ public class Log
 
     public static synchronized void profile(Object str)
     {
-        if (isEnabled)
-        {
-            try
-            {
-                log.writeBytes("$$ " + str + "\n");
-            } catch (IOException e)
-            {
-            }
-        }
+        if (isEnabled && logger.isLoggable(Level.FINER))
+            logger.finer((str!=null ? str.toString() : "null"));
     }
 
     public static synchronized void setIndent(int i)
@@ -160,29 +81,21 @@ public class Log
 
     public static synchronized void warning(Object str)
     {
-        if (isEnabled)
+        if (isEnabled && logger.isLoggable(Level.WARNING))
         {
-            try
-            {
-                log.writeBytes("!! " + str + "\n");
-            } catch (IOException e)
-            {
-            }
+                logger.warning((str!=null ? str.toString() : "null"));
         }
     }
 
     public static synchronized void write(Object str)
     {
-        if (isEnabled)
+        if (isEnabled && logger.isLoggable(Level.FINE))
         {
-            try
-            {
-                for (int i = indent; i > 0; i--)
-                    log.writeBytes("    ");
-                log.writeBytes(str + "\n");
-            } catch (IOException e)
-            {
-            }
+            StringBuilder sb = new StringBuilder();
+            for (int i = indent; i > 0; i--)
+                sb.append("    ");
+            sb.append(str!=null ? str.toString() : "null");
+            logger.fine(sb.toString());
         }
     }
 

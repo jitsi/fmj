@@ -32,7 +32,7 @@ public class RTPSourceStream extends BasicSourceStream implements
         int pktsPerFrame = DEFAULT_VIDEO_RATE;
 
         /**
-         * This seems to be a heuristic value estinating the average size of
+         * This seems to be a heuristic value estimating the average size of
          * packets in bytes.
          */
         int sizePerPkt = DEFAULT_AUD_PKT_SIZE;
@@ -139,6 +139,7 @@ public class RTPSourceStream extends BasicSourceStream implements
          */
         private synchronized void append(Buffer buffer)
         {
+            nbAppend++;
             fill[tailFill] = buffer;
             tailFill++;
             if (tailFill >= size)
@@ -147,6 +148,7 @@ public class RTPSourceStream extends BasicSourceStream implements
 
         private synchronized void cutByHalf()
         {
+            nbCutByHalf++;
             int i = size / 2;
             if (i <= 0)
                 return;
@@ -312,6 +314,7 @@ public class RTPSourceStream extends BasicSourceStream implements
          */
         private synchronized void grow(int newSize)
         {
+            nbGrow++;
             Buffer newFill[] = new Buffer[newSize];
             Buffer newFree[] = new Buffer[newSize];
             int j1 = totalPkts();
@@ -358,6 +361,7 @@ public class RTPSourceStream extends BasicSourceStream implements
          */
         private synchronized void insert(Buffer buffer)
         {
+            nbInsert++;
             int i;
             for (i = headFill; i != tailFill;)
             {
@@ -579,6 +583,7 @@ public class RTPSourceStream extends BasicSourceStream implements
          */
         private synchronized void prepend(Buffer buffer)
         {
+            nbPrepend++;
             if (headFill == tailFill)
                 return;
             headFill--;
@@ -589,6 +594,7 @@ public class RTPSourceStream extends BasicSourceStream implements
 
         private void removeAt(int i)
         {
+            nbRemoveAt++;
             Buffer buffer = fill[i];
             if (i == headFill)
             {
@@ -622,6 +628,7 @@ public class RTPSourceStream extends BasicSourceStream implements
          */
         public synchronized void reset()
         {
+            nbReset++;
             for (; fillNotEmpty(); returnFree(get()))
             {
                 //consider packets dropped
@@ -666,6 +673,39 @@ public class RTPSourceStream extends BasicSourceStream implements
             return tailFill < headFill ? size - (headFill - tailFill)
                     : tailFill - headFill;
         }
+    }
+
+    //boris grozev: These are added temporary to help with debugging
+    private int nbAdd = 0;
+    private int nbReset = 0;
+    private int nbAppend = 0;
+    private int nbInsert = 0;
+    private int nbCutByHalf = 0;
+    private int nbGrow = 0;
+    private int nbPrepend = 0;
+    private int nbRemoveAt = 0;
+    private int nbDrop = 0;
+    private int nbReplenishFinished = 0;
+    private int nbReadWhileEmpty = 0;
+    private int nbReplenishStart = 0;
+
+    private void printStats()
+    {
+        String cn = this.getClass().getCanonicalName()+" ";
+        Log.comment(cn+"Total packets added: " + nbAdd);
+        Log.comment(cn+"Times reset() called: " + nbReset);
+        Log.comment(cn+"Times append() called: " + nbAppend);
+        Log.comment(cn+"Times insert() called: " + nbInsert);
+        Log.comment(cn+"Times cutByHalf() called: " + nbCutByHalf);
+        Log.comment(cn+"Times grow() called: " + nbGrow);
+        Log.comment(cn+"Times prepend() called: " + nbPrepend);
+        Log.comment(cn+"Times removeAt() called: " + nbRemoveAt);
+        Log.comment(cn+"Packets dropped: " + nbDrop);
+        Log.comment(cn+"Times replenish finished:" + nbReplenishFinished);
+        Log.comment(cn+"Times read() while empty:" + nbReadWhileEmpty);
+        Log.comment(cn+"Times replenish started:" + nbReplenishStart);
+        //Log.comment(this);
+        //new Throwable().printStackTrace();
     }
 
     private static final int DEFAULT_AUDIO_RATE = 8000;
@@ -740,6 +780,7 @@ public class RTPSourceStream extends BasicSourceStream implements
         if (!started && !bufferWhenStopped)
             return;
 
+        nbAdd++;
         if (lastSeqRecv - buffer.getSequenceNumber() > 256L)
             pktQ.reset();
         lastSeqRecv = buffer.getSequenceNumber();
@@ -749,9 +790,14 @@ public class RTPSourceStream extends BasicSourceStream implements
             pktQ.monitorQueueSize(buffer, rtprawreceiver);
             if (pktQ.noMoreFree())
             {
+                nbDrop++;
                 long l = pktQ.getFirstSeq();
                 if (l != NOT_SPECIFIED && buffer.getSequenceNumber() < l)
+                {
+                    if(stats != null)
+                        stats.update(RTPStats.PDUDROP);
                     return;
+                }
                 pktQ.dropPkt();
             }
         }
@@ -792,6 +838,7 @@ public class RTPSourceStream extends BasicSourceStream implements
                 //delay the call to notifyAll until the queue is 'replenished'
                 if (pktQ.totalPkts() >= pktQ.size / 2)
                 {
+                    nbReplenishFinished++;
                     replenish = false;
                     pktQ.notifyAll();
                 }
@@ -806,6 +853,7 @@ public class RTPSourceStream extends BasicSourceStream implements
     {
         if (killed)
             return;
+        printStats();
         stop();
         killed = true;
         synchronized (startReq)
@@ -861,6 +909,7 @@ public class RTPSourceStream extends BasicSourceStream implements
     {
         if (pktQ.totalPkts() == 0)
         {
+            nbReadWhileEmpty++;
             buffer.setDiscard(true);
             return;
         }
@@ -880,7 +929,10 @@ public class RTPSourceStream extends BasicSourceStream implements
                 if (pktQ.totalPkts() > 0)
                     pktQ.notifyAll();
                 else
+                {
+                    nbReplenishStart++;
                     replenish = true; //start to replenish when the queue empties
+                }
             } else
             {
                 pktQ.notifyAll();

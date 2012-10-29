@@ -361,7 +361,7 @@ public class PlaybackEngine extends BasicController implements ModuleListener
 
     protected String realizeError = "Failed to realize: " + this;
     protected String timeBaseError = "  Cannot manage the different time bases.\n";
-    protected String genericProcessorError = "cannot handle the customized options set on the Processor.\nCheck " + Log.fileName + " for full details.";
+    protected String genericProcessorError = "cannot handle the customized options set on the Processor.\nCheck the logs for full details.";
 
     String prefetchError = "Failed to prefetch: " + this;
 
