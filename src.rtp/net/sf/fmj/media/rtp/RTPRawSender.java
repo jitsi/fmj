@@ -68,8 +68,8 @@ public class RTPRawSender extends PacketFilter
             if (socket != null)
             {
                 Class cls = socket.getClass();
-                Method m = cls.getMethod("getSendBufferSize", null);
-                Integer res = (Integer) m.invoke(socket, null);
+                Method m = cls.getMethod("getSendBufferSize");
+                Integer res = (Integer) m.invoke(socket);
                 return res.intValue();
             }
             if (rtpConnector != null)

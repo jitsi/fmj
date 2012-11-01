@@ -20,37 +20,38 @@ public abstract class BasicPlugIn implements PlugIn
         jdkInit = true;
         try
         {
-            forName3ArgsM = Class.class.getMethod("forName", new Class[] {
-                    String.class, boolean.class, ClassLoader.class });
+            forName3ArgsM
+                = Class.class.getMethod(
+                        "forName",
+                        new Class[] { String.class, boolean.class, ClassLoader.class });
 
-            getSystemClassLoaderM = ClassLoader.class.getMethod(
-                    "getSystemClassLoader", null);
+            Method getSystemClassLoaderM
+                = ClassLoader.class.getMethod("getSystemClassLoader");
 
-            // TODO: may need to invoke RuntimePermission("getClassLoader")
-            // privilege
-            systemClassLoader = (ClassLoader) getSystemClassLoaderM.invoke(
-                    ClassLoader.class, null);
+            // TODO May need to invoke RuntimePermission("getClassLoader") privilege
+            systemClassLoader
+                = (ClassLoader) getSystemClassLoaderM.invoke(ClassLoader.class);
 
-            getContextClassLoaderM = Thread.class.getMethod(
-                    "getContextClassLoader", null);
+            getContextClassLoaderM
+                = Thread.class.getMethod("getContextClassLoader");
 
             return true;
-        } catch (Throwable t)
+        }
+        catch (Throwable t)
         {
             forName3ArgsM = null;
             return false;
         }
     }
 
-    // Commented out the next 3 definitions because of a weird
-    // bug when running in jdk1.2 (No problem in jdk1.1.x).
-    // Reference to byte[].class in any file causes runtime
-    // error java.lang.IllegalAccessError: try to access field
-    // com/sun/media/BasicPlugIn.array$B
-    // Similarly for short[].class and int[].class
-    // Happens even if the next 3 definitions are made public
-    // and final.
-    // Babu Srinivasan 10/30/98
+    /*
+     * Commented out the next 3 definitions because of a weird bug when running
+     * in jdk1.2 (No problem in jdk1.1.x). Reference to byte[].class in any file
+     * causes runtime error java.lang.IllegalAccessError: try to access field
+     * com/sun/media/BasicPlugIn.array$B. Similarly for short[].class and
+     * int[].class. Happens even if the next 3 definitions are made public and
+     * final.
+     */
 
     /** class type for byte array */
     // protected static Class byteArrayClass = byte[].class;
@@ -109,12 +110,15 @@ public abstract class BasicPlugIn implements PlugIn
          */
         try
         {
-            // TODO: may need to invoke RuntimePermission("getClassLoader")
-            // privilege
-            ClassLoader contextClassLoader = (ClassLoader) getContextClassLoaderM
-                    .invoke(Thread.currentThread(), null);
-            return (Class) forName3ArgsM.invoke(Class.class, new Object[] {
-                    className, new Boolean(true), contextClassLoader });
+            // TODO May need to invoke RuntimePermission("getClassLoader") privilege.
+            ClassLoader contextClassLoader
+                = (ClassLoader)
+                    getContextClassLoaderM.invoke(Thread.currentThread());
+            return
+                (Class)
+                    forName3ArgsM.invoke(
+                            Class.class,
+                            new Object[] { className, new Boolean(true), contextClassLoader });
         } catch (Exception e)
         {
             throw new ClassNotFoundException(e.getMessage());
@@ -160,8 +164,6 @@ public abstract class BasicPlugIn implements PlugIn
     private static boolean jdkInit = false;
 
     private static Method forName3ArgsM;
-
-    private static Method getSystemClassLoaderM;
 
     private static ClassLoader systemClassLoader;
 
