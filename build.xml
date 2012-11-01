@@ -80,7 +80,7 @@
 
     <target name="build-jitsi" description="compile java source for jitsi">
         <mkdir dir="${javac.out}"/>
-        <javac debug="false" optimize="true" destdir="${javac.out}">
+        <javac debug="true" optimize="true" destdir="${javac.out}">
             <compilerarg line="-source 1.5"/>
             <compilerarg line="-target 1.5"/>
             <src path="${src}"/>
