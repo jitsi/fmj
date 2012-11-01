@@ -75,28 +75,23 @@ public abstract class RTCPReport implements Report
     private long ssrc = 0;
 
     /**
-     * Creates a new RTCPReport
+     * Creates a new <tt>RTCPReport</tt> instance.
      * 
-     * @param data
-     *            The data of the report
-     * @param offset
-     *            The offset in the data where the report starts
-     * @param length
-     *            The length of the report in the data
-     * @throws IOException
-     *             I/O Exception
+     * @param data the data of the report
+     * @param offset the offset in the data where the report starts
+     * @param length the length of the report in the data
+     * @throws IOException if an I/O-related error is encountered
      */
     public RTCPReport(byte data[], int offset, int length) throws IOException
     {
         header = new RTCPHeader(data, offset, length);
-        this.ssrc = header.getSsrc();
+
         if (header.getPadding() == 1)
-        {
             throw new IOException("First packet has padding");
-        } else if (((header.getLength() + 1) * 4) >= length)
-        {
+        else if (((header.getLength() + 1) * 4) > length)
             throw new IOException("Invalid Length");
-        }
+
+        ssrc = header.getSsrc();
     }
 
     /**
