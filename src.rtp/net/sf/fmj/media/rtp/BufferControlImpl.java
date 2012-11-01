@@ -10,7 +10,7 @@ import javax.media.format.*;
 
 public class BufferControlImpl implements BufferControl
 {
-    class BufferControlPanel extends Panel
+    private class BufferControlPanel extends Panel
     {
         Panel buffersize;
         Panel threshold;
@@ -159,9 +159,9 @@ public class BufferControlImpl implements BufferControl
     }
 
     private static final int AUDIO_DEFAULT_BUFFER = 250;
-    private static final int AUDIO_DEFAULT_THRESHOLD = 125;
+    private static final int AUDIO_DEFAULT_THRESHOLD = AUDIO_DEFAULT_BUFFER / 2;
     private static final int AUDIO_MAX_BUFFER = 4000;
-    private static final int AUDIO_MAX_THRESHOLD = 2000;
+    private static final int AUDIO_MAX_THRESHOLD = AUDIO_MAX_BUFFER / 2;
     private static final int VIDEO_DEFAULT_BUFFER = 135;
     private static final int VIDEO_DEFAULT_THRESHOLD = 0;
     private static final int VIDEO_MAX_BUFFER = 4000;
@@ -230,7 +230,7 @@ public class BufferControlImpl implements BufferControl
             currThreshold = (currThreshold != NOT_SPECIFIED)
                     ? currThreshold : defThreshold;
         }
-        if (f instanceof VideoFormat)
+        else if (f instanceof VideoFormat)
         {
             defBuffer = (defBuffer != NOT_SPECIFIED)
                     ? currBuffer : VIDEO_DEFAULT_BUFFER;

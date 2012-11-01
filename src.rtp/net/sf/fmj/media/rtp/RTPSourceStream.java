@@ -10,15 +10,27 @@ import net.sf.fmj.media.protocol.*;
 import net.sf.fmj.media.protocol.rtp.DataSource;
 import net.sf.fmj.media.rtp.util.*;
 
-public class RTPSourceStream extends BasicSourceStream implements
-        PushBufferStream, Runnable
+public class RTPSourceStream
+    extends BasicSourceStream
+    implements PushBufferStream, Runnable
 {
-    class PktQue
+    private class PktQue
     {
         private final int FUDGE = 5;
         private final int DEFAULT_AUD_PKT_SIZE = 256;
-        private final int DEFAULT_MILLISECS_PER_PKT = 30;
-        // damencho increase packets to buffer was 30
+
+        /**
+         * The default duration in milliseconds of an audio RTP packet. The
+         * default value expresses an expectation only. A value of <tt>20</tt>
+         * seems more reasonable than, for example, <tt>30</tt> because it is
+         * more commonly used in specifications.
+         */
+        private final int DEFAULT_MS_PER_PKT = 20;
+
+        // damencho: The original value was 30 and we increased it.
+        /**
+         * The default number of RTP packets to buffer in the case of video.
+         */
         private final int DEFAULT_PKTS_TO_BUFFER = 90;
         private final int MIN_BUF_CHECK = 10000;
         private final int BUF_CHECK_INTERVAL = 7000;
@@ -32,10 +44,17 @@ public class RTPSourceStream extends BasicSourceStream implements
         int pktsPerFrame = DEFAULT_VIDEO_RATE;
 
         /**
-         * This seems to be a heuristic value estimating the average size of
-         * packets in bytes.
+         * The average approximation of the size in bytes of an RTP packet.
          */
-        int sizePerPkt = DEFAULT_AUD_PKT_SIZE;
+        private int sizePerPkt = DEFAULT_AUD_PKT_SIZE;
+
+        /**
+         * The average approximation of the duration in milliseconds of an RTP
+         * packet. Used for audio only at the time of this writing. It sounds
+         * reasonable to introduce such a value for the duration since there is
+         * one for the size in bytes already (i.e. <tt>sizePerPkt</tt>).
+         */
+        private long msPerPkt = DEFAULT_MS_PER_PKT;
 
         int maxPktsToBuffer = 0;
 
@@ -49,22 +68,23 @@ public class RTPSourceStream extends BasicSourceStream implements
         long lastCheckTime = 0L;
 
         /**
-         * Contains the <tt>Buffer</tt>s added to the the queue
+         * The <tt>Buffer</tt>s which represent/contain the RTP packets which
+         * have been added into this <tt>PktQue</tt> and which may be read out
+         * of it.
          */
         private Buffer fill[];
 
         /**
-         * Contains free (as in "spare") buffers that will be reused. When
-         * adding an element to the queue, one of these buffers is used. When
-         * removing an element from the queue (done in different places), it
-         * is released and added to <tt>free</tt>.
-         *
-         * It would follow that the number of elements in both arrays is always
-         * <tt>size</tt>, but I am not certain.
+         * The <tt>Buffer</tt>s which are pooled by this <tt>PktQue</tt> in
+         * order to reduce memory allocations and to achieve a better garbage
+         * collection profile. A <tt>Buffer</tt> goes out of <tt>free</tt> when
+         * it is to be used for an actual RTP packet i.e. placed into
+         * <tt>fill</tt> and comes back into <tt>free</tt> when it is read out
+         * of <tt>fill</tt>.
          */
         private Buffer free[];
 
-        //Used as pointers in the 'fill' and 'free' arrays
+        // Used as pointers in the 'fill' and 'free' arrays.
         private int headFill;
         private int tailFill;
         private int headFree;
@@ -78,16 +98,12 @@ public class RTPSourceStream extends BasicSourceStream implements
         }
 
         /**
-         * Inserts <tt>buffer</tt> in it's proper place in the queue according
-         * to it's sequence number. The elements are always kept in ascending
-         * order of sequence numbers.
+         * Inserts <tt>buffer</tt> in its proper place in this queue according
+         * to its sequence number. The elements are always kept in ascending
+         * order by sequence number.
          *
-         * Note: no check is performed here to see if the queue is full.
-         * Note: This could potentially be slow in the case when <tt>insert</tt>
-         * is used
-         * @see PktQue#insert(javax.media.Buffer)
-         *
-         * @param buffer The <tt>Buffer</tt> to add
+         * @param buffer the <tt>Buffer</tt> to insert in this queue
+         * @see #insert(Buffer)
          */
         public synchronized void addPkt(Buffer buffer)
         {
@@ -116,10 +132,10 @@ public class RTPSourceStream extends BasicSourceStream implements
         }
 
         /**
-         * Initialize the arrays used to store the queue <tt>Buffer</tt>s and
-         * the 'free' <tt>Buffers</tt>
+         * Initialises the <tt>Buffer</tt> arrays {@link #free} and
+         * {@link #fill}.
          *
-         * @param i the size of the arrays
+         * @param i the size of the arrays to be initialised
          */
         private void allocBuffers(int i)
         {
@@ -135,7 +151,10 @@ public class RTPSourceStream extends BasicSourceStream implements
         }
 
         /**
-         * Adds <tt>buffer</tt> to the end of the queue.
+         * Adds <tt>buffer</tt> to the end of this queue.
+         *
+         * @param buffer the <tt>Buffer</tt> to be added to the end of this
+         * queue
          */
         private synchronized void append(Buffer buffer)
         {
@@ -245,9 +264,10 @@ public class RTPSourceStream extends BasicSourceStream implements
         }
 
         /**
-         * Returns the first element of the queue.
+         * Pops the element/<tt>Buffer</tt> at the head of this queue.
          *
-         * @return the first element of the queue.
+         * @return the element/<tt>Buffer</tt> which was at the head of this
+         * queue
          */
         private synchronized Buffer get()
         {
@@ -260,11 +280,11 @@ public class RTPSourceStream extends BasicSourceStream implements
         }
 
         /**
-         * Returns the sequence number of the first element of the queue, or
-         * -1 if the queue is empty.
+         * Gets the sequence number of the element/<tt>Buffer</tt> at the head
+         * of this queue or <tt>-1</tt> if this queue is empty.
          *
-         * @return the sequence number of the first element of the queue, or
-         * -1 if the queue is empty.
+         * @return the sequence number of the element/<tt>Buffer</tt> at the
+         * head of this queue or <tt>-1</tt> if this queue is empty.
          */
         public synchronized long getFirstSeq()
         {
@@ -398,7 +418,8 @@ public class RTPSourceStream extends BasicSourceStream implements
          * @param buffer the <tt>Buffer</tt> which is about to be added
          * @param rtprawreceiver used to access the 'socket buffer'?
          */
-        public void monitorQueueSize(Buffer buffer,
+        public void monitorQueueSize(
+                Buffer buffer,
                 RTPRawReceiver rtprawreceiver)
         {
             sizePerPkt = (sizePerPkt + buffer.getLength()) / 2;
@@ -448,16 +469,16 @@ public class RTPSourceStream extends BasicSourceStream implements
                     if (i <= 0)
                         i = 1;
                     i = pktsPerFrame * i;
-                    threshold = (int) (((bc.getMinimumThreshold() * fps) / 1000L) * pktsPerFrame);
-                    if (threshold <= i / 2)
-                        ;
+//                    threshold = (int) (((bc.getMinimumThreshold() * fps) / 1000L) * pktsPerFrame);
+//                    if (threshold <= i / 2)
+//                        ;
                     threshold = i / 2;
                 } else
                 {
                     i = DEFAULT_PKTS_TO_BUFFER;
                 }
 
-                // damencho we need bigger buffers fo h264
+                // damencho: We need bigger buffers for H.264.
                 if (RTPSourceStream.h264Video.matches(format))
                 {
                     maxPktsToBuffer = 200;
@@ -498,66 +519,99 @@ public class RTPSourceStream extends BasicSourceStream implements
                 {
                     rtprawreceiver.setRecvBufSize(l1);
                     if (rtprawreceiver.getRecvBufSize() < l1)
-                    {
-                        //BufferControlImpl.NOT_SPECIFIED happens to be
-                        //0x7fffffff
-                        sockBufSize = 0x7fffffff;
-                    }
+                        sockBufSize = 0x7fffffff /* BufferControlImpl.NOT_SPECIFIED? */;
                     else
                         sockBufSize = l1;
 
-                    Log.comment("RTP video socket buffer size: "
-                            + rtprawreceiver.getRecvBufSize() + " bytes.\n");
+                    Log.comment(
+                            "RTP video socket receive buffer size: "
+                                + rtprawreceiver.getRecvBufSize()
+                                + " bytes.\n");
                 }
-            } else if (format instanceof AudioFormat)
+            }
+            else if (format instanceof AudioFormat)
             {
                 if (sizePerPkt <= 0)
                     sizePerPkt = DEFAULT_AUD_PKT_SIZE;
                 if (bc != null)
                 {
-                    int ms;
+                    long ms;
                     if (RTPSourceStream.mpegAudio.matches(format))
                         ms = sizePerPkt / 4;
                     else
-                        ms = DEFAULT_MILLISECS_PER_PKT;
-                    int approxNbPacketsInBc = (int) (bc.getBufferLength() / ms);
-                    //threshold = (int) (bc.getMinimumThreshold() / ms);
-                    //if (threshold <= bcMs / 2)
-                    //    ;
-                    threshold = approxNbPacketsInBc / 2;
-                    if (approxNbPacketsInBc > size)
                     {
-                        grow(approxNbPacketsInBc);
-                        Log.comment("Growing packet queue to"
-                            + approxNbPacketsInBc + "\nRTP audio buffer size: "
-                            + size + " pkts, "
-                            + approxNbPacketsInBc * sizePerPkt + " bytes.\n");
-                    }
-                    int approxHalfBcBytes = (approxNbPacketsInBc * sizePerPkt) / 2;
-                    if (rtprawreceiver != null && approxHalfBcBytes > sockBufSize)
-                    {
-                        rtprawreceiver.setRecvBufSize(approxHalfBcBytes);
-                        if (rtprawreceiver.getRecvBufSize() < approxHalfBcBytes)
+                        ms = DEFAULT_MS_PER_PKT;
+                        try
                         {
-                            //BufferControlImpl.NOT_SPECIFIED happens to be
-                            //0x7fffffff
-                            sockBufSize = 0x7fffffff;
+                            long ns = buffer.getDuration();
+
+                            if (ns <= 0)
+                            {
+                                ns
+                                    = ((AudioFormat) format).computeDuration(
+                                            buffer.getLength());
+                                if (ns > 0)
+                                    ms = ns / 1000L;
+                            }
+                            else
+                                ms = ns / 1000L;
                         }
+                        catch (Throwable t)
+                        {
+                            if (t instanceof ThreadDeath)
+                                throw (ThreadDeath) t;
+                        }
+                    }
+                    msPerPkt = (msPerPkt + ms) / 2;
+                    ms = (msPerPkt == 0) ? DEFAULT_MS_PER_PKT : msPerPkt;
+                    int aprxBufferLengthInPkts
+                        = (int) (bc.getBufferLength() / ms);
+//                    threshold = (int) (bc.getMinimumThreshold() / ms);
+//                    if (threshold <= bcMs / 2)
+//                        ;
+                    threshold = aprxBufferLengthInPkts / 2;
+                    if (aprxBufferLengthInPkts > size)
+                    {
+                        grow(aprxBufferLengthInPkts);
+                        Log.comment(
+                                "Grew audio RTP packet queue to: "
+                                    + size + " pkts, "
+                                    + size * sizePerPkt + " bytes.\n");
+                    }
+
+                    /*
+                     * There was no comment and the variables did not use
+                     * meaningful names at the time the following code was
+                     * initially written. Consequently, it is not immediately
+                     * obvious why it is necessary at all and it may be hard to
+                     * understand. A possible explanation may be that, since
+                     * the threshold value will force a delay with a specific
+                     * duration/byte size, we should better be able to hold on
+                     * to that much in the socket so that it does not throw the
+                     * delayed data away.
+                     */
+                    int aprxThresholdInBytes = (aprxBufferLengthInPkts * sizePerPkt) / 2;
+                    if (rtprawreceiver != null && aprxThresholdInBytes > sockBufSize)
+                    {
+                        rtprawreceiver.setRecvBufSize(aprxThresholdInBytes);
+                        if (rtprawreceiver.getRecvBufSize() < aprxThresholdInBytes)
+                            sockBufSize = 0x7fffffff /* BufferControlImpl.NOT_SPECIFIED? */;
                         else
-                            sockBufSize = approxHalfBcBytes;
-                        Log.comment("RTP audio socket buffer size: "
-                                + rtprawreceiver.getRecvBufSize() + " bytes.\n");
+                            sockBufSize = aprxThresholdInBytes;
+                        Log.comment(
+                                "RTP audio socket receive buffer size: "
+                                    + rtprawreceiver.getRecvBufSize()
+                                    + " bytes.\n");
                     }
                 }
             }
         }
 
         /**
-         * Return <tt>true</tt> if there are elements in the queue,
-         * <tt>false</tt> if the queue is empty.
+         * Determines whether this queue is not empty.
          *
-         * @return Return <tt>true</tt> if there are elements in the queue,
-         * <tt>false</tt> if the queue is empty.
+         * @return <tt>true</tt> if this queue is not empty i.e. it contains
+         * elements/<tt>Buffer</tt>s; otherwise, <tt>false</tt>
          */
         private boolean fillNotEmpty()
         {
@@ -565,11 +619,11 @@ public class RTPSourceStream extends BasicSourceStream implements
         }
 
         /**
-         * Return <tt>true</tt> if there are no more 'free' <tt>Buffer</tt>s.
+         * Determines whether there are no more free elements/<tt>Buffer</tt>s
+         * in this queue.
          *
-         * Note: Should be equivalent to the queue being full.
-         *
-         * @return <tt>true</tt> if there are no more 'free' <tt>Buffer</tt>s.
+         * @return <tt>true</tt> if there are no more free
+         * elements/<tt>Buffer</tt>s in this queue; otherwise, <tt>false</tt>
          */
         private boolean noMoreFree()
         {
@@ -577,9 +631,10 @@ public class RTPSourceStream extends BasicSourceStream implements
         }
 
         /**
-         * Adds <tt>buffer</tt> to the beginning of the queue.
+         * Adds <tt>buffer</tt> to the beginning of this queue.
          *
-         * @param buffer the <tt>Buffer</tt> to add.
+         * @param buffer the <tt>Buffer</tt> to add to the beginning of this
+         * queue
          */
         private synchronized void prepend(Buffer buffer)
         {
@@ -705,7 +760,6 @@ public class RTPSourceStream extends BasicSourceStream implements
         Log.info(cn+"Times read() while empty:" + nbReadWhileEmpty);
         Log.info(cn+"Times replenish started:" + nbReplenishStart);
         //Log.comment(this);
-        //new Throwable().printStackTrace();
     }
 
     private static final int DEFAULT_AUDIO_RATE = 8000;
