@@ -200,7 +200,7 @@ public class RTPSourceStream
         {
             // System.out.println("Drop first packet!");
             Buffer buffer = get();
-            lastSeqSent = buffer.getSequenceNumber();
+            //lastSeqSent = buffer.getSequenceNumber();
             returnFree(buffer);
         }
 
@@ -232,8 +232,8 @@ public class RTPSourceStream
             if (k == -1)
                 i = j != -1 ? j : headFill;
             Buffer buffer1 = fill[i];
-            if (i == 0)
-                lastSeqSent = buffer1.getSequenceNumber();
+            //if (i == 0)
+                //lastSeqSent = buffer1.getSequenceNumber();
             removeAt(i);
         }
 
@@ -743,6 +743,7 @@ public class RTPSourceStream
     private int nbReplenishFinished = 0;
     private int nbReadWhileEmpty = 0;
     private int nbReplenishStart = 0;
+    private int nbTooLate = 0;
 
     private void printStats()
     {
@@ -759,6 +760,7 @@ public class RTPSourceStream
         Log.info(cn+"Times replenish finished:" + nbReplenishFinished);
         Log.info(cn+"Times read() while empty:" + nbReadWhileEmpty);
         Log.info(cn+"Times replenish started:" + nbReplenishStart);
+        Log.info(cn+"Times too late: " + nbTooLate);
         //Log.comment(this);
     }
 
@@ -788,8 +790,14 @@ public class RTPSourceStream
 
     private BufferControlImpl bc = null;
 
+    /**
+     * Sequence number of the last <tt>Buffer</tt> added to the queue.
+     */
     private long lastSeqRecv = NOT_SPECIFIED;
 
+    /**
+     * Sequence number of the last <tt>Buffer</tt> read from the queue.
+     */
     private long lastSeqSent = NOT_SPECIFIED;
 
     private BufferListener listener = null;
@@ -834,10 +842,26 @@ public class RTPSourceStream
         if (!started && !bufferWhenStopped)
             return;
 
+        long bufferSN = buffer.getSequenceNumber();
+        if(lastSeqSent != NOT_SPECIFIED &&
+                comesBefore(bufferSN, lastSeqSent))
+        {
+            //A subsequent to 'buffer' packet has already been read. In case
+            //of audio, we drop it, because we want the packets read to always
+            //be in order. In case of video, we add it to the queue anyway,
+            //since it might contain important information.
+            nbTooLate++;
+            if(buffer.getFormat() instanceof AudioFormat)
+                return;
+        }
         nbAdd++;
-        if (lastSeqRecv - buffer.getSequenceNumber() > 256L)
+        if (lastSeqRecv - bufferSN > 256L)
+        {
+            Log.info("Resetting queue, last seq added: " + lastSeqRecv +
+                    ", current seq: " + bufferSN);
             pktQ.reset();
-        lastSeqRecv = buffer.getSequenceNumber();
+        }
+        lastSeqRecv = bufferSN;
         boolean almostFull = false;
         synchronized (pktQ)
         {
@@ -848,6 +872,8 @@ public class RTPSourceStream
                 long l = pktQ.getFirstSeq();
                 if (l != NOT_SPECIFIED && buffer.getSequenceNumber() < l)
                 {
+                    //The incoming packet is the earliest, so "drop" it by
+                    //simply not adding it.
                     if(stats != null)
                         stats.update(RTPStats.PDUDROP);
                     return;
@@ -1097,5 +1123,19 @@ public class RTPSourceStream
     public void setStats(RTPStats rtpStats)
     {
         stats = rtpStats;
+    }
+
+    /**
+     * Checks whether the RTP sequence number <tt>a</tt> comes before
+     * <tt>b</tt>, taking into account that RTP sequence numbers cycle when they
+     * reach 65535. Only makes sense for RTP sequence numbers.
+     *
+     * @param a should be non-negative and less than 65536
+     * @param b should be non-negative and less than 65536
+     * @return <tt>true</tt> if <tt>a</tt> comes before <tt>b</tt>
+     */
+    private boolean comesBefore(long a, long b)
+    {
+        return (b - a + 65536) % 65536 < 32768;
     }
 }
