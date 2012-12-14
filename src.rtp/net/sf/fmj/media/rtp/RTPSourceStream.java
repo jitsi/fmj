@@ -1068,6 +1068,7 @@ public class RTPSourceStream
     private int nbDiscardedShrink = 0;
     private int nbDiscardedLate = 0;
     private int nbDiscardedReset = 0;
+    private int nbDiscardedVeryLate = 0;
     private int maxSizeReached = 0;
 
     private void printStats()
@@ -1086,6 +1087,7 @@ public class RTPSourceStream
         Log.info(cn+"Packets dropped because full: " + nbDiscardedFull);
         Log.info(cn+"Packets dropped while shrinking: " + nbDiscardedShrink);
         Log.info(cn+"Packets dropped because they were late: " + nbDiscardedLate);
+        Log.info(cn+"Packets dropped because they were late by more than MAX_SIZE: " + nbDiscardedVeryLate);
         Log.info(cn+"Packets dropped in reset(): " + nbDiscardedReset);
         Log.info(cn + "Max size reached: " + maxSizeReached);
         Log.info(cn+"Adaptive jitter buffer mode was " +
@@ -1170,15 +1172,21 @@ public class RTPSourceStream
         long bufferSN = buffer.getSequenceNumber();
         if(lastSeqSent != NOT_SPECIFIED &&
                 bufferSN < lastSeqSent &&
-                lastSeqSent - bufferSN < (long) pktQ.AJB_MAX_SIZE &&
                 format instanceof AudioFormat)
         {
-            //A subsequent to 'buffer' packet has already been read. In case
-            //of audio, we drop it, because we want the packets read to always
-            //be in order. In case of video, we add it to the queue anyway,
-            //since it might contain important information.
-            pktQ.recordInHistory(true);
-            nbDiscardedLate++;
+            //A subsequent to 'buffer' packet has already been read. We should
+            //add it to the history, so that the queue is resized if found
+            //necessary. But if it's late by more than AJB_MAX_SIZE, there's no
+            //need to consider it, so we ignore it.
+            if(lastSeqSent - bufferSN < (long) pktQ.AJB_MAX_SIZE)
+            {
+                pktQ.recordInHistory(true);
+                nbDiscardedLate++;
+            }
+            else
+            {
+                nbDiscardedVeryLate++;
+            }
             return;
         }
         nbAdd++;
@@ -1450,7 +1458,7 @@ public class RTPSourceStream
     public int getDiscarded()
     {
         return nbDiscardedFull + nbDiscardedLate +
-               nbDiscardedReset + nbDiscardedShrink;
+               nbDiscardedReset + nbDiscardedShrink + nbDiscardedVeryLate;
     }
 
     /**
