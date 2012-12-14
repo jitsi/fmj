@@ -170,6 +170,10 @@ public class RTPReceiver extends PacketFilter
         int diff = rtppacket.seqnum - ssrcinfo.maxseq;
         if (ssrcinfo.maxseq + 1 != rtppacket.seqnum && diff > 0)
             ssrcinfo.stats.update(RTPStats.PDULOST, diff - 1);
+        //Packets arriving out of order have already been counted as lost (by
+        //the clause above), so decrease the lost count.
+        if (diff > -MAX_MISORDER && diff < 0)
+            ssrcinfo.stats.update(RTPStats.PDULOST, -1);
         if (ssrcinfo.wrapped)
             ssrcinfo.wrapped = false;
         boolean flag = false;
@@ -351,7 +355,6 @@ public class RTPReceiver extends PacketFilter
             ssrcinfo.dstream = (RTPSourceStream) apushbufferstream[0];
             ssrcinfo.dstream.setContentDescriptor(content);
             ssrcinfo.dstream.setFormat(ssrcinfo.currentformat);
-            ssrcinfo.dstream.setStats(ssrcinfo.stats);
             RTPControlImpl rtpcontrolimpl2 = (RTPControlImpl) ssrcinfo.dsource
                     .getControl(controlstr);
             if (rtpcontrolimpl2 != null)

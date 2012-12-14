@@ -10,14 +10,16 @@ import net.sf.fmj.media.protocol.*;
 import net.sf.fmj.media.protocol.rtp.DataSource;
 import net.sf.fmj.media.rtp.util.*;
 
+import java.awt.*;
+
 public class RTPSourceStream
     extends BasicSourceStream
-    implements PushBufferStream, Runnable
+    implements PushBufferStream, Runnable, PacketQueueControl
 {
     private class PktQue
     {
-        private final int FUDGE = 5;
-        private final int DEFAULT_AUD_PKT_SIZE = 256;
+        private final static int FUDGE = 5;
+        private final static int DEFAULT_AUD_PKT_SIZE = 256;
 
         /**
          * The default duration in milliseconds of an audio RTP packet. The
@@ -25,22 +27,127 @@ public class RTPSourceStream
          * seems more reasonable than, for example, <tt>30</tt> because it is
          * more commonly used in specifications.
          */
-        private final int DEFAULT_MS_PER_PKT = 20;
+        private static final int DEFAULT_MS_PER_PKT = 20;
 
         // damencho: The original value was 30 and we increased it.
         /**
          * The default number of RTP packets to buffer in the case of video.
          */
-        private final int DEFAULT_PKTS_TO_BUFFER = 90;
-        private final int MIN_BUF_CHECK = 10000;
-        private final int BUF_CHECK_INTERVAL = 7000;
+        private static final int DEFAULT_PKTS_TO_BUFFER = 90;
+        private static final int MIN_BUF_CHECK = 10000;
+        private static final int BUF_CHECK_INTERVAL = 7000;
+
+
+        /*
+         * For audio streams, the following scheme is implemented in order for
+         * the queue to work as an adaptive jitter buffer:
+         *
+         * For the last AJB_HISTORY_SIZE items added to the queue (via
+         * RTPSourceStream.add()) a number is saved in the 'history' array that
+         * indicates whether the packet was successfully added or dropped,
+         * because it was added too late (after a subsequently numbered packet
+         * was read() from the queue).
+         *
+         * If resizing is enabled, the size of the queue changes in the
+         * following ways:
+         * 1. It shrinks by AJB_SHRINK_DECREMENT items, if in the last
+         * AJB_SHRINK_INTERVAL packets, no more than AJB_SHRINK_THRESHOLD packets were
+         * late.
+         * 2. It grows by AJB_GROW_INCREMENT items, if in the last AJB_GROW_INTERVAL
+         * packets, at least AJB_GROW_THRESHOLD packets were late.
+         *
+         * The following are the parameters used:
+         */
+
+        /**
+         * How many packets to monitor when deciding whether to grow the queue.
+         */
+        private final int AJB_GROW_INTERVAL;
+
+        /**
+         * Grow the queue if there are at least that many late packets (in the
+         * last AJB_GROW_INTERVAL packets)
+         */
+        private final int AJB_GROW_THRESHOLD;
+
+        /**
+         * How many packets to increment the queue size by, when growing.
+         */
+        private final int AJB_GROW_INCREMENT;
+
+        /**
+         * How many packets to monitor when deciding whether to shrink the queue.
+         */
+        private final int AJB_SHRINK_INTERVAL;
+
+        /**
+         * Shrink the queue if there are at most that many late packets (in the
+         * last AJB_SHRINK_INTERVAL packets)
+         */
+        private final int AJB_SHRINK_THRESHOLD;
+
+        /**
+         * How many packets to decrement the queue size by, when shrinking.
+         */
+        private final int AJB_SHRINK_DECREMENT;
+
+        /**
+         * Whether resizing the queue is enabled.
+         */
+        private final boolean AJB_ENABLED;
+
+        /**
+         * The queue will not be shrunk below this.
+         */
+        private final int AJB_MIN_SIZE;
+
+        /**
+         * The queue will not be grown above this.
+         */
+        private final int AJB_MAX_SIZE;
+
+        /**
+         * The number of packets to keep track of.
+         */
+        private final int AJB_HISTORY_SIZE;
+
+        /**
+         * Contains information about recent packets. A 0 indicates that the
+         * packet was accepted normally, a 1 indicates that it was
+         * dropped because it was received too late. It's circular, with
+         * <tt>historyPointer</tt> always pointing to the last packet added.
+         */
+        private int[] history;
+
+        /**
+         * Contains the number of 'late' packets from the last
+         * <tt>growInterval</tt> packets. Updated on every add().
+         */
+        private int growCount;
+
+        /**
+         * Contains the number of 'late' packets from the last
+         * <tt>AJB_SHRINK_INTERVAL</tt> packets. Updated on every add().
+         */
+        private int shrinkCount;
+
+        /**
+         * Points to the place in <tt>history</tt> corresponding to the last
+         * packet added
+         */
+        private int historyPointer;
+
+        /**
+         * The number of packets for which <tt>history</tt> is valid. Used in
+         * order to avoid filling <tt>history</tt> with zeroes when it needs to
+         * be reset.
+         */
+        private int historyCount;
+
 
         int pktsEst;
-
         int framesEst = 0;
-
         int fps = 15;
-
         int pktsPerFrame = DEFAULT_VIDEO_RATE;
 
         /**
@@ -57,14 +164,11 @@ public class RTPSourceStream
         private long msPerPkt = DEFAULT_MS_PER_PKT;
 
         int maxPktsToBuffer = 0;
-
         private int sockBufSize = 0;
 
         //unused?
         int tooMuchBufferingCount = 0;
-
         long lastPktSeq = 0L;
-
         long lastCheckTime = 0L;
 
         /**
@@ -90,11 +194,161 @@ public class RTPSourceStream
         private int headFree;
         private int tailFree;
 
+        /**
+         * The size of the queue.
+         */
         protected int size;
 
         public PktQue(int size)
         {
             allocBuffers(size);
+
+            /*
+             * Set the history related parameters with values from the registry
+             * or default values.
+             */
+            Object value;
+            value = com.sun.media.util.Registry.get(
+                    "adaptive_jitter_buffer_GROW_INTERVAL");
+            int growInterval = 30;
+            try
+            {
+                growInterval = Integer.parseInt((String)value);
+            }
+            catch(Exception e){}
+            AJB_GROW_INTERVAL = growInterval;
+
+            value = com.sun.media.util.Registry.get(
+                    "adaptive_jitter_buffer_GROW_THRESHOLD");
+            int growThreshold = 3;
+            try
+            {
+                growThreshold = Integer.parseInt((String)value);
+            }
+                catch(Exception e){}
+            AJB_GROW_THRESHOLD = growThreshold;
+
+            value = com.sun.media.util.Registry.get(
+                    "adaptive_jitter_buffer_GROW_INCREMENT");
+            int growIncrement = 2;
+            try
+            {
+                growIncrement = Integer.parseInt((String)value);
+            }
+            catch(Exception e){}
+            AJB_GROW_INCREMENT = growIncrement;
+
+            value = com.sun.media.util.Registry.get(
+                    "adaptive_jitter_buffer_SHRINK_INTERVAL");
+            int shrinkInterval = 200;
+            try
+            {
+                shrinkInterval = Integer.parseInt((String)value);
+            }
+            catch(Exception e){}
+            AJB_SHRINK_INTERVAL = shrinkInterval;
+
+            value = com.sun.media.util.Registry.get(
+                    "adaptive_jitter_buffer_SHRINK_THRESHOLD");
+            int shrinkThreshold = 0;
+            try
+            {
+                shrinkThreshold= Integer.parseInt((String)value);
+            }
+            catch(Exception e){}
+            AJB_SHRINK_THRESHOLD = shrinkThreshold;
+
+            value = com.sun.media.util.Registry.get(
+                    "adaptive_jitter_buffer_SHRINK_DECREMENT");
+            int shrinkDecrement = 2;
+            try
+            {
+                shrinkDecrement = Integer.parseInt((String)value);
+            }
+            catch(Exception e){}
+            AJB_SHRINK_DECREMENT = shrinkDecrement;
+
+            value = com.sun.media.util.Registry.get(
+                    "adaptive_jitter_buffer_MIN_SIZE");
+            int minSize = 4;
+            try
+            {
+                minSize = Integer.parseInt((String)value);
+            }
+            catch(Exception e){}
+            AJB_MIN_SIZE = minSize;
+
+            value = com.sun.media.util.Registry.get(
+                    "adaptive_jitter_buffer_MAX_SIZE");
+            int maxSize = 1000 / DEFAULT_MS_PER_PKT; //0.5sec delay
+            try
+            {
+                maxSize = Integer.parseInt((String)value);
+            }
+            catch(Exception e){}
+            AJB_MAX_SIZE = maxSize;
+
+            value = com.sun.media.util.Registry.get(
+                    "adaptive_jitter_buffer_ENABLE");
+            boolean enableAJB = true;
+            try
+            {
+                enableAJB = Boolean.parseBoolean((String)value);
+            }
+            catch(Exception e){}
+            AJB_ENABLED = enableAJB;
+
+            AJB_HISTORY_SIZE = AJB_GROW_INTERVAL < AJB_SHRINK_INTERVAL
+                    ? AJB_SHRINK_INTERVAL
+                    : AJB_GROW_INTERVAL;
+
+            initHistory();
+        }
+
+        /**
+         * Records a packet in <tt>history</tt>.
+         *
+         * @param late whether the packet arrived too late or not
+         */
+        public void recordInHistory(boolean late)
+        {
+            int n = late ? 1 : 0;
+
+            int growPointer
+                    = (historyPointer - AJB_GROW_INTERVAL +
+                    AJB_HISTORY_SIZE) % AJB_HISTORY_SIZE;
+            growCount = growCount - history[growPointer] + n;
+
+            int shrinkPointer
+                    = (historyPointer - AJB_SHRINK_INTERVAL +
+                    AJB_HISTORY_SIZE) % AJB_HISTORY_SIZE;
+            shrinkCount = shrinkCount - history[shrinkPointer] + n;
+
+            history[historyPointer] = n;
+            historyPointer = (historyPointer + 1 ) % AJB_HISTORY_SIZE;
+
+            if(historyCount < AJB_HISTORY_SIZE)
+                historyCount++;
+        }
+
+        /**
+         * Resets the history.
+         */
+        private void resetHistory()
+        {
+            historyCount = 0;
+        }
+
+        /**
+         * Initializes the history
+         */
+        private void initHistory()
+        {
+            history = new int[AJB_HISTORY_SIZE];
+            historyCount = 0;
+            historyPointer = 0;
+            growCount = 0;
+            shrinkCount = 0;
         }
 
         /**
@@ -249,12 +503,8 @@ public class RTPSourceStream
                 try
                 {
                     wait();
-                } catch (Exception exception)
-                {
                 }
-            //boris grozev
-            if(stats != null)
-                stats.update(RTPStats.PDUDROP);
+                catch (Exception exception){}
             if (format instanceof AudioFormat)
                 dropFirstPkt();
             else if (RTPSourceStream.mpegVideo.matches(format))
@@ -324,6 +574,42 @@ public class RTPSourceStream
                 {
                 }
             return get();
+        }
+
+        /**
+         * Resizes the queue to <tt>newSize</tt>, assuming <tt>newSize</tt> is
+         * not bigger than <tt>size</tt>. Drops packets if necessary.
+         */
+        private synchronized void shrink(int newSize)
+        {
+            nbShrink++;
+            if(size == newSize)
+                return;
+            int packetCount = totalPkts();
+            while(packetCount > newSize/2)
+            {
+                dropPkt();
+                //Log.comment("Dropping a packet during shrink()");
+                nbDiscardedShrink++;
+                packetCount = totalPkts();
+            }
+
+            Buffer newFill[] = new Buffer[newSize];
+            Buffer newFree[] = new Buffer[newSize];
+            for (int k = 0; k < packetCount; k++)
+                newFill[k] = get();
+            headFill = 0;
+            tailFill = packetCount % newSize;
+
+            int newFreeCount = newSize - packetCount;
+            for (int l = 0; l < newFreeCount; l++)
+                newFree[l] = new Buffer();
+            headFree = 0;
+            tailFree = newFreeCount-1;
+
+            fill = newFill;
+            free = newFree;
+            size = newSize;
         }
 
         /**
@@ -422,6 +708,8 @@ public class RTPSourceStream
                 Buffer buffer,
                 RTPRawReceiver rtprawreceiver)
         {
+            if(size > maxSizeReached)
+                maxSizeReached = size;
             sizePerPkt = (sizePerPkt + buffer.getLength()) / 2;
             if (format instanceof VideoFormat)
             {
@@ -531,6 +819,36 @@ public class RTPSourceStream
             }
             else if (format instanceof AudioFormat)
             {
+                if(AJB_ENABLED &&
+                        historyCount >= AJB_GROW_INTERVAL &&
+                        growCount >= AJB_GROW_THRESHOLD &&
+                        size < AJB_MAX_SIZE)
+                {
+                    int n = size + AJB_GROW_INCREMENT;
+                    if(n > AJB_MAX_SIZE)
+                        n = AJB_MAX_SIZE;
+                    if(n > size)
+                    {
+                        Log.info("Growing packet queue to " + n);
+                        grow(n);
+                        resetHistory();
+                    }
+                }
+                else if(AJB_ENABLED &&
+                        historyCount >= AJB_SHRINK_INTERVAL &&
+                        shrinkCount <= AJB_SHRINK_THRESHOLD &&
+                        size > AJB_MIN_SIZE)
+                {
+                    int n = size - AJB_SHRINK_DECREMENT;
+                    if(n < AJB_MIN_SIZE)
+                        n = AJB_MIN_SIZE;
+                    if(n < size)
+                    {
+                        Log.info("Shrinking the queue to " + n);
+                        shrink(n);
+                        resetHistory();
+                    }
+                }
                 if (sizePerPkt <= 0)
                     sizePerPkt = DEFAULT_AUD_PKT_SIZE;
                 if (bc != null)
@@ -566,11 +884,16 @@ public class RTPSourceStream
                     ms = (msPerPkt == 0) ? DEFAULT_MS_PER_PKT : msPerPkt;
                     int aprxBufferLengthInPkts
                         = (int) (bc.getBufferLength() / ms);
-//                    threshold = (int) (bc.getMinimumThreshold() / ms);
-//                    if (threshold <= bcMs / 2)
-//                        ;
+
                     threshold = aprxBufferLengthInPkts / 2;
-                    if (aprxBufferLengthInPkts > size)
+                    /* If the adaptive jitter buffer mode is enabled we let
+                     * this class manage the size of the queue, ignoring 'bc'.
+                     * Otherwise, we adapt to the value from 'bc' (which was
+                     * the behaviour before resizing based on the history of
+                     * late packets was introduced here)
+                     */
+                    if (aprxBufferLengthInPkts > size &&
+                            !AJB_ENABLED)
                     {
                         grow(aprxBufferLengthInPkts);
                         Log.comment(
@@ -683,12 +1006,12 @@ public class RTPSourceStream
          */
         public synchronized void reset()
         {
+            Log.comment("Resetting the packet queue");
+            resetHistory();
             nbReset++;
             for (; fillNotEmpty(); returnFree(get()))
             {
-                //consider packets dropped
-                if(stats != null)
-                    stats.update(RTPStats.PDUDROP);
+                nbDiscardedReset++;
             }
             tooMuchBufferingCount = 0;
             notifyAll();
@@ -739,29 +1062,34 @@ public class RTPSourceStream
     private int nbGrow = 0;
     private int nbPrepend = 0;
     private int nbRemoveAt = 0;
-    private int nbDrop = 0;
-    private int nbReplenishFinished = 0;
     private int nbReadWhileEmpty = 0;
-    private int nbReplenishStart = 0;
-    private int nbTooLate = 0;
+    private int nbShrink = 0;
+    private int nbDiscardedFull = 0;
+    private int nbDiscardedShrink = 0;
+    private int nbDiscardedLate = 0;
+    private int nbDiscardedReset = 0;
+    private int maxSizeReached = 0;
 
     private void printStats()
     {
         String cn = this.getClass().getCanonicalName()+" ";
         Log.info(cn+"Total packets added: " + nbAdd);
         Log.info(cn+"Times reset() called: " + nbReset);
-        Log.info(cn+"Times append() called: " + nbAppend);
-        Log.info(cn+"Times insert() called: " + nbInsert);
-        Log.info(cn+"Times cutByHalf() called: " + nbCutByHalf);
+        //Log.info(cn+"Times append() called: " + nbAppend);
+        //Log.info(cn+"Times insert() called: " + nbInsert);
+        //Log.info(cn+"Times cutByHalf() called: " + nbCutByHalf);
         Log.info(cn+"Times grow() called: " + nbGrow);
-        Log.info(cn+"Times prepend() called: " + nbPrepend);
-        Log.info(cn+"Times removeAt() called: " + nbRemoveAt);
-        Log.info(cn+"Packets dropped: " + nbDrop);
-        Log.info(cn+"Times replenish finished:" + nbReplenishFinished);
+        Log.info(cn+"Times shrink() called: " + nbShrink);
+        //Log.info(cn+"Times prepend() called: " + nbPrepend);
+        //Log.info(cn+"Times removeAt() called: " + nbRemoveAt);
         Log.info(cn+"Times read() while empty:" + nbReadWhileEmpty);
-        Log.info(cn+"Times replenish started:" + nbReplenishStart);
-        Log.info(cn+"Times too late: " + nbTooLate);
-        //Log.comment(this);
+        Log.info(cn+"Packets dropped because full: " + nbDiscardedFull);
+        Log.info(cn+"Packets dropped while shrinking: " + nbDiscardedShrink);
+        Log.info(cn+"Packets dropped because they were late: " + nbDiscardedLate);
+        Log.info(cn+"Packets dropped in reset(): " + nbDiscardedReset);
+        Log.info(cn + "Max size reached: " + maxSizeReached);
+        Log.info(cn+"Adaptive jitter buffer mode was " +
+                (pktQ.AJB_ENABLED ? "enabled" : "disabled"));
     }
 
     private static final int DEFAULT_AUDIO_RATE = 8000;
@@ -814,9 +1142,6 @@ public class RTPSourceStream
     // damencho
     static VideoFormat h264Video = new VideoFormat("h264/rtp");
 
-    //boris grozev: log discarded packets here
-    private RTPStats stats = null;
-
     public RTPSourceStream(DataSource datasource)
     {
         startReq = new Object();
@@ -844,15 +1169,17 @@ public class RTPSourceStream
 
         long bufferSN = buffer.getSequenceNumber();
         if(lastSeqSent != NOT_SPECIFIED &&
-                comesBefore(bufferSN, lastSeqSent))
+                bufferSN < lastSeqSent &&
+                lastSeqSent - bufferSN < (long) pktQ.AJB_MAX_SIZE &&
+                format instanceof AudioFormat)
         {
             //A subsequent to 'buffer' packet has already been read. In case
             //of audio, we drop it, because we want the packets read to always
             //be in order. In case of video, we add it to the queue anyway,
             //since it might contain important information.
-            nbTooLate++;
-            if(buffer.getFormat() instanceof AudioFormat)
-                return;
+            pktQ.recordInHistory(true);
+            nbDiscardedLate++;
+            return;
         }
         nbAdd++;
         if (lastSeqRecv - bufferSN > 256L)
@@ -861,6 +1188,7 @@ public class RTPSourceStream
                     ", current seq: " + bufferSN);
             pktQ.reset();
         }
+        pktQ.recordInHistory(false);
         lastSeqRecv = bufferSN;
         boolean almostFull = false;
         synchronized (pktQ)
@@ -868,14 +1196,12 @@ public class RTPSourceStream
             pktQ.monitorQueueSize(buffer, rtprawreceiver);
             if (pktQ.noMoreFree())
             {
-                nbDrop++;
+                nbDiscardedFull++;
                 long l = pktQ.getFirstSeq();
                 if (l != NOT_SPECIFIED && buffer.getSequenceNumber() < l)
                 {
                     //The incoming packet is the earliest, so "drop" it by
                     //simply not adding it.
-                    if(stats != null)
-                        stats.update(RTPStats.PDUDROP);
                     return;
                 }
                 pktQ.dropPkt();
@@ -918,7 +1244,6 @@ public class RTPSourceStream
                 //delay the call to notifyAll until the queue is 'replenished'
                 if (pktQ.totalPkts() >= pktQ.size / 2)
                 {
-                    nbReplenishFinished++;
                     replenish = false;
                     pktQ.notifyAll();
                 }
@@ -1010,7 +1335,6 @@ public class RTPSourceStream
                     pktQ.notifyAll();
                 else
                 {
-                    nbReplenishStart++;
                     replenish = true; //start to replenish when the queue empties
                 }
             } else
@@ -1120,22 +1444,129 @@ public class RTPSourceStream
         return l;
     }
 
-    public void setStats(RTPStats rtpStats)
+    /**
+     * {@inheritDoc}
+     */
+    public int getDiscarded()
     {
-        stats = rtpStats;
+        return nbDiscardedFull + nbDiscardedLate +
+               nbDiscardedReset + nbDiscardedShrink;
     }
 
     /**
-     * Checks whether the RTP sequence number <tt>a</tt> comes before
-     * <tt>b</tt>, taking into account that RTP sequence numbers cycle when they
-     * reach 65535. Only makes sense for RTP sequence numbers.
-     *
-     * @param a should be non-negative and less than 65536
-     * @param b should be non-negative and less than 65536
-     * @return <tt>true</tt> if <tt>a</tt> comes before <tt>b</tt>
+     * {@inheritDoc}
      */
-    private boolean comesBefore(long a, long b)
+    public int getDiscardedShrink()
     {
-        return (b - a + 65536) % 65536 < 32768;
+        return nbDiscardedShrink;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getDiscardedLate()
+    {
+        return nbDiscardedLate;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getDiscardedReset()
+    {
+        return nbDiscardedReset;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getDiscardedFull()
+    {
+        return nbDiscardedFull;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getCurrentDelayMs()
+    {
+        return (int) (getCurrentDelayPackets() * pktQ.msPerPkt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getCurrentDelayPackets()
+    {
+        return pktQ.size / 2;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getCurrentSizePackets()
+    {
+        return pktQ.size;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getMaxSizeReached()
+    {
+        return maxSizeReached;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAdaptiveBufferEnabled()
+    {
+        return pktQ.AJB_ENABLED;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getCurrentPacketCount()
+    {
+        return pktQ.totalPkts();
+    }
+
+    /**
+     * Stub. Return null.
+     *
+     * @return <tt>null</tt>
+     */
+    public Component getControlComponent()
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getControl(String controlType)
+    {
+        if(PacketQueueControl.class.getName().equals(controlType))
+        {
+            return this;
+        }
+        else
+        {
+            return super.getControl(controlType);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object[] getControls()
+    {
+        Object[] superControls = super.getControls();
+        Object[] controls = new Object[superControls.length + 1];
+        System.arraycopy(superControls, 0, controls, 0, superControls.length);
+        controls[superControls.length] = this;
+        return controls;
     }
 }

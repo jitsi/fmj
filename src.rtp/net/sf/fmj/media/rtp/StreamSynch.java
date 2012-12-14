@@ -38,15 +38,15 @@ public class StreamSynch
             else if (pt == 17)
                 rate = 22050L;
             else if (pt >= 25 && pt <= 26)
-                rate = 0x15f90L;
+                rate = 90000L;
             else if (pt == 28)
-                rate = 0x15f90L;
+                rate = 90000L;
             else if (pt >= 31 && pt <= 34)
-                rate = 0x15f90L;
+                rate = 90000L;
             else if (pt == 42)
-                rate = 0x15f90L;
+                rate = 90000L;
             timestamp = source.ntpTimestamp
-                    + ((rtpTimestamp - source.rtpTimestamp) * 0x3b9aca00L)
+                    + ((rtpTimestamp - source.rtpTimestamp) * 1000 * 1000 * 1000)
                     / rate;
         }
         return timestamp;
