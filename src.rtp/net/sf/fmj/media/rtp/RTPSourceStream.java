@@ -869,10 +869,10 @@ public class RTPSourceStream
                                     = ((AudioFormat) format).computeDuration(
                                             buffer.getLength());
                                 if (ns > 0)
-                                    ms = ns / 1000L;
+                                    ms = ns / 1000000L;
                             }
                             else
-                                ms = ns / 1000L;
+                                ms = ns / 1000000L;
                         }
                         catch (Throwable t)
                         {
