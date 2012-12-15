@@ -293,7 +293,8 @@ public class RTPSourceStream
             boolean enableAJB = true;
             try
             {
-                enableAJB = Boolean.parseBoolean((String)value);
+                if(value != null)
+                    enableAJB = Boolean.parseBoolean((String)value);
             }
             catch(Exception e){}
             AJB_ENABLED = enableAJB;
@@ -1170,6 +1171,13 @@ public class RTPSourceStream
             return;
 
         long bufferSN = buffer.getSequenceNumber();
+        if (lastSeqRecv - bufferSN > 256L)
+        {
+            Log.info("Resetting queue, last seq added: " + lastSeqRecv +
+                    ", current seq: " + bufferSN);
+            reset();
+            lastSeqRecv = bufferSN;
+        }
         if(lastSeqSent != NOT_SPECIFIED &&
                 bufferSN < lastSeqSent &&
                 format instanceof AudioFormat)
@@ -1189,13 +1197,8 @@ public class RTPSourceStream
             }
             return;
         }
+
         nbAdd++;
-        if (lastSeqRecv - bufferSN > 256L)
-        {
-            Log.info("Resetting queue, last seq added: " + lastSeqRecv +
-                    ", current seq: " + bufferSN);
-            pktQ.reset();
-        }
         pktQ.recordInHistory(false);
         lastSeqRecv = bufferSN;
         boolean almostFull = false;
