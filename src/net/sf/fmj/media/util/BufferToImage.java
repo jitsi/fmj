@@ -24,8 +24,18 @@ public class BufferToImage
 
     public BufferToImage(VideoFormat format)
     {
-        if (format.getSize() == null)
-            throw new NullPointerException(); // this is what JMF does.
+        /*
+         * The code bellow throws a NullPointerException for the sake of
+         * compatibility with JMF. However, such behavior is wrong. Firstly,
+         * the format argument is not used. Secondly, Buffer instances have a
+         * format property. Thirdly, SimpleAWTRenderer#setInputFormat(Format)
+         * and SimpleSwingRenderer#setInputFormat(Format) may invoke the
+         * constructor with a VideoFormat which does not have a size and such
+         * an argument is perfectly valid for them.
+         */
+//        if (format.getSize() == null)
+//            throw new NullPointerException(); // this is what JMF does.
+
         // TODO: we should be able to get this info up front, and do some
         // optimization
         // for down below.
