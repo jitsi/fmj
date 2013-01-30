@@ -279,6 +279,10 @@ public class RTPReceiver extends PacketFilter
             if (ssrcinfo.dsource != null)
                 try
                 {
+                    Log.warning("Stopping stream because of payload type "
+                            + "mismatch: expecting pt="
+                            + ssrcinfo.lastPayloadType + ", got pt="
+                            + rtppacket.payloadType);
                     ssrcinfo.dsource.stop();
                 } catch (IOException ioexception)
                 {

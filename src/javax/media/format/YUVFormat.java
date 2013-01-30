@@ -82,6 +82,8 @@ public class YUVFormat extends VideoFormat
      *            The maximum size of the data array.
      * @param dataType
      *            The type of the data.
+     * @param frameRate
+     *            The frame rate.
      * @param yuvType
      *            The YUV ordering type.
      * @param strideY

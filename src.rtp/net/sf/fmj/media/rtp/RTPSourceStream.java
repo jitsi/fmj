@@ -1427,6 +1427,7 @@ public class RTPSourceStream
 
     public void start()
     {
+        Log.info("Starting RTPSourceStream");
         synchronized (startReq)
         {
             started = true;
@@ -1436,6 +1437,10 @@ public class RTPSourceStream
 
     public void stop()
     {
+        Log.info("Stopping RTPSourceStream, dumping stack trace (this is not " +
+                "an error)");
+        for(StackTraceElement s : new Throwable().getStackTrace())
+            Log.info(s.toString());
         synchronized (startReq)
         {
             started = false;
