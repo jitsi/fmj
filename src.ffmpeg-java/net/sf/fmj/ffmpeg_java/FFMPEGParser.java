@@ -461,7 +461,7 @@ public class FFMPEGParser extends AbstractDemultiplexer
                                     + res); // TODO: how to handle
 
                         int length = codecCtx.height * dstFrame.linesize[0];
-                        Class dataType = format.getDataType();
+                        Class<?> dataType = format.getDataType();
                         final Object data;
                         if (Format.intArray.equals(dataType))
                         {

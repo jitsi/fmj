@@ -16,7 +16,7 @@ public final class LoggingStringUtils
 {
     public static String bufferFlagsToStr(int flags)
     {
-        List strings = new ArrayList();
+        List<String> strings = new ArrayList<String>();
         if ((flags & Buffer.FLAG_EOM) != 0)
             strings.add("FLAG_EOM");
         if ((flags & Buffer.FLAG_DISCARD) != 0)

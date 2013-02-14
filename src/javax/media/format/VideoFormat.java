@@ -89,7 +89,7 @@ public class VideoFormat extends Format
      *            The frame rate.
      */
     public VideoFormat(String encoding, Dimension size, int maxDataLength,
-            Class dataType, float frameRate)
+            Class<?> dataType, float frameRate)
     {
         this(encoding);
         if (size != null)

@@ -27,7 +27,7 @@ public class SimpleGraphBuilder
 {
     static public PlugIn createPlugIn(String name, int type)
     {
-        Class cls;
+        Class<?> cls;
         Object obj;
 
         try
@@ -315,7 +315,7 @@ public class SimpleGraphBuilder
 
     static public boolean verifyClass(Object obj, int type)
     {
-        Class cls;
+        Class<?> cls;
 
         switch (type)
         {

@@ -553,7 +553,7 @@ public abstract class BasicController implements Controller, Duration
      */
     public Control getControl(String type)
     {
-        Class cls;
+        Class<?> cls;
         try
         {
             cls = Class.forName(type);

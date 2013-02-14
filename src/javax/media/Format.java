@@ -28,26 +28,26 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
     /**
      * The data object required by the <tt>Format</tt> is an integer array.
      */
-    public static final Class intArray = (new int[0]).getClass();
+    public static final Class<?> intArray = (new int[0]).getClass();
 
     /**
      * The data object required by the <tt>Format</tt> is a short array.
      */
-    public static final Class shortArray = (new short[0]).getClass();
+    public static final Class<?> shortArray = (new short[0]).getClass();
 
     /**
      * The data object required by the <tt>Format</tt> is a byte array.
      */
-    public static final Class byteArray = (new byte[0]).getClass();
+    public static final Class<?> byteArray = (new byte[0]).getClass();
 
     /**
      * The data object required by the <tt>Format</tt> is an array of
      * <tt>Format</tt> objects.
      */
-    public static final Class formatArray = (new Format[0]).getClass();
+    public static final Class<?> formatArray = (new Format[0]).getClass();
 
-    protected Class dataType = byteArray;
-    protected Class clz = getClass(); // Cache the to optimize on
+    protected Class<?> dataType = byteArray;
+    protected Class<?> clz = getClass(); // Cache the to optimize on
     // equals, matches & intersect.
 
     private long encodingCode = 0;
@@ -77,7 +77,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
      *            or <tt>shortArray</tt>. For example, for a byte array the data
      *            type would be " <tt>Format.byteArray</tt>".
      */
-    public Format(String encoding, Class dataType)
+    public Format(String encoding, Class<?> dataType)
     {
         this(encoding);
         this.dataType = dataType;
@@ -125,7 +125,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
             return false;
 
         String otherEncoding = ((Format) format).encoding;
-        Class otherType = ((Format) format).dataType;
+        Class<?> otherType = ((Format) format).dataType;
 
         return (dataType == otherType)
                 && (encoding == otherEncoding || ((encoding != null && otherEncoding != null) && isSameEncoding((Format) format)));
@@ -137,7 +137,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
      * 
      * @return The data type of this <tt>Format</tt>.
      */
-    public Class getDataType()
+    public Class<?> getDataType()
     {
         return dataType;
     }

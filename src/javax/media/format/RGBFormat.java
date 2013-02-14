@@ -90,7 +90,7 @@ public class RGBFormat extends VideoFormat
      * @param blue
      *            The mask for the blue color component.
      */
-    public RGBFormat(Dimension size, int maxDataLength, Class dataType,
+    public RGBFormat(Dimension size, int maxDataLength, Class<?> dataType,
             float frameRate, int bitsPerPixel, int red, int green, int blue)
     {
         super(ENCODING, size, maxDataLength, dataType, frameRate);
@@ -148,7 +148,7 @@ public class RGBFormat extends VideoFormat
      *            The byte ordering used for this <tt>RGBFormat</tt>--
      *            <tt>BIG_ENDIAN</tt> or <tt>LITTLE_ENDIAN</tt>.
      */
-    public RGBFormat(Dimension size, int maxDataLength, Class dataType,
+    public RGBFormat(Dimension size, int maxDataLength, Class<?> dataType,
             float frameRate, int bitsPerPixel, int red, int green, int blue,
             int pixelStride, int lineStride, int flipped, int endian)
     {

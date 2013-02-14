@@ -41,7 +41,7 @@ public class H263Format extends VideoFormat
     }
 
     public H263Format(java.awt.Dimension size, int maxDataLength,
-            Class dataType, float frameRate, int advancedPrediction,
+            Class<?> dataType, float frameRate, int advancedPrediction,
             int arithmeticCoding, int errorCompensation, int hrDB,
             int pbFrames, int unrestrictedVector)
     {

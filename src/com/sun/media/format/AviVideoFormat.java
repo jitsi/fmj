@@ -31,7 +31,7 @@ public class AviVideoFormat extends VideoFormat
     }
 
     public AviVideoFormat(String encoding, Dimension size, int maxDataLength,
-            Class dataType, float frameRate, int planes, int bitsPerPixel,
+            Class<?> dataType, float frameRate, int planes, int bitsPerPixel,
             int imageSize, int xPelsPerMeter, int yPelsPerMeter, int clrUsed,
             int clrImportant, byte[] codecHeader)
     {

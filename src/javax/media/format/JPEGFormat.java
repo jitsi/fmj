@@ -32,7 +32,7 @@ public class JPEGFormat extends VideoFormat
     }
 
     public JPEGFormat(java.awt.Dimension size, int maxDataLength,
-            Class dataType, float frameRate, int q, int dec)
+            Class<?> dataType, float frameRate, int q, int dec)
     {
         super(JPEG, size, maxDataLength, dataType, frameRate);
         this.qFactor = q;

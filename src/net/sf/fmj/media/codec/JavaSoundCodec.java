@@ -412,8 +412,8 @@ public class JavaSoundCodec extends AbstractCodec
      */
     private static byte[] fakeHeader(javax.sound.sampled.AudioFormat f)
     {
-        Class classVorbisAudioFormat = null;
-        Class classMpegAudioFormatt = null;
+        Class<?> classVorbisAudioFormat = null;
+        Class<?> classMpegAudioFormatt = null;
 
         if (!JavaSoundUtils.onlyStandardFormats)
         {
@@ -464,7 +464,7 @@ public class JavaSoundCodec extends AbstractCodec
             // mgodehardt: now using reflection
             try
             {
-                Class classMpegEncoding = Class
+                Class<?> classMpegEncoding = Class
                         .forName("javazoom.spi.mpeg.sampled.file.MpegEncoding");
 
                 final String[] mpegEncodingStrings = { "MPEG1L1", "MPEG1L2",
@@ -482,7 +482,7 @@ public class JavaSoundCodec extends AbstractCodec
             // mgodehardt: now using reflection
             try
             {
-                Class classVorbisEncoding = Class
+                Class<?> classVorbisEncoding = Class
                         .forName("javazoom.spi.vorbis.sampled.file.VorbisEncoding");
 
                 final String[] vorbisEncodingStrings = { "VORBISENC" };
@@ -522,8 +522,8 @@ public class JavaSoundCodec extends AbstractCodec
 
         final javax.sound.sampled.AudioFormat[] targetsSpecial;
 
-        Class classVorbisAudioFormat = null;
-        Class classMpegAudioFormatt = null;
+        Class<?> classVorbisAudioFormat = null;
+        Class<?> classMpegAudioFormatt = null;
 
         if (!JavaSoundUtils.onlyStandardFormats)
         {

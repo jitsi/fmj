@@ -49,7 +49,7 @@ public class FormatArgUtils
             ix = 0;
         }
 
-        public Class nextDataType() throws ParseException
+        public Class<?> nextDataType() throws ParseException
         {
             String s = nextString();
             if (s == null)
@@ -253,7 +253,7 @@ public class FormatArgUtils
     private static final Map<String, String> formatEncodings = new HashMap<String, String>(); // corect
                                                                                               // case
 
-    private static final Map<String, Class> formatClasses = new HashMap<String, Class>();
+    private static final Map<String, Class<?>> formatClasses = new HashMap<String, Class<?>>();
 
     static
     {
@@ -265,7 +265,7 @@ public class FormatArgUtils
         addFormat(s, AudioFormat.class);
     }
 
-    private static final void addFormat(String s, Class clazz)
+    private static final void addFormat(String s, Class<?> clazz)
     {
         formatClasses.put(s.toLowerCase(), clazz);
         formatEncodings.put(s.toLowerCase(), s);
@@ -367,7 +367,7 @@ public class FormatArgUtils
 
     }
 
-    private static final String dataTypeToStr(Class clazz)
+    private static final String dataTypeToStr(Class<?> clazz)
     {
         if (clazz == null)
         {
@@ -437,7 +437,7 @@ public class FormatArgUtils
         if (encodingIgnoreCase == null)
             throw new ParseException("No encoding specified", 0);
 
-        final Class formatClass = formatClasses.get(encodingIgnoreCase
+        final Class<?> formatClass = formatClasses.get(encodingIgnoreCase
                 .toLowerCase());
         if (formatClass == null)
             throw new ParseException("Unknown encoding: " + encodingIgnoreCase,
@@ -458,7 +458,7 @@ public class FormatArgUtils
             final int signed = t.nextSigned();
             final int frameSizeInBits = t.nextInt();
             final double frameRate = t.nextDouble();
-            Class dataType = t.nextDataType();
+            Class<?> dataType = t.nextDataType();
             if (dataType == null)
                 dataType = Format.byteArray; // default
 
@@ -472,7 +472,7 @@ public class FormatArgUtils
             {
                 final java.awt.Dimension size = t.nextDimension();
                 final int maxDataLength = t.nextInt();
-                Class dataType = t.nextDataType();
+                Class<?> dataType = t.nextDataType();
                 if (dataType == null)
                     dataType = Format.byteArray; // default
                 final float frameRate = t.nextFloat();
@@ -485,7 +485,7 @@ public class FormatArgUtils
             {
                 final java.awt.Dimension size = t.nextDimension();
                 final int maxDataLength = t.nextInt();
-                Class dataType = t.nextDataType();
+                Class<?> dataType = t.nextDataType();
                 if (dataType == null)
                     dataType = Format.byteArray; // default
                 final float frameRate = t.nextFloat();
@@ -495,7 +495,7 @@ public class FormatArgUtils
             {
                 final java.awt.Dimension size = t.nextDimension();
                 final int maxDataLength = t.nextInt();
-                Class dataType = t.nextDataType();
+                Class<?> dataType = t.nextDataType();
                 if (dataType == null)
                     dataType = Format.byteArray; // default
                 final float frameRate = t.nextFloat();
@@ -505,7 +505,7 @@ public class FormatArgUtils
             {
                 final java.awt.Dimension size = t.nextDimension();
                 final int maxDataLength = t.nextInt();
-                Class dataType = t.nextDataType();
+                Class<?> dataType = t.nextDataType();
                 if (dataType == null)
                     dataType = Format.byteArray; // default
                 final float frameRate = t.nextFloat();
@@ -516,7 +516,7 @@ public class FormatArgUtils
             {
                 final java.awt.Dimension size = t.nextDimension();
                 final int maxDataLength = t.nextInt();
-                Class dataType = t.nextDataType();
+                Class<?> dataType = t.nextDataType();
                 if (dataType == null)
                     dataType = Format.byteArray; // default
                 final float frameRate = t.nextFloat();

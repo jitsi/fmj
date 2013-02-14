@@ -12,8 +12,8 @@ import java.beans.*;
  */
 public class MediaPlayerBeanInfo extends java.beans.SimpleBeanInfo
 {
-    private static PropertyDescriptor buildPropertyDescriptor(Class clazz,
-            String name, String displayName, Class propertyEditorClass,
+    private static PropertyDescriptor buildPropertyDescriptor(Class<?> clazz,
+            String name, String displayName, Class<?> propertyEditorClass,
             boolean bound) throws IntrospectionException
     {
         final PropertyDescriptor pd = new PropertyDescriptor(name, clazz);

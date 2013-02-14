@@ -49,7 +49,7 @@ public class ControlCollection
     {
         try
         {
-            Class cls = Class.forName(controlType);
+            Class<?> cls = Class.forName(controlType);
             synchronized (controls)
             {
                 Control cs[] = getControls();

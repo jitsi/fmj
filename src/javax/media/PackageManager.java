@@ -39,7 +39,7 @@ public class PackageManager
 
     private static final Logger logger = LoggerSingleton.logger;
 
-    private static Class implClass;
+    private static Class<?> implClass;
     private static Method getProtocolPrefixListMethod;
     private static Method setProtocolPrefixListMethod;
     private static Method commitProtocolPrefixListMethod;
@@ -95,8 +95,8 @@ public class PackageManager
         return (Vector) callImpl(getProtocolPrefixListMethod, new Object[] {});
     }
 
-    private static Method getStaticMethodOnImplClass(String name, Class[] args,
-            Class returnType) throws Exception
+    private static Method getStaticMethodOnImplClass(String name,
+            Class<?>[] args, Class<?> returnType) throws Exception
     {
         final Method m = implClass.getMethod(name, args);
         if (m.getReturnType() != returnType)

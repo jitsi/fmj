@@ -29,7 +29,7 @@ public class CaptureDeviceManager
 
     private static final Logger logger = LoggerSingleton.logger;
 
-    private static Class implClass;
+    private static Class<?> implClass;
     private static Method getDeviceMethod;
     private static Method getDeviceListMethod;
     private static Method addDeviceMethod;
@@ -111,8 +111,8 @@ public class CaptureDeviceManager
         return (Vector) callImpl(getDeviceListMethod, new Object[] { format });
     }
 
-    private static Method getStaticMethodOnImplClass(String name, Class[] args,
-            Class returnType) throws Exception
+    private static Method getStaticMethodOnImplClass(String name,
+            Class<?>[] args, Class<?> returnType) throws Exception
     {
         final Method m = implClass.getMethod(name, args);
         if (m.getReturnType() != returnType)

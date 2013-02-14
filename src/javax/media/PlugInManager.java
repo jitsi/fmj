@@ -36,7 +36,7 @@ public class PlugInManager
 
     public static final int MULTIPLEXER = 5;
 
-    private static Class implClass;
+    private static Class<?> implClass;
     private static Method getPlugInListMethod;
     private static Method setPlugInListMethod;
     private static Method commitMethod;
@@ -90,8 +90,8 @@ public class PlugInManager
                 output, new Integer(type) });
     }
 
-    private static Method getStaticMethodOnImplClass(String name, Class[] args,
-            Class returnType) throws Exception
+    private static Method getStaticMethodOnImplClass(String name,
+            Class<?>[] args, Class<?> returnType) throws Exception
     {
         final Method m = implClass.getMethod(name, args);
         if (m.getReturnType() != returnType)

@@ -212,7 +212,7 @@ public final class Manager
 
             try
             {
-                final Class handlerClass = Class.forName(handlerClassName);
+                final Class<?> handlerClass = Class.forName(handlerClassName);
                 if (!DataSink.class.isAssignableFrom(handlerClass)
                         && !DataSinkProxy.class.isAssignableFrom(handlerClass))
                     continue; // skip any classes that will not be matched
@@ -250,7 +250,7 @@ public final class Manager
 
                         try
                         {
-                            final Class handlerClass2 = Class
+                            final Class<?> handlerClass2 = Class
                                     .forName(handlerClassName2);
                             if (!DataSink.class.isAssignableFrom(handlerClass2))
                                 continue; // skip any classes that will not be
@@ -328,7 +328,7 @@ public final class Manager
 
             try
             {
-                final Class handlerClass = Class.forName(handlerClassName);
+                final Class<?> handlerClass = Class.forName(handlerClassName);
                 if (!DataSink.class.isAssignableFrom(handlerClass))
                     continue; // skip any classes that will not be matched
                               // below.
@@ -384,7 +384,7 @@ public final class Manager
             String dataSourceClassName = (String) dataSourceList.get(i);
             try
             {
-                final Class dataSourceClass = Class
+                final Class<?> dataSourceClass = Class
                         .forName(dataSourceClassName);
                 final DataSource dataSource = (DataSource) dataSourceClass
                         .newInstance();
@@ -539,7 +539,7 @@ public final class Manager
 
             try
             {
-                final Class handlerClass = Class.forName(handlerClassName);
+                final Class<?> handlerClass = Class.forName(handlerClassName);
                 if (!Player.class.isAssignableFrom(handlerClass)
                         && !MediaProxy.class.isAssignableFrom(handlerClass))
                     continue; // skip any classes that will not be matched
@@ -630,7 +630,7 @@ public final class Manager
             String dataSourceClassName = (String) dataSourceList.get(i);
             try
             {
-                final Class dataSourceClass = Class
+                final Class<?> dataSourceClass = Class
                         .forName(dataSourceClassName);
                 final DataSource dataSource = (DataSource) dataSourceClass
                         .newInstance();
@@ -758,7 +758,7 @@ public final class Manager
 
             try
             {
-                final Class handlerClass = Class.forName(handlerClassName);
+                final Class<?> handlerClass = Class.forName(handlerClassName);
                 if (!Processor.class.isAssignableFrom(handlerClass)
                         && !MediaProxy.class.isAssignableFrom(handlerClass))
                     continue; // skip any classes that will not be matched
@@ -823,7 +823,7 @@ public final class Manager
             String dataSourceClassName = (String) dataSourceList.get(i);
             try
             {
-                final Class dataSourceClass = Class
+                final Class<?> dataSourceClass = Class
                         .forName(dataSourceClassName);
                 final DataSource dataSource = (DataSource) dataSourceClass
                         .newInstance();

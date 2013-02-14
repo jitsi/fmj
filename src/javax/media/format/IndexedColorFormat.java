@@ -28,7 +28,7 @@ public class IndexedColorFormat extends VideoFormat
     }
 
     public IndexedColorFormat(java.awt.Dimension size, int maxDataLength,
-            Class dataType, float frameRate, int lineStride, int mapSize,
+            Class<?> dataType, float frameRate, int lineStride, int mapSize,
             byte[] red, byte[] green, byte[] blue)
     {
         super(ENCODING, size, maxDataLength, dataType, frameRate);

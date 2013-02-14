@@ -100,7 +100,7 @@ public class YUVFormat extends VideoFormat
      * @param offsetV
      *            The offset into the data array where the V plane begins.
      */
-    public YUVFormat(Dimension size, int maxDataLength, Class dataType,
+    public YUVFormat(Dimension size, int maxDataLength, Class<?> dataType,
             float frameRate, int yuvType, int strideY, int strideUV,
             int offsetY, int offsetU, int offsetV)
     {

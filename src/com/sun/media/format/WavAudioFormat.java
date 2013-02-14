@@ -48,8 +48,10 @@ public class WavAudioFormat extends AudioFormat
     protected byte[] codecSpecificHeader;
     private int averageBytesPerSecond = NOT_SPECIFIED;
 
-    public static final Hashtable formatMapper = new Hashtable();
-    public static final Hashtable reverseFormatMapper = new Hashtable();
+    public static final Hashtable<Integer,String> formatMapper
+        = new Hashtable<Integer,String>();
+    public static final Hashtable<String,Integer> reverseFormatMapper
+        = new Hashtable<String,Integer>();
 
     static
     {
@@ -121,7 +123,7 @@ public class WavAudioFormat extends AudioFormat
     public WavAudioFormat(String encoding, double sampleRate,
             int sampleSizeInBits, int channels, int frameSizeInBits,
             int averageBytesPerSecond, int endian, int signed, float frameRate,
-            Class dataType, byte[] codecSpecificHeader)
+            Class<?> dataType, byte[] codecSpecificHeader)
     {
         // averageBytesPerSecond seems to be substituted for frameRate.
         super(encoding, sampleRate, sampleSizeInBits, channels, endian, signed,

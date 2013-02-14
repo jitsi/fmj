@@ -69,8 +69,8 @@ public class JavaSoundUtils
 
         javax.sound.sampled.AudioFormat sampledFormat;
 
-        Class classMpegEncoding = null;
-        Class classVorbisEncoding = null;
+        Class<?> classMpegEncoding = null;
+        Class<?> classVorbisEncoding = null;
 
         if (!JavaSoundUtils.onlyStandardFormats)
         {
@@ -99,10 +99,10 @@ public class JavaSoundUtils
         {
             try
             {
-                Class classMpegAudioFormat = Class
+                Class<?> classMpegAudioFormat = Class
                         .forName("javazoom.spi.mpeg.sampled.file.MpegAudioFormat");
 
-                Class partypes[] = new Class[8];
+                Class<?> partypes[] = new Class[8];
                 partypes[0] = javax.sound.sampled.AudioFormat.Encoding.class;
                 partypes[1] = Float.TYPE;
                 partypes[2] = Integer.TYPE;
@@ -112,7 +112,7 @@ public class JavaSoundUtils
                 partypes[6] = Boolean.TYPE;
                 partypes[7] = java.util.Map.class;
 
-                Constructor ct = classMpegAudioFormat.getConstructor(partypes);
+                Constructor<?> ct = classMpegAudioFormat.getConstructor(partypes);
 
                 Object arglist[] = new Object[8];
                 arglist[0] = encoding;
@@ -135,10 +135,10 @@ public class JavaSoundUtils
         {
             try
             {
-                Class classVorbisAudioFormat = Class
+                Class<?> classVorbisAudioFormat = Class
                         .forName("javazoom.spi.vorbis.sampled.file.VorbisAudioFormat");
 
-                Class partypes[] = new Class[8];
+                Class<?> partypes[] = new Class[8];
                 partypes[0] = javax.sound.sampled.AudioFormat.Encoding.class;
                 partypes[1] = Float.TYPE;
                 partypes[2] = Integer.TYPE;
@@ -148,7 +148,7 @@ public class JavaSoundUtils
                 partypes[6] = Boolean.TYPE;
                 partypes[7] = java.util.Map.class;
 
-                Constructor ct = classVorbisAudioFormat
+                Constructor<?> ct = classVorbisAudioFormat
                         .getConstructor(partypes);
 
                 Object arglist[] = new Object[8];
@@ -238,7 +238,7 @@ public class JavaSoundUtils
             if (!JavaSoundUtils.onlyStandardFormats)
             {
                 // mgodehardt: now using reflection
-                Class classMpegEncoding = Class
+                Class<?> classMpegEncoding = Class
                         .forName("javazoom.spi.mpeg.sampled.file.MpegEncoding");
 
                 final String[] mpegEncodingStrings = { "MPEG1L1", "MPEG1L2",
@@ -280,7 +280,7 @@ public class JavaSoundUtils
             if (!JavaSoundUtils.onlyStandardFormats)
             {
                 // mgodehardt: now using reflection
-                Class classVorbisEncoding = Class
+                Class<?> classVorbisEncoding = Class
                         .forName("javazoom.spi.vorbis.sampled.file.VorbisEncoding");
 
                 final String[] vorbisEncodingStrings = { "VORBISENC" };

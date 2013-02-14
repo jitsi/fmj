@@ -10,11 +10,17 @@ import net.sf.fmj.media.*;
 import net.sf.fmj.media.protocol.rtp.*;
 import net.sf.fmj.media.rtp.util.*;
 
+/**
+ *
+ * @author Damian Minkov
+ * @author Boris Grozev
+ * @author Lyubomir Marinov
+ */
 public class RTPReceiver extends PacketFilter
 {
-    SSRCCache cache;
+    final SSRCCache cache;
 
-    RTPDemultiplexer rtpdemultiplexer;
+    final RTPDemultiplexer rtpdemultiplexer;
 
     int lastseqnum;
 
@@ -22,12 +28,15 @@ public class RTPReceiver extends PacketFilter
 
     private boolean setpriority;
 
-    //boris grozev: this always stays 'false' and can be removed
+    /*
+     * TODO Boris Grozev: The field mismatchprinted always equals false and may
+     * be removed.
+     */ 
     private boolean mismatchprinted = false;
 
-    private String content;
+    private final String content;
 
-    SSRCTable probationList;
+    final SSRCTable probationList;
 
     static final int MAX_DROPOUT = 3000;
 
@@ -38,7 +47,7 @@ public class RTPReceiver extends PacketFilter
 
     //BufferControl initialized
     private boolean initBC = false;
-    public String controlstr;
+    public final String controlstr;
     private int errorPayload;
 
     public RTPReceiver(SSRCCache ssrccache, RTPDemultiplexer rtpdemultiplexer1)
@@ -197,12 +206,12 @@ public class RTPReceiver extends PacketFilter
             {
                 /*
                  * Vincent Lucas: Without any lost, the seqnum cycles when
-                 * passing from 65535 to 0. Thus, diff is equal to -65535. But if
-                 * there have been some occurrences of loss, diff may be -65534,
-                 * -65533, etc. On the other hand, if diff is too close to 0 i.e.
-                 * -1, -2, etc., it may correspond to a desequenced packet. This
-                 * is why it is a sound choice to differentiate between a cycle
-                 * and a desequence on the basis of a value in between the two
+                 * passing from 65535 to 0. Thus, diff is equal to -65535. But
+                 * if there have been losses, diff may be -65534, -65533, etc.
+                 * On the other hand, if diff is too close to 0 (i.e. -1, -2,
+                 * etc.), it may correspond to a packet out of sequence. This is
+                 * why it is a sound choice to differentiate between a cycle and
+                 * an out-of-sequence on the basis of a value in between the two
                  * cases i.e. -65535 / 2.
                  */
                 if (diff < -65535 / 2)
@@ -221,8 +230,11 @@ public class RTPReceiver extends PacketFilter
                 ssrcinfo.lastbadseq = rtppacket.seqnum + 1 & 0xffff;
         } else
         {
-            //boris grozev: The case of diff==0 is caught in diff<MAX_DROPOUT
-            //and doesn't end up here. Is this the way it's supposed to work?
+            /*
+             * TODO Boris Grozev: The case of diff==0 is caught in
+             * diff<MAX_DROPOUT and does NOT end up here. Is this the way it is
+             * supposed to work?
+             */
             ssrcinfo.stats.update(RTPStats.PDUDUP);
         }
         if (cache.sm.isUnicast())

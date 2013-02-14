@@ -126,7 +126,7 @@ public abstract class VideoCodec extends BasicCodec
             logger.fine("videoCodec.getSupportedOutputFormats("
                     + LoggingStringUtils.formatToStr(in) + ")");
         // TODO: test this code.
-        final List result = new ArrayList();
+        final List<Format> result = new ArrayList<Format>();
 
         for (int i = 0; i < supportedInputFormats.length; ++i)
         {
@@ -144,13 +144,7 @@ public abstract class VideoCodec extends BasicCodec
             }
         }
 
-        final Format[] arrayResult = new Format[result.size()];
-        for (int i = 0; i < result.size(); ++i)
-        {
-            arrayResult[i] = (Format) result.get(i);
-        }
-
-        return arrayResult;
+        return result.toArray(new Format[result.size()]);
     }
 
     @Override

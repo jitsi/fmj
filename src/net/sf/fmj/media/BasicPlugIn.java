@@ -65,7 +65,7 @@ public abstract class BasicPlugIn implements PlugIn
     // This is a Package private class
     // Currently used by a few classes in this package
     // Not used in this class as we can use the generic Class.forName
-    static public Class getClassForName(String className)
+    static public Class<?> getClassForName(String className)
             throws ClassNotFoundException
     {
         /**
@@ -97,7 +97,7 @@ public abstract class BasicPlugIn implements PlugIn
          */
         try
         {
-            return (Class) forName3ArgsM.invoke(Class.class, new Object[] {
+            return (Class<?>) forName3ArgsM.invoke(Class.class, new Object[] {
                     className, new Boolean(true), systemClassLoader });
         } catch (Throwable e)
         {
@@ -115,7 +115,7 @@ public abstract class BasicPlugIn implements PlugIn
                 = (ClassLoader)
                     getContextClassLoaderM.invoke(Thread.currentThread());
             return
-                (Class)
+                (Class<?>)
                     forName3ArgsM.invoke(
                             Class.class,
                             new Object[] { className, new Boolean(true), contextClassLoader });
@@ -184,7 +184,7 @@ public abstract class BasicPlugIn implements PlugIn
     {
         try
         {
-            Class cls = Class.forName(controlType);
+            Class<?> cls = Class.forName(controlType);
             Object cs[] = getControls();
             for (int i = 0; i < cs.length; i++)
             {
@@ -259,7 +259,7 @@ public abstract class BasicPlugIn implements PlugIn
     protected Object validateData(Buffer buffer, int length, boolean allowNative)
     {
         Format format = buffer.getFormat();
-        Class dataType = format.getDataType();
+        Class<?> dataType = format.getDataType();
 
         if (length < 1 && format != null)
         {

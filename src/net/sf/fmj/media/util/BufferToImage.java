@@ -56,7 +56,7 @@ public class BufferToImage
         final VideoFormat format;
         final int w;
         final int h;
-        final Class dataType;
+        final Class<?> dataType;
 
         format = (VideoFormat) buffer.getFormat();
 

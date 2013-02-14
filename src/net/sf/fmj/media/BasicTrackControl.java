@@ -60,7 +60,7 @@ public class BasicTrackControl implements javax.media.control.TrackControl
 
     public Object getControl(String type)
     {
-        Class cls;
+        Class<?> cls;
         try
         {
             // cls = Class.forName(type);

@@ -13,7 +13,7 @@ import javax.media.protocol.*;
  */
 public class MediaCGUtils
 {
-    public static String dataTypeToStr(Class dataType)
+    public static String dataTypeToStr(Class<?> dataType)
     {
         if (dataType == null)
             return "null";
@@ -31,7 +31,7 @@ public class MediaCGUtils
     {
         if (f == null)
             return "null";
-        final Class c = f.getClass();
+        final Class<?> c = f.getClass();
         if (c == RGBFormat.class)
         {
             final RGBFormat o = (RGBFormat) f;

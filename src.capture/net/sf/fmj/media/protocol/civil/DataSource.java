@@ -645,7 +645,7 @@ public class DataSource extends PushBufferDataSource implements CaptureDevice,
     @Override
     public Object getControl(String controlType)
     {
-        Class c;
+        Class<?> c;
 
         try
         {

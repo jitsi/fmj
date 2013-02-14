@@ -62,7 +62,7 @@ public class RawPushBufferParser extends RawStreamParser
 
         private Depacketizer findDepacketizer(String name, Format input)
         {
-            Class cls;
+            Class<?> cls;
             Object obj;
 
             try

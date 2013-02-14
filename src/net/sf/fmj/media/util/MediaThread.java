@@ -24,7 +24,7 @@ public class MediaThread extends Thread
     static
     {
         Method m[] = new Method[1];
-        Class cl[] = new Class[1];
+        Class<?> cl[] = new Class[1];
         Object args[][] = new Object[1][0];
 
         try

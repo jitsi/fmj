@@ -184,7 +184,7 @@ public class AudioFormat extends Format
      */
     public AudioFormat(String encoding, double sampleRate,
             int sampleSizeInBits, int channels, int endian, int signed,
-            int frameSizeInBits, double frameRate, Class dataType)
+            int frameSizeInBits, double frameRate, Class<?> dataType)
     {
         this(encoding, sampleRate, sampleSizeInBits, channels, endian, signed);
         this.frameSizeInBits = frameSizeInBits;

@@ -50,7 +50,7 @@ public abstract class BasicPushBufferDataSource extends PushBufferDataSource
     {
         try
         {
-            Class cls = Class.forName(controlType);
+            Class<?> cls = Class.forName(controlType);
             Object cs[] = getControls();
             for (int i = 0; i < cs.length; i++)
             {

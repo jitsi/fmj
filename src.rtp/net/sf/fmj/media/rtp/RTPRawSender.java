@@ -67,7 +67,7 @@ public class RTPRawSender extends PacketFilter
         {
             if (socket != null)
             {
-                Class cls = socket.getClass();
+                Class<?> cls = socket.getClass();
                 Method m = cls.getMethod("getSendBufferSize");
                 Integer res = (Integer) m.invoke(socket);
                 return res.intValue();
@@ -139,7 +139,7 @@ public class RTPRawSender extends PacketFilter
         {
             if (socket != null)
             {
-                Class cls = socket.getClass();
+                Class<?> cls = socket.getClass();
                 Method m = cls.getMethod("setSendBufferSize",
                         new Class[] { Integer.TYPE });
                 m.invoke(socket, new Object[] { new Integer(size) });

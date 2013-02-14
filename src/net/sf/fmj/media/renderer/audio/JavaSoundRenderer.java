@@ -473,7 +473,7 @@ public class JavaSoundRenderer implements Renderer
 
         final Format format = buffer.getFormat();
 
-        final Class type = format.getDataType();
+        final Class<?> type = format.getDataType();
         if (type != Format.byteArray)
         {
             return BUFFER_PROCESSED_FAILED;

@@ -27,9 +27,9 @@ public abstract class RTPManager implements Controls
     private static final Logger logger = LoggerSingleton.logger;
 
     // returns a vector of string
-    public static java.util.Vector getRTPManagerList()
+    public static Vector<String> getRTPManagerList()
     {
-        final Vector result = new Vector();
+        final Vector<String> result = new Vector<String>();
 
         // mgodehardt: disabled this, why is this need, there is no
         // media.rtp.RTPSessionMgr
@@ -58,7 +58,7 @@ public abstract class RTPManager implements Controls
             try
             {
                 logger.finer("Trying RTPManager class: " + className);
-                final Class clazz = Class.forName(className);
+                final Class<?> clazz = Class.forName(className);
                 return (RTPManager) clazz.newInstance();
             } catch (ClassNotFoundException e)
             {

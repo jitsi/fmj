@@ -50,7 +50,7 @@ public class BasicSourceModule extends BasicModule implements Duration,
         ContentDescriptor cd = new ContentDescriptor(ds.getContentType());
         Vector cnames = PlugInManager.getPlugInList(cd, null,
                 PlugInManager.DEMULTIPLEXER);
-        Class cls;
+        Class<?> cls;
         Demultiplexer parser = null;
         IOException ioe = null;
         IncompatibleSourceException ise = null;

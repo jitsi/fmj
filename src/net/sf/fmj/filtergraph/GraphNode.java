@@ -12,7 +12,7 @@ import javax.media.*;
  */
 public class GraphNode
 {
-    Class clz;
+    Class<?> clz;
     public String cname;
     public PlugIn plugin;
     public int type = -1;

@@ -23,7 +23,7 @@ public class GIFFormat extends VideoFormat
     }
 
     public GIFFormat(java.awt.Dimension size, int maxDataLength,
-            Class dataType, float frameRate)
+            Class<?> dataType, float frameRate)
     {
         super(BonusVideoFormatEncodings.GIF, size, maxDataLength, dataType,
                 frameRate);

@@ -85,9 +85,9 @@ public class PlayerPanel extends JPanel
             addressComboBox = new JComboBox();
             addressComboBox.setEditable(true);
             addressComboBox.setPreferredSize(new Dimension(400, 27));
-            for (int i = 0; i < prefs.recentUrls.size(); i++)
+            for (String recentUrl : prefs.recentUrls)
             {
-                addressComboBox.addItem(prefs.recentUrls.get(i));
+                addressComboBox.addItem(recentUrl);
             }
             addressComboBox.setSelectedIndex(-1); // nothing selected by
                                                   // default.

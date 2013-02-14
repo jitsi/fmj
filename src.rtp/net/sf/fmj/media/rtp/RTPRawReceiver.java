@@ -96,7 +96,7 @@ public class RTPRawReceiver extends PacketFilter
 
         try
         {
-            Class class1 = socket.getClass();
+            Class<?> class1 = socket.getClass();
             Method method = class1.getMethod("getReceiveBufferSize");
             integer = (Integer) method.invoke(socket);
             return integer.intValue();

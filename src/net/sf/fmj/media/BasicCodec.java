@@ -64,7 +64,7 @@ public abstract class BasicCodec extends BasicPlugIn implements Codec
         opened = false;
     }
 
-    protected int getArrayElementSize(Class type)
+    protected int getArrayElementSize(Class<?> type)
     {
         if (type == Format.intArray)
             return 4;

@@ -23,7 +23,7 @@ public class PNGFormat extends VideoFormat
     }
 
     public PNGFormat(java.awt.Dimension size, int maxDataLength,
-            Class dataType, float frameRate)
+            Class<?> dataType, float frameRate)
     {
         super(BonusVideoFormatEncodings.PNG, size, maxDataLength, dataType,
                 frameRate);

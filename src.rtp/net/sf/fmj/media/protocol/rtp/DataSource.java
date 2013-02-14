@@ -133,7 +133,7 @@ public class DataSource extends BasicPushBufferDataSource implements
     @Override
     public Object getControl(String type)
     {
-        Class cls;
+        Class<?> cls;
         try
         {
             cls = Class.forName(type);

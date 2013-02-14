@@ -18,7 +18,7 @@ public class JmfUtility
         {
             // com.sun.media.util.Registry.set("allowLogging", true);
 
-            final Class clazz = Class.forName("com.sun.media.util.Registry");
+            final Class<?> clazz = Class.forName("com.sun.media.util.Registry");
             final Method m = clazz.getMethod("set", String.class, Object.class);
             m.invoke(null, "allowLogging", true);
 

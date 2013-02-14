@@ -13,7 +13,8 @@ import javax.media.datasink.*;
  */
 public abstract class AbstractDataSink implements DataSink
 {
-    private final List listeners = new ArrayList(); // of DataSinkListener
+    private final List<DataSinkListener> listeners
+        = new ArrayList<DataSinkListener>();
 
     protected MediaLocator outputLocator;
 
@@ -32,16 +33,16 @@ public abstract class AbstractDataSink implements DataSink
 
     protected void notifyDataSinkListeners(DataSinkEvent event)
     {
-        final List listenersCopy = new ArrayList();
+        DataSinkListener[] listenersCopy;
 
         synchronized (listeners)
         {
-            listenersCopy.addAll(listeners);
+            listenersCopy
+                = listeners.toArray(new DataSinkListener[listeners.size()]);
         }
 
-        for (int i = 0; i < listenersCopy.size(); ++i)
+        for (DataSinkListener listener : listenersCopy)
         {
-            DataSinkListener listener = (DataSinkListener) listenersCopy.get(i);
             listener.dataSinkUpdate(event);
         }
     }
@@ -58,5 +59,4 @@ public abstract class AbstractDataSink implements DataSink
     {
         this.outputLocator = output;
     }
-
 }

@@ -14,17 +14,17 @@ import javax.media.format.*;
  */
 public class FormatUtils
 {
-    public static final Class byteArray = byte[].class;
-    public static final Class shortArray = short[].class;
-    public static final Class intArray = int[].class;
-    public static final Class formatArray = Format[].class; // TODO: is this
+    public static final Class<?> byteArray = byte[].class;
+    public static final Class<?> shortArray = short[].class;
+    public static final Class<?> intArray = int[].class;
+    public static final Class<?> formatArray = Format[].class; // TODO: is this
                                                             // used or allowed?
 
     // here to avoid messing up the serialization signature in the format
     // classes. The Eclipse compiler
     // will insert anonymous fields for these:
-    public static final Class videoFormatClass = VideoFormat.class;
-    public static final Class audioFormatClass = AudioFormat.class;
+    public static final Class<?> videoFormatClass = VideoFormat.class;
+    public static final Class<?> audioFormatClass = AudioFormat.class;
 
     public static boolean byteArraysEqual(byte[] ba1, byte[] ba2)
     {
@@ -79,7 +79,7 @@ public class FormatUtils
         return s;
     }
 
-    public static boolean isOneAssignableFromTheOther(Class a, Class b)
+    public static boolean isOneAssignableFromTheOther(Class<?> a, Class<?> b)
     {
         return a == b || b.isAssignableFrom(a) || a.isAssignableFrom(b);
     }
@@ -87,7 +87,7 @@ public class FormatUtils
     /**
      * Is a a subclass of b? Strict.
      */
-    public static boolean isSubclass(Class a, Class b)
+    public static boolean isSubclass(Class<?> a, Class<?> b)
     {
         if (a == b)
             return false;

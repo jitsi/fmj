@@ -286,8 +286,9 @@ public class DataSource extends PushBufferDataSource implements CaptureDevice
                                 data.length);
                         if (actuallyRead > 0)
                         {
-                            final BufferTransferHandler handler = (BufferTransferHandler) transferHandlerHolder
-                                    .getObject();
+                            final BufferTransferHandler handler
+                                = transferHandlerHolder.getObject();
+
                             if (handler != null)
                             {
                                 if (!jitterBuffer.put(data))
@@ -315,7 +316,9 @@ public class DataSource extends PushBufferDataSource implements CaptureDevice
 
         private AvailabilityThread availabilityThread;
 
-        private final SynchronizedObjectHolder transferHandlerHolder = new SynchronizedObjectHolder();
+        private final SynchronizedObjectHolder<BufferTransferHandler>
+            transferHandlerHolder
+                = new SynchronizedObjectHolder<BufferTransferHandler>();
 
         public boolean endOfStream()
         {
@@ -482,7 +485,7 @@ public class DataSource extends PushBufferDataSource implements CaptureDevice
 
     public static Format[] querySupportedFormats(int mixerIndex)
     {
-        List formats = new ArrayList();
+        List<AudioFormat> formats = new ArrayList<AudioFormat>();
 
         // get info about all mixers in the system
         Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
@@ -516,17 +519,12 @@ public class DataSource extends PushBufferDataSource implements CaptureDevice
         }
 
         // sort by quality:
-        Collections.sort(formats,
+        Collections.sort(
+                formats,
                 Collections.reverseOrder(new AudioFormatComparator()));
 
         // convert to an array:
-        final Format[] formatsArray = new Format[formats.size()];
-        for (int i = 0; i < formats.size(); i++)
-        {
-            formatsArray[i] = (Format) formats.get(i);
-        }
-
-        return formatsArray;
+        return formats.toArray(new Format[formats.size()]);
     }
 
     private MyPushBufferStream pushBufferStream;

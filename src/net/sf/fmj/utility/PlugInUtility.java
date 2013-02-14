@@ -23,7 +23,7 @@ public class PlugInUtility
         final Object o;
         try
         {
-            final Class clazz = Class.forName(className);
+            final Class<?> clazz = Class.forName(className);
             o = clazz.newInstance();
 
             if (o instanceof Demultiplexer)

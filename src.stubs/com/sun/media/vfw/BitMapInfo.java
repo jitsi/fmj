@@ -126,12 +126,12 @@ public class BitMapInfo
         }
     }
 
-    public VideoFormat createVideoFormat(Class arrayType)
+    public VideoFormat createVideoFormat(Class<?> arrayType)
     {
         return createVideoFormat(arrayType, -1.f);
     }
 
-    public VideoFormat createVideoFormat(Class arrayType, float frameRate)
+    public VideoFormat createVideoFormat(Class<?> arrayType, float frameRate)
     {
         if (fourcc.equals("RGB"))
         {

@@ -406,7 +406,7 @@ public abstract class AbstractController extends AbstractClock implements
      */
     public Control getControl(String forName)
     {
-        Class c;
+        Class<?> c;
 
         try
         {

@@ -12,6 +12,12 @@ import net.sf.fmj.media.rtp.util.*;
 
 import java.awt.*;
 
+/**
+ *
+ * @author Damian Minkov
+ * @author Boris Grozev
+ * @author Lyubomir Marinov
+ */
 public class RTPSourceStream
     extends BasicSourceStream
     implements PushBufferStream, Runnable, PacketQueueControl
@@ -37,7 +43,6 @@ public class RTPSourceStream
         private static final int MIN_BUF_CHECK = 10000;
         private static final int BUF_CHECK_INTERVAL = 7000;
 
-
         /*
          * For audio streams, the following scheme is implemented in order for
          * the queue to work as an adaptive jitter buffer:
@@ -51,10 +56,11 @@ public class RTPSourceStream
          * If resizing is enabled, the size of the queue changes in the
          * following ways:
          * 1. It shrinks by AJB_SHRINK_DECREMENT items, if in the last
-         * AJB_SHRINK_INTERVAL packets, no more than AJB_SHRINK_THRESHOLD packets were
+         * AJB_SHRINK_INTERVAL packets, no more than AJB_SHRINK_THRESHOLD
+         * packets were late.
+         * 2. It grows by AJB_GROW_INCREMENT items, if in the last
+         * AJB_GROW_INTERVAL packets, at least AJB_GROW_THRESHOLD packets were
          * late.
-         * 2. It grows by AJB_GROW_INCREMENT items, if in the last AJB_GROW_INTERVAL
-         * packets, at least AJB_GROW_THRESHOLD packets were late.
          *
          * The following are the parameters used:
          */
@@ -112,12 +118,13 @@ public class RTPSourceStream
         private final int AJB_HISTORY_SIZE;
 
         /**
-         * Contains information about recent packets. A 0 indicates that the
-         * packet was accepted normally, a 1 indicates that it was
-         * dropped because it was received too late. It's circular, with
-         * <tt>historyPointer</tt> always pointing to the last packet added.
+         * Contains information about the recently received packets. A
+         * <tt>0</tt> indicates that the respective packet was accepted
+         * normally, a <tt>1</tt> indicates that it was dropped because it was
+         * received too late. The storage of the <tt>history</tt> is circular
+         * and {@link #historyPointer} always points to the last packet added.
          */
-        private int[] history;
+        private byte[] history;
 
         /**
          * Contains the number of 'late' packets from the last
@@ -204,8 +211,8 @@ public class RTPSourceStream
             allocBuffers(size);
 
             /*
-             * Set the history related parameters with values from the registry
-             * or default values.
+             * Assign the adaptive jitter buffer-related properties of this
+             * instance values from the Registry or default values.
              */
             Object value;
             value = com.sun.media.util.Registry.get(
@@ -225,7 +232,7 @@ public class RTPSourceStream
             {
                 growThreshold = Integer.parseInt((String)value);
             }
-                catch(Exception e){}
+            catch(Exception e){}
             AJB_GROW_THRESHOLD = growThreshold;
 
             value = com.sun.media.util.Registry.get(
@@ -316,16 +323,16 @@ public class RTPSourceStream
             int n = late ? 1 : 0;
 
             int growPointer
-                    = (historyPointer - AJB_GROW_INTERVAL +
-                    AJB_HISTORY_SIZE) % AJB_HISTORY_SIZE;
-            growCount = growCount - history[growPointer] + n;
+                = (historyPointer - AJB_GROW_INTERVAL + AJB_HISTORY_SIZE)
+                    % AJB_HISTORY_SIZE;
+            growCount += n - history[growPointer];
 
             int shrinkPointer
-                    = (historyPointer - AJB_SHRINK_INTERVAL +
-                    AJB_HISTORY_SIZE) % AJB_HISTORY_SIZE;
-            shrinkCount = shrinkCount - history[shrinkPointer] + n;
+                = (historyPointer - AJB_SHRINK_INTERVAL + AJB_HISTORY_SIZE)
+                    % AJB_HISTORY_SIZE;
+            shrinkCount += n - history[shrinkPointer];
 
-            history[historyPointer] = n;
+            history[historyPointer] = (byte) n;
             historyPointer = (historyPointer + 1 ) % AJB_HISTORY_SIZE;
 
             if(historyCount < AJB_HISTORY_SIZE)
@@ -345,7 +352,7 @@ public class RTPSourceStream
          */
         private void initHistory()
         {
-            history = new int[AJB_HISTORY_SIZE];
+            history = new byte[AJB_HISTORY_SIZE];
             historyCount = 0;
             historyPointer = 0;
             growCount = 0;
@@ -387,10 +394,10 @@ public class RTPSourceStream
         }
 
         /**
-         * Initialises the <tt>Buffer</tt> arrays {@link #free} and
+         * Initializes the <tt>Buffer</tt> arrays {@link #free} and
          * {@link #fill}.
          *
-         * @param i the size of the arrays to be initialised
+         * @param i the size of the arrays to be initialized
          */
         private void allocBuffers(int i)
         {
@@ -423,27 +430,31 @@ public class RTPSourceStream
         private synchronized void cutByHalf()
         {
             nbCutByHalf++;
-            int i = size / 2;
-            if (i <= 0)
-                return;
-            Buffer abuffer[] = new Buffer[size / 2];
-            Buffer abuffer1[] = new Buffer[size / 2];
-            int j = totalPkts();
-            int k;
-            for (k = 0; k < i && k < j; k++)
-                abuffer[k] = get();
 
-            j = i - k - (size - j - totalFree());
-            headFill = 0;
-            tailFill = k;
-            for (int l = 0; l <= j; l++)
-                abuffer1[l] = new Buffer();
+            int newSize = size / 2;
 
-            headFree = 0;
-            tailFree = j;
-            fill = abuffer;
-            free = abuffer1;
-            size = i;
+            if (newSize > 0)
+            {
+                Buffer newFill[] = new Buffer[newSize];
+                Buffer newFree[] = new Buffer[newSize];
+                int totalPkts = totalPkts();
+                int k;
+
+                for (k = 0; k < newSize && k < totalPkts; k++)
+                    newFill[k] = get();
+
+                totalPkts = newSize - k - (size - totalPkts - totalFree());
+                for (int l = 0; l <= totalPkts; l++)
+                    newFree[l] = new Buffer();
+
+                fill = newFill;
+                headFill = 0;
+                tailFill = k;
+                free = newFree;
+                headFree = 0;
+                tailFree = totalPkts;
+                size = newSize;
+            }
         }
 
         /**
@@ -461,7 +472,7 @@ public class RTPSourceStream
 
         /**
          * Removes an element from the queue and releases it to be reused. The
-         * element is chosen in a way specific to mpeg.
+         * element is chosen in a way specific to MPEG.
          */
         private synchronized void dropMpegPkt()
         {
@@ -486,9 +497,9 @@ public class RTPSourceStream
             }
             if (k == -1)
                 i = j != -1 ? j : headFill;
-            Buffer buffer1 = fill[i];
-            //if (i == 0)
-                //lastSeqSent = buffer1.getSequenceNumber();
+//            Buffer buffer1 = fill[i];
+//            if (i == 0)
+//                lastSeqSent = buffer1.getSequenceNumber();
             removeAt(i);
         }
 
@@ -501,17 +512,19 @@ public class RTPSourceStream
         public void dropPkt()
         {
             while (!fillNotEmpty())
+            {
                 try
                 {
                     wait();
                 }
-                catch (Exception exception){}
-            if (format instanceof AudioFormat)
+                catch (InterruptedException ie) {}
+            }
+
+            if ((format instanceof AudioFormat)
+                    || !RTPSourceStream.mpegVideo.matches(format))
                 dropFirstPkt();
-            else if (RTPSourceStream.mpegVideo.matches(format))
-                dropMpegPkt();
             else
-                dropFirstPkt();
+                dropMpegPkt();
         }
 
         /**
@@ -568,12 +581,12 @@ public class RTPSourceStream
         public synchronized Buffer getPkt()
         {
             while (!fillNotEmpty())
+            {
                 try
                 {
                     wait();
-                } catch (Exception exception)
-                {
-                }
+                } catch (InterruptedException ie) {}
+            }
             return get();
         }
 
@@ -820,36 +833,38 @@ public class RTPSourceStream
             }
             else if (format instanceof AudioFormat)
             {
-                if(AJB_ENABLED &&
-                        historyCount >= AJB_GROW_INTERVAL &&
-                        growCount >= AJB_GROW_THRESHOLD &&
-                        size < AJB_MAX_SIZE)
+                if (AJB_ENABLED)
                 {
-                    int n = size + AJB_GROW_INCREMENT;
-                    if(n > AJB_MAX_SIZE)
-                        n = AJB_MAX_SIZE;
-                    if(n > size)
+                    if(historyCount >= AJB_GROW_INTERVAL
+                            && growCount >= AJB_GROW_THRESHOLD
+                            && size < AJB_MAX_SIZE)
                     {
-                        Log.info("Growing packet queue to " + n);
-                        grow(n);
-                        resetHistory();
+                        int n = size + AJB_GROW_INCREMENT;
+                        if(n > AJB_MAX_SIZE)
+                            n = AJB_MAX_SIZE;
+                        if(n > size)
+                        {
+                            Log.info("Growing packet queue to " + n);
+                            grow(n);
+                            resetHistory();
+                        }
+                    }
+                    else if(historyCount >= AJB_SHRINK_INTERVAL
+                            && shrinkCount <= AJB_SHRINK_THRESHOLD
+                            && size > AJB_MIN_SIZE)
+                    {
+                        int n = size - AJB_SHRINK_DECREMENT;
+                        if(n < AJB_MIN_SIZE)
+                            n = AJB_MIN_SIZE;
+                        if(n < size)
+                        {
+                            Log.info("Shrinking the queue to " + n);
+                            shrink(n);
+                            resetHistory();
+                        }
                     }
                 }
-                else if(AJB_ENABLED &&
-                        historyCount >= AJB_SHRINK_INTERVAL &&
-                        shrinkCount <= AJB_SHRINK_THRESHOLD &&
-                        size > AJB_MIN_SIZE)
-                {
-                    int n = size - AJB_SHRINK_DECREMENT;
-                    if(n < AJB_MIN_SIZE)
-                        n = AJB_MIN_SIZE;
-                    if(n < size)
-                    {
-                        Log.info("Shrinking the queue to " + n);
-                        shrink(n);
-                        resetHistory();
-                    }
-                }
+
                 if (sizePerPkt <= 0)
                     sizePerPkt = DEFAULT_AUD_PKT_SIZE;
                 if (bc != null)
@@ -887,14 +902,14 @@ public class RTPSourceStream
                         = (int) (bc.getBufferLength() / ms);
 
                     threshold = aprxBufferLengthInPkts / 2;
-                    /* If the adaptive jitter buffer mode is enabled we let
-                     * this class manage the size of the queue, ignoring 'bc'.
-                     * Otherwise, we adapt to the value from 'bc' (which was
-                     * the behaviour before resizing based on the history of
-                     * late packets was introduced here)
+                    /*
+                     * If the adaptive jitter buffer mode is enabled, we let
+                     * this queue manage its size, ignoring bc. Otherwise, we
+                     * adapt to the value of bc (which was the behavior before
+                     * resizing based on the history of late packets was
+                     * introduced here).
                      */
-                    if (aprxBufferLengthInPkts > size &&
-                            !AJB_ENABLED)
+                    if (aprxBufferLengthInPkts > size && !AJB_ENABLED)
                     {
                         grow(aprxBufferLengthInPkts);
                         Log.comment(
@@ -914,14 +929,21 @@ public class RTPSourceStream
                      * to that much in the socket so that it does not throw the
                      * delayed data away.
                      */
-                    int aprxThresholdInBytes = (aprxBufferLengthInPkts * sizePerPkt) / 2;
-                    if (rtprawreceiver != null && aprxThresholdInBytes > sockBufSize)
+                    int aprxThresholdInBytes
+                        = (aprxBufferLengthInPkts * sizePerPkt) / 2;
+                    if (rtprawreceiver != null
+                            && aprxThresholdInBytes > sockBufSize)
                     {
                         rtprawreceiver.setRecvBufSize(aprxThresholdInBytes);
-                        if (rtprawreceiver.getRecvBufSize() < aprxThresholdInBytes)
+                        if (rtprawreceiver.getRecvBufSize()
+                                < aprxThresholdInBytes)
+                        {
                             sockBufSize = 0x7fffffff /* BufferControlImpl.NOT_SPECIFIED? */;
+                        }
                         else
+                        {
                             sockBufSize = aprxThresholdInBytes;
+                        }
                         Log.comment(
                                 "RTP audio socket receive buffer size: "
                                     + rtprawreceiver.getRecvBufSize()
@@ -1011,9 +1033,7 @@ public class RTPSourceStream
             resetHistory();
             nbReset++;
             for (; fillNotEmpty(); returnFree(get()))
-            {
                 nbDiscardedReset++;
-            }
             tooMuchBufferingCount = 0;
             notifyAll();
         }
@@ -1054,7 +1074,10 @@ public class RTPSourceStream
         }
     }
 
-    //boris grozev: These are added temporary to help with debugging
+    /*
+     * Boris Grozev: The following have been added temporarily to facilitate
+     * debugging.
+     */
     private int nbAdd = 0;
     private int nbReset = 0;
     private int nbAppend = 0;
@@ -1092,7 +1115,7 @@ public class RTPSourceStream
         Log.info(cn+"Packets dropped in reset(): " + nbDiscardedReset);
         Log.info(cn + "Max size reached: " + maxSizeReached);
         Log.info(cn+"Adaptive jitter buffer mode was " +
-                (pktQ.AJB_ENABLED ? "enabled" : "disabled"));
+                (isAdaptiveBufferEnabled() ? "enabled" : "disabled"));
     }
 
     private static final int DEFAULT_AUDIO_RATE = 8000;
@@ -1111,7 +1134,7 @@ public class RTPSourceStream
 
     boolean replenish = true;
 
-    PktQue pktQ;
+    final PktQue pktQ;
 
     Object startReq;
 
@@ -1171,6 +1194,16 @@ public class RTPSourceStream
             return;
 
         long bufferSN = buffer.getSequenceNumber();
+
+        /*
+         * The access to lastSeqSent is synchronized because it is concurrently
+         * modified by multiple threads. The access to started and
+         * bufferWhenStopped above is usually synchronized on startReq so they
+         * are left out to avoid synchronization on multiple monitors.
+         */
+        synchronized (pktQ)
+        {
+
         if (lastSeqRecv - bufferSN > 256L)
         {
             Log.info("Resetting queue, last seq added: " + lastSeqRecv +
@@ -1178,14 +1211,17 @@ public class RTPSourceStream
             reset();
             lastSeqRecv = bufferSN;
         }
-        if(lastSeqSent != NOT_SPECIFIED &&
-                bufferSN < lastSeqSent &&
-                format instanceof AudioFormat)
+        if(lastSeqSent != NOT_SPECIFIED
+                && bufferSN < lastSeqSent
+                && format instanceof AudioFormat)
         {
-            //A subsequent to 'buffer' packet has already been read. We should
-            //add it to the history, so that the queue is resized if found
-            //necessary. But if it's late by more than AJB_MAX_SIZE, there's no
-            //need to consider it, so we ignore it.
+            /*
+             * A packet which is subsequent to the specified buffer has already
+             * been read. It should be added to the history so that the queue
+             * may be resized if necessary. But if it is late by more than
+             * AJB_MAX_SIZE, it is too late to take it into account and,
+             * consequently, is ignored.
+             */
             if(lastSeqSent - bufferSN < (long) pktQ.AJB_MAX_SIZE)
             {
                 pktQ.recordInHistory(true);
@@ -1202,14 +1238,14 @@ public class RTPSourceStream
         pktQ.recordInHistory(false);
         lastSeqRecv = bufferSN;
         boolean almostFull = false;
-        synchronized (pktQ)
+//        synchronized (pktQ)
         {
             pktQ.monitorQueueSize(buffer, rtprawreceiver);
             if (pktQ.noMoreFree())
             {
                 nbDiscardedFull++;
                 long l = pktQ.getFirstSeq();
-                if (l != NOT_SPECIFIED && buffer.getSequenceNumber() < l)
+                if (l != NOT_SPECIFIED && bufferSN < l)
                 {
                     //The incoming packet is the earliest, so "drop" it by
                     //simply not adding it.
@@ -1226,18 +1262,26 @@ public class RTPSourceStream
         byte freeBufferData[] = (byte[]) freeBuffer.getData();
         if (freeBufferData == null || freeBufferData.length < bufferData.length)
             freeBufferData = new byte[bufferData.length];
-        System.arraycopy(bufferData, buffer.getOffset(), freeBufferData,
-                buffer.getOffset(), buffer.getLength());
+        System.arraycopy(
+                bufferData, buffer.getOffset(),
+                freeBufferData, buffer.getOffset(),
+                buffer.getLength());
         freeBuffer.copy(buffer);
         freeBuffer.setData(freeBufferData);
         if (almostFull) //with this packet added, the queue will be full
-            freeBuffer.setFlags(freeBuffer.getFlags() |
-                    Buffer.FLAG_BUF_OVERFLOWN | Buffer.FLAG_NO_DROP);
+        {
+            freeBuffer.setFlags(
+                    freeBuffer.getFlags()
+                        | Buffer.FLAG_BUF_OVERFLOWN
+                        | Buffer.FLAG_NO_DROP);
+        }
         else
+        {
             freeBuffer.setFlags(freeBuffer.getFlags() | Buffer.FLAG_NO_DROP);
+        }
 
         pktQ.addPkt(freeBuffer);
-        synchronized (pktQ)
+//        synchronized (pktQ)
         {
             if (started && prebufferNotice && listener != null
                     && pktQ.totalPkts() >= threshold)
@@ -1263,6 +1307,8 @@ public class RTPSourceStream
                 pktQ.notifyAll();
             }
         }
+
+        } /* synchronized (pktQ) */
     }
 
     public void close()
@@ -1323,34 +1369,60 @@ public class RTPSourceStream
      */
     public void read(Buffer buffer)
     {
-        if (pktQ.totalPkts() == 0)
-        {
-            nbReadWhileEmpty++;
-            buffer.setDiscard(true);
-            return;
-        }
-        Buffer bufferFromQueue = pktQ.getPkt();
-        lastSeqSent = bufferFromQueue.getSequenceNumber();
-        Object bufferData = buffer.getData();
-        Object bufferHeader = buffer.getHeader();
-        buffer.copy(bufferFromQueue);
-        bufferFromQueue.setData(bufferData);
-        bufferFromQueue.setHeader(bufferHeader);
-        pktQ.returnFree(bufferFromQueue);
+        /*
+         * The access to lastSeqSent is synchronized because it is concurrently
+         * modified by multiple threads.
+         */
         synchronized (pktQ)
         {
-            hasRead = true;
-            if (format instanceof AudioFormat)
+            if (pktQ.totalPkts() == 0)
             {
-                if (pktQ.totalPkts() > 0)
-                    pktQ.notifyAll();
-                else
+                nbReadWhileEmpty++;
+                buffer.setDiscard(true);
+            }
+            else
+            {
+                Buffer bufferFromQueue = pktQ.getPkt();
+
+                /*
+                 * Whatever follows, it sounds safer to return the
+                 * bufferFromQueue into the free pool eventually.
+                 */
+                try
                 {
-                    replenish = true; //start to replenish when the queue empties
+                    lastSeqSent = bufferFromQueue.getSequenceNumber();
+
+                    /*
+                     * Copy the bufferFromQueue into the specified (output)
+                     * buffer.
+                     */
+                    Object bufferData = buffer.getData();
+                    Object bufferHeader = buffer.getHeader();
+
+                    buffer.copy(bufferFromQueue);
+                    bufferFromQueue.setData(bufferData);
+                    bufferFromQueue.setHeader(bufferHeader);
                 }
-            } else
-            {
-                pktQ.notifyAll();
+                finally
+                {
+                    pktQ.returnFree(bufferFromQueue);
+
+                    hasRead = true;
+                    if (format instanceof AudioFormat)
+                    {
+                        if (pktQ.totalPkts() > 0)
+                            pktQ.notifyAll();
+                        else
+                        {
+                            // Start to replenish when the queue empties.
+                            replenish = true;
+                        }
+                    }
+                    else
+                    {
+                        pktQ.notifyAll();
+                    }
+                }
             }
         }
     }
@@ -1360,13 +1432,21 @@ public class RTPSourceStream
      */
     public void reset()
     {
-        pktQ.reset();
-        lastSeqSent = NOT_SPECIFIED;
+        /*
+         * The access to lastSeqSent is synchronized because it is concurrently
+         * modified by multiple threads.
+         */
+        synchronized (pktQ)
+        {
+            pktQ.reset();
+            lastSeqSent = NOT_SPECIFIED;
+        }
     }
 
     public void run()
     {
         while (true)
+        {
             try
             {
                 synchronized (startReq)
@@ -1387,10 +1467,12 @@ public class RTPSourceStream
                     break;
                 if (handler != null)
                     handler.transferData(this);
-            } catch (InterruptedException interruptedexception)
-            {
-                Log.error("Thread " + interruptedexception.getMessage());
             }
+            catch (InterruptedException ie)
+            {
+                Log.error("Thread " + ie.getMessage());
+            }
+        }
     }
 
     public void setBufferControl(BufferControl buffercontrol)
@@ -1427,7 +1509,7 @@ public class RTPSourceStream
 
     public void start()
     {
-        Log.info("Starting RTPSourceStream");
+        Log.info("Starting RTPSourceStream.");
         synchronized (startReq)
         {
             started = true;
@@ -1437,10 +1519,20 @@ public class RTPSourceStream
 
     public void stop()
     {
-        Log.info("Stopping RTPSourceStream, dumping stack trace (this is not " +
-                "an error)");
-        for(StackTraceElement s : new Throwable().getStackTrace())
-            Log.info(s.toString());
+        /*
+         * Log a message for debugging purposes which states the method
+         * invocation and its stack trace.
+         */
+        StringBuilder msg
+            = new StringBuilder(
+                    "Stopping RTPSourceStream."
+                        + " Dumping stack trace, this is NOT an error:");
+        String ls = System.getProperty("line.separator");
+
+        for(StackTraceElement ste : new Throwable().getStackTrace())
+            msg.append('\t').append(ste).append(ls);
+        Log.info(msg);
+
         synchronized (startReq)
         {
             started = false;

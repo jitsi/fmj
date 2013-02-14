@@ -40,7 +40,7 @@ public class BasicSourceStream implements SourceStream
     {
         try
         {
-            Class cls = Class.forName(controlType);
+            Class<?> cls = Class.forName(controlType);
             Object cs[] = getControls();
             for (int i = 0; i < cs.length; i++)
             {

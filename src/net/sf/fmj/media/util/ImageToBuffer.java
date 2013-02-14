@@ -40,7 +40,7 @@ public class ImageToBuffer
 
         final Object pixels;
         final int pixelsLength;
-        final Class dataType;
+        final Class<?> dataType;
 
         if (dataBuffer instanceof DataBufferInt)
         {

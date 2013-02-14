@@ -31,7 +31,7 @@ public class H261Format extends VideoFormat
     }
 
     public H261Format(java.awt.Dimension size, int maxDataLength,
-            Class dataType, float frameRate, int stillImageTransmission)
+            Class<?> dataType, float frameRate, int stillImageTransmission)
     {
         super(ENCODING, size, maxDataLength, dataType, frameRate);
         this.stillImageTransmission = stillImageTransmission;

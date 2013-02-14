@@ -425,7 +425,7 @@ public class NativeOggParser extends AbstractDemultiplexer
 
         final Dimension size = new Dimension(ti.width, ti.height);
         final int maxDataLength = ti.width * ti.height;
-        final Class dataType = int[].class;
+        final Class<?> dataType = int[].class;
         final int bitsPerPixel = 32;
         final float frameRate = (float) ti.fps_numerator
                 / (float) ti.fps_denominator;

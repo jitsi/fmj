@@ -34,7 +34,7 @@ public class PlayerPanelPrefs
         return new File(home + File.separator + filename);
     }
 
-    public List recentUrls = new ArrayList();
+    public List<String> recentUrls = new ArrayList<String>();
     public boolean autoPlay = true;
 
     public boolean autoLoop = false;
@@ -247,10 +247,10 @@ public class PlayerPanelPrefs
     {
         Element element = new Element(ELEMENT_RECENT_URLS);
 
-        Iterator iterator = recentUrls.iterator();
+        Iterator<String> iterator = recentUrls.iterator();
         while (iterator.hasNext())
         {
-            String s = (String) iterator.next();
+            String s = iterator.next();
             Element element_RecentUrl = new Element(ELEMENT_RECENT_URL);
             element_RecentUrl.setText(s);
             element.addContent(element_RecentUrl);

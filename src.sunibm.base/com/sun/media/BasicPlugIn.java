@@ -27,7 +27,7 @@ public abstract class BasicPlugIn implements PlugIn
     // see
     // http://archives.java.sun.com/cgi-bin/wa?A2=ind0105&L=jmf-interest&D=1&F=P&S=&m=6503&P=26257
 
-    public static Class getClassForName(String className)
+    public static Class<?> getClassForName(String className)
             throws ClassNotFoundException
     {
         return Class.forName(className); // not sure why this method exists.
@@ -76,7 +76,7 @@ public abstract class BasicPlugIn implements PlugIn
 
     public Object getControl(String controlType)
     {
-        final Class clazz;
+        final Class<?> clazz;
         try
         {
             clazz = Class.forName(controlType);
@@ -161,7 +161,7 @@ public abstract class BasicPlugIn implements PlugIn
     protected Object validateData(Buffer buffer, int length, boolean allowNative)
     {
         // TODO: allowNative?
-        final Class dataType = buffer.getFormat().getDataType();
+        final Class<?> dataType = buffer.getFormat().getDataType();
         if (dataType == Format.byteArray)
             return validateByteArraySize(buffer, length);
         else if (dataType == Format.shortArray)

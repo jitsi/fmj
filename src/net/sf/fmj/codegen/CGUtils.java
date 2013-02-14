@@ -211,7 +211,7 @@ public class CGUtils
         return "\"" + replaceSpecialJavaStringChars(s) + "\"";
     }
 
-    static String toName(Class c)
+    static String toName(Class<?> c)
     {
         if (c == int.class)
             return "int";
@@ -251,7 +251,7 @@ public class CGUtils
             return "" + c.getName() + "";
     }
 
-    public static String toNameDotClass(Class c)
+    public static String toNameDotClass(Class<?> c)
     {
         if (c == null)
             return null;

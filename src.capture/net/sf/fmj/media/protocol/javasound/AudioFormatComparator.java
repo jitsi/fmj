@@ -10,9 +10,9 @@ import javax.media.format.*;
  * @author Ken Larson
  * 
  */
-public class AudioFormatComparator implements Comparator
+public class AudioFormatComparator implements Comparator<AudioFormat>
 {
-    public int compare(Object a, Object b)
+    public int compare(AudioFormat a, AudioFormat b)
     {
         // null-safety: not strictly necessary, but defensive:
         if (a == null && b == null)
@@ -22,22 +22,19 @@ public class AudioFormatComparator implements Comparator
         if (b == null)
             return 1; // a > b
 
-        final AudioFormat aCast = (AudioFormat) a;
-        final AudioFormat bCast = (AudioFormat) b;
-
-        if (aCast.getSampleRate() > bCast.getSampleRate())
+        if (a.getSampleRate() > b.getSampleRate())
             return 1;
-        else if (aCast.getSampleRate() < bCast.getSampleRate())
+        else if (a.getSampleRate() < b.getSampleRate())
             return -1;
 
-        if (aCast.getChannels() > bCast.getChannels())
+        if (a.getChannels() > b.getChannels())
             return 1;
-        else if (aCast.getChannels() < bCast.getChannels())
+        else if (a.getChannels() < b.getChannels())
             return -1;
 
-        if (aCast.getSampleSizeInBits() > bCast.getSampleSizeInBits())
+        if (a.getSampleSizeInBits() > b.getSampleSizeInBits())
             return 1;
-        else if (aCast.getSampleSizeInBits() < bCast.getSampleSizeInBits())
+        else if (a.getSampleSizeInBits() < b.getSampleSizeInBits())
             return -1;
 
         // endian and signed do not affect quality, don't bother to compare.

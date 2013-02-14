@@ -32,9 +32,10 @@ public class DePacketizer extends AbstractCodec implements Codec
      * 
      * @author Ken Larson
      */
-    private static class BufferFragmentOffsetComparator implements Comparator
+    private static class BufferFragmentOffsetComparator
+        implements Comparator<Buffer>
     {
-        public int compare(Object a, Object b)
+        public int compare(Buffer a, Buffer b)
         {
             if (a == null && b == null)
                 return 0;
@@ -43,13 +44,10 @@ public class DePacketizer extends AbstractCodec implements Codec
             if (b == null)
                 return 1; // a > b
 
-            final Buffer aCast = (Buffer) a;
-            final Buffer bCast = (Buffer) b;
-
             final JpegRTPHeader jpegRtpHeaderA = JpegRTPHeader.parse(
-                    (byte[]) aCast.getData(), aCast.getOffset());
+                    (byte[]) a.getData(), a.getOffset());
             final JpegRTPHeader jpegRtpHeaderB = JpegRTPHeader.parse(
-                    (byte[]) bCast.getData(), bCast.getOffset());
+                    (byte[]) b.getData(), b.getOffset());
 
             return jpegRtpHeaderA.getFragmentOffset()
                     - jpegRtpHeaderB.getFragmentOffset();
@@ -64,7 +62,7 @@ public class DePacketizer extends AbstractCodec implements Codec
      */
     static class FrameAssembler
     {
-        private final List list = new ArrayList(); // of Buffer
+        private final List<Buffer> list = new ArrayList<Buffer>();
         private boolean rtpMarker; // have we received the RTP marker that
                                    // signifies the end of a frame?
 
@@ -98,9 +96,8 @@ public class DePacketizer extends AbstractCodec implements Codec
         {
             int expect = 0; // next expected offset.
 
-            for (int i = 0; i < list.size(); ++i)
+            for (Buffer b : list)
             {
-                final Buffer b = (Buffer) list.get(i);
                 final JpegRTPHeader jpegRtpHeader = parseJpegRTPHeader(b);
                 int otherOffset = 0;
                 if (jpegRtpHeader.getType() > 63)
@@ -143,7 +140,7 @@ public class DePacketizer extends AbstractCodec implements Codec
             // The test samples coming from JMStudio had headers in them, so the
             // JPEG could not be
             // parsed if (another) header was prepended.
-            final Buffer bFirst = (Buffer) list.get(0);
+            final Buffer bFirst = list.get(0);
             final boolean prependHeader = !hasJPEGHeaders(
                     (byte[]) bFirst.getData(), bFirst.getOffset()
                             + JpegRTPHeader.HEADER_SIZE, bFirst.getLength()
@@ -259,9 +256,8 @@ public class DePacketizer extends AbstractCodec implements Codec
             }
             if (TRACE)
                 System.out.println("offsetAfterHeaders=" + offsetAfterHeaders);
-            for (int i = 0; i < list.size(); ++i)
+            for (Buffer b : list)
             {
-                final Buffer b = (Buffer) list.get(i);
                 final JpegRTPHeader jpegRtpHeader = parseJpegRTPHeader(b);
 
                 // if (TRACE) System.out.println("Copying, length=" +
@@ -309,7 +305,7 @@ public class DePacketizer extends AbstractCodec implements Codec
                 throw new IllegalStateException();
 
             // calculate from offset and length of last buffer:
-            final Buffer b = (Buffer) list.get(list.size() - 1);
+            final Buffer b = list.get(list.size() - 1);
             final JpegRTPHeader jpegRtpHeader = parseJpegRTPHeader(b);
             // Observed: the frame with the marker has valid offset,
             return jpegRtpHeader.getFragmentOffset() + b.getLength()
@@ -376,8 +372,8 @@ public class DePacketizer extends AbstractCodec implements Codec
      */
     private static class FrameAssemblerCollection
     {
-        private Map frameAssemblers = new HashMap(); // FrameAssembler keyed by
-                                                     // long - timestamp.
+        private Map<Long /* timestamp */, FrameAssembler> frameAssemblers
+            = new HashMap<Long, FrameAssembler>();
 
         public void clear()
         {
@@ -388,12 +384,12 @@ public class DePacketizer extends AbstractCodec implements Codec
         {
             if (TRACE)
                 System.out.println("========== " + frameAssemblers.size());
-            FrameAssembler result = (FrameAssembler) frameAssemblers
-                    .get(new Long(timestamp));
+            Long timestampObj = Long.valueOf(timestamp);
+            FrameAssembler result = frameAssemblers.get(timestampObj);
             if (result == null)
             {
                 result = new FrameAssembler();
-                frameAssemblers.put(new Long(timestamp), result);
+                frameAssemblers.put(timestampObj, result);
             }
             return result;
         }
@@ -402,10 +398,10 @@ public class DePacketizer extends AbstractCodec implements Codec
         {
             long oldestSoFar = -1;
 
-            final Iterator i = frameAssemblers.keySet().iterator();
+            final Iterator<Long> i = frameAssemblers.keySet().iterator();
             while (i.hasNext())
             {
-                final Long ts = (Long) i.next();
+                final Long ts = i.next();
                 if (oldestSoFar < 0 || ts.longValue() < oldestSoFar)
                     oldestSoFar = ts.longValue();
             }
@@ -415,7 +411,7 @@ public class DePacketizer extends AbstractCodec implements Codec
 
         public void remove(long timestamp)
         {
-            frameAssemblers.remove(new Long(timestamp));
+            frameAssemblers.remove(Long.valueOf(timestamp));
         }
 
         public void removeAllButNewestN(int n)
@@ -425,8 +421,8 @@ public class DePacketizer extends AbstractCodec implements Codec
                 final long oldestTimestamp = getOldestTimestamp();
                 if (oldestTimestamp < 0)
                     throw new RuntimeException();
-                Long key = new Long(oldestTimestamp);
-                FrameAssembler a = (FrameAssembler) frameAssemblers.get(key);
+                Long key = Long.valueOf(oldestTimestamp);
+                FrameAssembler a = frameAssemblers.get(key);
                 String completeIncomplete = a.complete() ? "complete"
                         : "incomplete";
                 if (TRACE)
@@ -442,11 +438,12 @@ public class DePacketizer extends AbstractCodec implements Codec
 
         public void removeOlderThan(long timestamp)
         {
-            final Iterator i = frameAssemblers.entrySet().iterator();
+            final Iterator<Entry<Long, FrameAssembler>> i
+                = frameAssemblers.entrySet().iterator();
             while (i.hasNext())
             {
-                final Entry e = (Entry) i.next();
-                final Long entryTimestamp = (Long) e.getKey();
+                final Entry<Long, FrameAssembler> e = i.next();
+                final Long entryTimestamp = e.getKey();
                 if (entryTimestamp.longValue() < timestamp)
                 {
                     if (TRACE)
