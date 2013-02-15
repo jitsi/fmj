@@ -1258,16 +1258,17 @@ public class RTPSourceStream
             almostFull = true;
         Buffer freeBuffer = pktQ.getFree();
 
+        freeBuffer.copy(buffer);
         byte bufferData[] = (byte[]) buffer.getData();
         byte freeBufferData[] = (byte[]) freeBuffer.getData();
         if (freeBufferData == null || freeBufferData.length < bufferData.length)
             freeBufferData = new byte[bufferData.length];
         System.arraycopy(
                 bufferData, buffer.getOffset(),
-                freeBufferData, buffer.getOffset(),
+                freeBufferData, 0,
                 buffer.getLength());
-        freeBuffer.copy(buffer);
         freeBuffer.setData(freeBufferData);
+        freeBuffer.setOffset(0);
         if (almostFull) //with this packet added, the queue will be full
         {
             freeBuffer.setFlags(
