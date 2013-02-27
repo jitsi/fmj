@@ -1520,19 +1520,7 @@ public class RTPSourceStream
 
     public void stop()
     {
-        /*
-         * Log a message for debugging purposes which states the method
-         * invocation and its stack trace.
-         */
-        StringBuilder msg
-            = new StringBuilder(
-                    "Stopping RTPSourceStream."
-                        + " Dumping stack trace, this is NOT an error:");
-        String ls = System.getProperty("line.separator");
-
-        for(StackTraceElement ste : new Throwable().getStackTrace())
-            msg.append('\t').append(ste).append(ls);
-        Log.info(msg);
+       Log.info("Stopping RTPSourceStream.");
 
         synchronized (startReq)
         {
