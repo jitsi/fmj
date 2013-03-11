@@ -8,7 +8,6 @@ import javax.media.rtp.*;
  * target="_blank">this class in the JMF Javadoc</a>. Complete.
  * 
  * @author Ken Larson
- * 
  */
 public class ActiveSendStreamEvent extends SendStreamEvent
 {
@@ -17,5 +16,4 @@ public class ActiveSendStreamEvent extends SendStreamEvent
     {
         super(from, stream, participant);
     }
-
 }

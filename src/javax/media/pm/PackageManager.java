@@ -44,12 +44,12 @@ public final class PackageManager extends javax.media.PackageManager
         }
     }
 
-    public static synchronized Vector getContentPrefixList()
+    public static synchronized Vector<String> getContentPrefixList()
     {
         return registry.getContentPrefixList();
     }
 
-    public static synchronized Vector getProtocolPrefixList()
+    public static synchronized Vector<String> getProtocolPrefixList()
     {
         return registry.getProtocolPrefixList();
     }

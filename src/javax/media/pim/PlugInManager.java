@@ -12,7 +12,6 @@ import net.sf.fmj.utility.*;
  * Internal implementation of javax.media.PlugInManager. In progress.
  * 
  * @author Ken Larson
- * 
  */
 public class PlugInManager extends javax.media.PlugInManager
 {
@@ -28,12 +27,16 @@ public class PlugInManager extends javax.media.PlugInManager
     /**
      * Maps of classnames to PluginInfo
      */
-    private static final HashMap<String, PlugInInfo>[] pluginMaps = new HashMap[] {
-            new HashMap<String, PlugInInfo>(),
-            new HashMap<String, PlugInInfo>(),
-            new HashMap<String, PlugInInfo>(),
-            new HashMap<String, PlugInInfo>(),
-            new HashMap<String, PlugInInfo>(), };
+    @SuppressWarnings("unchecked")
+    private static final HashMap<String, PlugInInfo>[] pluginMaps
+        = new HashMap[]
+                {
+                    new HashMap<String, PlugInInfo>(),
+                    new HashMap<String, PlugInInfo>(),
+                    new HashMap<String, PlugInInfo>(),
+                    new HashMap<String, PlugInInfo>(),
+                    new HashMap<String, PlugInInfo>(),
+                };
 
     static
     {
@@ -41,7 +44,7 @@ public class PlugInManager extends javax.media.PlugInManager
         for (int i = 0; i < Registry.NUM_PLUGIN_TYPES; i++)
         {
             final List<String> classList = registry.getPluginList(i + 1);
-            HashMap pluginMap = pluginMaps[i];
+            HashMap<String, PlugInInfo> pluginMap = pluginMaps[i];
 
             for (String className : classList)
             {
@@ -181,12 +184,12 @@ public class PlugInManager extends javax.media.PlugInManager
 
         final Vector<String> result = new Vector<String>();
         final Vector<String> classList = getVector(type);
-        final HashMap pluginMap = pluginMaps[type - 1];
+        final HashMap<String,PlugInInfo> pluginMap = pluginMaps[type - 1];
 
         for (int i = 0; i < classList.size(); ++i)
         {
             final String classname = classList.get(i);
-            final PlugInInfo plugInInfo = (PlugInInfo) pluginMap.get(classname);
+            final PlugInInfo plugInInfo = pluginMap.get(classname);
             if (plugInInfo == null)
                 continue;
 
@@ -313,5 +316,4 @@ public class PlugInManager extends javax.media.PlugInManager
     {
         super();
     }
-
 }

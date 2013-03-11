@@ -11,21 +11,26 @@ import net.sf.fmj.media.*;
  * 
  * @author Warren Bloomer
  * @author Ken Larson
- * 
  */
 class RegistryContents
 {
     /** Lists of Plugin for each category */
-    Vector<String>[] plugins = new Vector[] { new Vector<String>(),
-            new Vector<String>(), new Vector<String>(), new Vector<String>(),
-            new Vector<String>(), };
+    @SuppressWarnings("unchecked")
+    Vector<String>[] plugins
+        = new Vector[]
+                {
+                    new Vector<String>(),
+                    new Vector<String>(),
+                    new Vector<String>(),
+                    new Vector<String>(),
+                    new Vector<String>(),
+                };
 
     /** a List of protocol prefixes */
-    Vector<String> protocolPrefixList = new Vector<String>(); // Vector of
-                                                              // String
+    Vector<String> protocolPrefixList = new Vector<String>();
 
     /** a list of content prefixes */
-    Vector<String> contentPrefixList = new Vector<String>(); // Vector of String
+    Vector<String> contentPrefixList = new Vector<String>();
 
     /** the MIME-type map. It maps file extensions to mime-types. */
     // Hashtable mimetypeMap = new Hashtable();
@@ -34,8 +39,6 @@ class RegistryContents
     final MimeTable mimeTable = new MimeTable();
 
     /** a List of protocol prefixes */
-    Vector<CaptureDeviceInfo> captureDeviceInfoList = new Vector<CaptureDeviceInfo>(); // Vector
-                                                                                       // of
-                                                                                       // CaptureDeviceInfo
-
+    Vector<CaptureDeviceInfo> captureDeviceInfoList
+        = new Vector<CaptureDeviceInfo>();
 }

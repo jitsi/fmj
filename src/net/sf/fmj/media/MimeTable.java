@@ -46,17 +46,16 @@ public class MimeTable
 
     }
 
-    public Hashtable<String, String> getMimeTable()
+    public Hashtable<String,String> getMimeTable()
     {
-        final Hashtable<String, String> result = new Hashtable<String, String>();
+        Hashtable<String,String> result = new Hashtable<String,String>();
         result.putAll(hashTable);
         return result;
     }
 
     public String getMimeType(String fileExtension)
     {
-        final String result = hashTable.get(fileExtension);
-        return result;
+        return hashTable.get(fileExtension);
     }
 
     public Set<String> getMimeTypes()

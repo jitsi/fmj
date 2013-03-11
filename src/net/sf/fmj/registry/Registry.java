@@ -158,6 +158,7 @@ public class Registry
         logger.info("Wrote registry file: " + file.getAbsolutePath());
     }
 
+    @SuppressWarnings("unchecked")
     public synchronized Vector<String> getContentPrefixList()
     {
         return (Vector<String>) registryContents.contentPrefixList.clone();
@@ -170,20 +171,22 @@ public class Registry
         return registryContents.mimeTable.getDefaultExtension(mimeType);
     }
 
+    @SuppressWarnings("unchecked")
     public synchronized Vector<CaptureDeviceInfo> getDeviceList()
     {
-        return (Vector<CaptureDeviceInfo>) registryContents.captureDeviceInfoList
-                .clone();
+        return
+            (Vector<CaptureDeviceInfo>)
+                registryContents.captureDeviceInfoList.clone();
     }
 
     /* --------- for PackageManager ----------------- */
 
-    public synchronized List getExtensions(String mimeType)
+    public synchronized List<String> getExtensions(String mimeType)
     {
         return registryContents.mimeTable.getExtensions(mimeType);
     }
 
-    public synchronized Hashtable getMimeTable()
+    public synchronized Hashtable<String,String> getMimeTable()
     {
         return registryContents.mimeTable.getMimeTable();
     }
@@ -196,16 +199,17 @@ public class Registry
     /**
      * pluginType = [1..NUM_PLUGIN_TYPES]
      */
+    @SuppressWarnings("unchecked")
     public synchronized List<String> getPluginList(int pluginType)
     {
         // get the list of plugins of the given type
-        final Vector<String> pluginList = registryContents.plugins[pluginType - 1];
+        Vector<String> pluginList = registryContents.plugins[pluginType - 1];
 
         return (List<String>) pluginList.clone();
     }
 
     /* ---------------- for mime-type --------------------- */
-
+    @SuppressWarnings("unchecked")
     public synchronized Vector<String> getProtocolPrefixList()
     {
         return (Vector<String>) registryContents.protocolPrefixList.clone();

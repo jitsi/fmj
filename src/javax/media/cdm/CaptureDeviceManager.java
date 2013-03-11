@@ -10,7 +10,6 @@ import net.sf.fmj.registry.*;
  * Internal implementation of javax.media.CaptureDeviceManager. Coding complete.
  * 
  * @author Ken Larson
- * 
  */
 public class CaptureDeviceManager extends javax.media.CaptureDeviceManager
 {
@@ -26,41 +25,33 @@ public class CaptureDeviceManager extends javax.media.CaptureDeviceManager
 
     public static synchronized CaptureDeviceInfo getDevice(String deviceName)
     {
-        final Vector v = getDeviceList();
-        for (int i = 0; i < v.size(); ++i)
+        for (CaptureDeviceInfo captureDeviceInfo : getDeviceList())
         {
-            final CaptureDeviceInfo captureDeviceInfo = (CaptureDeviceInfo) v
-                    .get(i);
             if (captureDeviceInfo.getName().equals(deviceName))
                 return captureDeviceInfo;
         }
         return null;
     }
 
-    public static synchronized Vector getDeviceList() // not in
-                                                      // javax.media.CaptureDeviceManager
+    public static synchronized Vector<CaptureDeviceInfo> getDeviceList() // not in javax.media.CaptureDeviceManager
     {
         return Registry.getInstance().getDeviceList();
     }
 
-    public static synchronized Vector getDeviceList(Format format)
+    public static synchronized Vector<CaptureDeviceInfo> getDeviceList(Format format)
     {
-        final Vector v = getDeviceList();
-        final Vector result = new Vector();
-        for (int i = 0; i < v.size(); ++i)
+        Vector<CaptureDeviceInfo> result = new Vector<CaptureDeviceInfo>();
+        for (CaptureDeviceInfo captureDeviceInfo : getDeviceList())
         {
-            final CaptureDeviceInfo captureDeviceInfo = (CaptureDeviceInfo) v
-                    .get(i);
             if (format == null)
             {
                 result.add(captureDeviceInfo);
-            } else
+            }
+            else
             {
-                final Format[] formats = captureDeviceInfo.getFormats();
-
-                for (int j = 0; j < formats.length; ++j)
+                for (Format aFormat : captureDeviceInfo.getFormats())
                 {
-                    if (format.matches(formats[j]))
+                    if (format.matches(aFormat))
                     {
                         result.add(captureDeviceInfo);
                         break;
@@ -70,7 +61,6 @@ public class CaptureDeviceManager extends javax.media.CaptureDeviceManager
 
         }
         return result;
-
     }
 
     public static synchronized boolean removeDevice(CaptureDeviceInfo device)

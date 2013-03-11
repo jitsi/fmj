@@ -17,7 +17,6 @@ import net.sf.fmj.utility.*;
  * target="_blank">this class in the JMF Javadoc</a>. Coding complete.
  * 
  * @author Ken Larson
- * 
  */
 public abstract class RTPManager implements Controls
 {
@@ -37,12 +36,9 @@ public abstract class RTPManager implements Controls
         // exactly.
         // result.add("media.rtp.RTPSessionMgr");
 
-        final Vector prefixList = PackageManager.getProtocolPrefixList();
-        for (int i = 0; i < prefixList.size(); ++i)
+        for (Object prefix : PackageManager.getProtocolPrefixList())
         {
-            final String prefix = (String) prefixList.get(i);
             result.add(prefix + ".media.rtp.RTPSessionMgr");
-
         }
 
         return result;
@@ -50,11 +46,8 @@ public abstract class RTPManager implements Controls
 
     public static RTPManager newInstance()
     {
-        final Vector v = getRTPManagerList();
-        for (int i = 0; i < v.size(); ++i)
+        for (String className : getRTPManagerList())
         {
-            final String className = (String) v.get(i);
-
             try
             {
                 logger.finer("Trying RTPManager class: " + className);
@@ -98,9 +91,9 @@ public abstract class RTPManager implements Controls
 
     public abstract void dispose();
 
-    public abstract java.util.Vector getActiveParticipants();
+    public abstract Vector getActiveParticipants();
 
-    public abstract java.util.Vector getAllParticipants();
+    public abstract Vector getAllParticipants();
 
     public abstract GlobalReceptionStats getGlobalReceptionStats();
 
@@ -108,13 +101,13 @@ public abstract class RTPManager implements Controls
 
     public abstract LocalParticipant getLocalParticipant();
 
-    public abstract java.util.Vector getPassiveParticipants();
+    public abstract Vector getPassiveParticipants();
 
-    public abstract java.util.Vector getReceiveStreams();
+    public abstract Vector getReceiveStreams();
 
-    public abstract java.util.Vector getRemoteParticipants();
+    public abstract Vector getRemoteParticipants();
 
-    public abstract java.util.Vector getSendStreams();
+    public abstract Vector getSendStreams();
 
     public abstract void initialize(RTPConnector connector);
 

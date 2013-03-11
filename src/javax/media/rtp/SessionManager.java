@@ -13,7 +13,6 @@ import javax.media.rtp.rtcp.*;
  * 
  * @author Ken Larson
  * @deprecated
- * 
  */
 @Deprecated
 public interface SessionManager extends Controls

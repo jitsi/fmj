@@ -32,7 +32,7 @@ public class FileTypeDescriptor extends ContentDescriptor
     @Override
     public String toString()
     {
-        final Map strings = new HashMap();
+        final Map<String,String> strings = new HashMap<String,String>();
         {
             // TODO: externalize.
             strings.put(QUICKTIME, "QuickTime");
@@ -48,7 +48,7 @@ public class FileTypeDescriptor extends ContentDescriptor
             strings.put(MPEG_AUDIO, "MPEG Audio");
         }
 
-        final String result = (String) strings.get(getContentType());
+        final String result = strings.get(getContentType());
         if (result == null)
             return super.toString();
         return result;

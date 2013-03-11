@@ -204,12 +204,8 @@ public final class Manager
     {
         final String protocol = destLocator.getProtocol();
 
-        final Vector handlerClassList = getDataSinkClassList(protocol);
-
-        for (int i = 0; i < handlerClassList.size(); ++i)
+        for (String handlerClassName : getDataSinkClassList(protocol))
         {
-            final String handlerClassName = (String) handlerClassList.get(i);
-
             try
             {
                 final Class<?> handlerClass = Class.forName(handlerClassName);
@@ -238,16 +234,16 @@ public final class Manager
                     // content-prefix.media.datasink.protocol.content-type.Handler
                     final DataSinkProxy mediaProxy = (DataSinkProxy) handler;
 
-                    final Vector handlerClassList2 = getDataSinkClassList(protocol
-                            + "."
-                            + toPackageFriendly(mediaProxy
-                                    .getContentType(destLocator)));
+                    Vector<String> handlerClassList2
+                        = getDataSinkClassList(
+                                protocol
+                                    + "."
+                                    + toPackageFriendly(
+                                            mediaProxy.getContentType(
+                                                    destLocator)));
 
-                    for (int j = 0; j < handlerClassList2.size(); ++j)
+                    for (String handlerClassName2 : handlerClassList2)
                     {
-                        final String handlerClassName2 = (String) handlerClassList2
-                                .get(j);
-
                         try
                         {
                             final Class<?> handlerClass2 = Class
@@ -317,15 +313,13 @@ public final class Manager
     }
 
     // does not handle proxies.
-    private static DataSink createDataSink(DataSource datasource,
-            String protocol) throws NoDataSinkException
+    private static DataSink createDataSink(
+            DataSource datasource,
+            String protocol)
+        throws NoDataSinkException
     {
-        final Vector handlerClassList = getDataSinkClassList(protocol);
-
-        for (int i = 0; i < handlerClassList.size(); ++i)
+        for (String handlerClassName : getDataSinkClassList(protocol))
         {
-            final String handlerClassName = (String) handlerClassList.get(i);
-
             try
             {
                 final Class<?> handlerClass = Class.forName(handlerClassName);
@@ -378,10 +372,8 @@ public final class Manager
             throws java.io.IOException, NoDataSourceException
     {
         final String protocol = sourceLocator.getProtocol();
-        final Vector dataSourceList = getDataSourceList(protocol);
-        for (int i = 0; i < dataSourceList.size(); ++i)
+        for (String dataSourceClassName : getDataSourceList(protocol))
         {
-            String dataSourceClassName = (String) dataSourceList.get(i);
             try
             {
                 final Class<?> dataSourceClass = Class
@@ -532,11 +524,8 @@ public final class Manager
                                                                               // classes
                                                                               // were
                                                                               // found
-        final Vector handlerClassList = getHandlerClassList(contentType);
-        for (int i = 0; i < handlerClassList.size(); ++i)
+        for (String handlerClassName : getHandlerClassList(contentType))
         {
-            final String handlerClassName = (String) handlerClassList.get(i);
-
             try
             {
                 final Class<?> handlerClass = Class.forName(handlerClassName);
@@ -624,10 +613,8 @@ public final class Manager
             throws java.io.IOException, NoPlayerException
     {
         final String protocol = sourceLocator.getProtocol();
-        final Vector dataSourceList = getDataSourceList(protocol);
-        for (int i = 0; i < dataSourceList.size(); ++i)
+        for (String dataSourceClassName : getDataSourceList(protocol))
         {
-            String dataSourceClassName = (String) dataSourceList.get(i);
             try
             {
                 final Class<?> dataSourceClass = Class
@@ -751,11 +738,8 @@ public final class Manager
             String contentType) throws java.io.IOException,
             NoProcessorException
     {
-        final Vector handlerClassList = getProcessorClassList(contentType);
-        for (int i = 0; i < handlerClassList.size(); ++i)
+        for (String handlerClassName : getProcessorClassList(contentType))
         {
-            final String handlerClassName = (String) handlerClassList.get(i);
-
             try
             {
                 final Class<?> handlerClass = Class.forName(handlerClassName);
@@ -817,10 +801,8 @@ public final class Manager
             throws java.io.IOException, NoProcessorException
     {
         final String protocol = sourceLocator.getProtocol();
-        final Vector dataSourceList = getDataSourceList(protocol);
-        for (int i = 0; i < dataSourceList.size(); ++i)
+        for (String dataSourceClassName : getDataSourceList(protocol))
         {
-            String dataSourceClassName = (String) dataSourceList.get(i);
             try
             {
                 final Class<?> dataSourceClass = Class
@@ -1060,31 +1042,38 @@ public final class Manager
         return System.getProperty("java.io.tmpdir");
     }
 
-    public static Vector getClassList(String contentName, Vector packages,
-            String component2, String className)
+    public static Vector<String> getClassList(
+            String contentName,
+            Vector packages,
+            String component2,
+            String className)
     {
-        final Vector result = new Vector();
+        final Vector<String> result = new Vector<String>();
         if (USE_MEDIA_PREFIX)
-            result.add("media." + component2 + "." + contentName + "."
-                    + className);
-
-        for (int i = 0; i < packages.size(); ++i)
         {
-            result.add(((String) packages.get(i)) + ".media." + component2
-                    + "." + contentName + "." + className);
+            result.add(
+                    "media." + component2 + "." + contentName + "."
+                        + className);
+        }
+
+        for (Object aPackage : packages)
+        {
+            result.add(
+                    aPackage + ".media." + component2 + "." + contentName + "."
+                        + className);
         }
 
         return result;
     }
 
-    public static Vector getDataSinkClassList(String contentName)
+    public static Vector<String> getDataSinkClassList(String contentName)
     {
         return getClassList(toPackageFriendly(contentName),
                 PackageManager.getContentPrefixList(), "datasink", "Handler");
 
     }
 
-    public static Vector getDataSourceList(String protocolName)
+    public static Vector<String> getDataSourceList(String protocolName)
     {
         return getClassList(protocolName,
                 PackageManager.getProtocolPrefixList(), "protocol",
@@ -1092,7 +1081,7 @@ public final class Manager
 
     }
 
-    public static Vector getHandlerClassList(String contentName)
+    public static Vector<String> getHandlerClassList(String contentName)
     {
         return getClassList(toPackageFriendly(contentName),
                 PackageManager.getContentPrefixList(), "content", "Handler");
@@ -1104,7 +1093,7 @@ public final class Manager
         return hints.get(hint);
     }
 
-    public static Vector getProcessorClassList(String contentName)
+    public static Vector<String> getProcessorClassList(String contentName)
     {
         return getClassList(toPackageFriendly(contentName),
                 PackageManager.getContentPrefixList(), "processor", "Handler");
