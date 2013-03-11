@@ -10,13 +10,13 @@ import net.sf.fmj.media.rtp.util.*;
 public class RTPEventHandler extends RTPMediaThread
 {
     private RTPSessionMgr sm;
-    private Vector eventQueue;
+    private Vector<RTPEvent> eventQueue;
     private boolean killed;
 
     public RTPEventHandler(RTPSessionMgr sm)
     {
         super("RTPEventHandler");
-        eventQueue = new Vector();
+        eventQueue = new Vector<RTPEvent>();
         killed = false;
         this.sm = sm;
         useControlPriority();
@@ -44,7 +44,7 @@ public class RTPEventHandler extends RTPMediaThread
             }
             if (killed)
                 return;
-            evt = (RTPEvent) eventQueue.elementAt(0);
+            evt = eventQueue.elementAt(0);
             eventQueue.removeElementAt(0);
         }
         processEvent(evt);

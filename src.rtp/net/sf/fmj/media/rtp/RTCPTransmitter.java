@@ -177,7 +177,7 @@ public class RTCPTransmitter
         RTCPSDESPacket sp = new RTCPSDESPacket(new RTCPSDES[1]);
         sp.sdes[0] = new RTCPSDES();
         sp.sdes[0].ssrc = ssrcInfo.ssrc;
-        Vector itemvec = new Vector();
+        Vector<RTCPSDESItem> itemvec = new Vector<RTCPSDESItem>();
         itemvec.addElement(new RTCPSDESItem(1, ourinfo.sourceInfo.getCNAME()));
         if (sdescounter % 3 == 0)
         {

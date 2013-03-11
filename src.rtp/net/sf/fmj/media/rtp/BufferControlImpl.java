@@ -179,7 +179,8 @@ public class BufferControlImpl implements BufferControl
     private int bufValue = NOT_SPECIFIED;
     private int threshValue = NOT_SPECIFIED;
     private boolean inited = false;
-    private Vector sourcestreamlist = new Vector(1);
+    private Vector<RTPSourceStream> sourcestreamlist
+        = new Vector<RTPSourceStream>(1);
 
     public BufferControlImpl()
     {
@@ -286,8 +287,7 @@ public class BufferControlImpl implements BufferControl
         else
             currBuffer = time;
         for (int i = 0; i < sourcestreamlist.size(); i++)
-            ((RTPSourceStream) sourcestreamlist.elementAt(i))
-                    .updateBuffer(currBuffer);
+            sourcestreamlist.elementAt(i).updateBuffer(currBuffer);
 
         if (controlComp != null)
             controlComp.updateBuffer(currBuffer);
@@ -321,8 +321,7 @@ public class BufferControlImpl implements BufferControl
         if (t < 0L)
             currThreshold = 0L;
         for (int i = 0; i < sourcestreamlist.size(); i++)
-            ((RTPSourceStream) sourcestreamlist.elementAt(i))
-                    .updateThreshold(currThreshold);
+            sourcestreamlist.elementAt(i).updateThreshold(currThreshold);
 
         if (controlComp != null)
             controlComp.updateThreshold(currThreshold);

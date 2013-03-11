@@ -1,7 +1,6 @@
 package net.sf.fmj.media.rtp;
 
 import javax.media.*;
-import javax.media.format.*;
 
 import net.sf.fmj.media.rtp.util.*;
 
@@ -25,11 +24,6 @@ public class RTPDemultiplexer
     {
         return "RTP DeMultiplexer";
     }
-
-    //public void demuxpayload(Packet p)
-    //{
-    //    demuxpayload(p);
-    //}
 
     public void demuxpayload(SourceRTPPacket sp)
     {

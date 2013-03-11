@@ -16,9 +16,9 @@ public class SSRCTable
         total = 0;
     }
 
-    public synchronized Enumeration elements()
+    public synchronized Enumeration<Object> elements()
     {
-        return new Enumeration()
+        return new Enumeration<Object>()
         {
             int next;
 

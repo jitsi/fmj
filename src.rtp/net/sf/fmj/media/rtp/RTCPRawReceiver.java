@@ -136,7 +136,7 @@ public class RTCPRawReceiver extends PacketFilter
     public RTCPPacket parse(Packet packet) throws BadFormatException
     {
         RTCPCompoundPacket base = new RTCPCompoundPacket(packet);
-        Vector subpackets = new Vector(2);
+        Vector<RTCPPacket> subpackets = new Vector<RTCPPacket>(2);
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(
                 ((Packet) (base)).data, ((Packet) (base)).offset,
                 ((Packet) (base)).length));
@@ -243,7 +243,7 @@ public class RTCPRawReceiver extends PacketFilter
                         sdesp.sdes[i] = chunk;
                         chunk.ssrc = in.readInt();
                         sdesoff += 5;
-                        Vector items = new Vector();
+                        Vector<RTCPSDESItem> items = new Vector<RTCPSDESItem>();
                         boolean gotcname = false;
                         int j;
                         while ((j = in.readUnsignedByte()) != 0)
