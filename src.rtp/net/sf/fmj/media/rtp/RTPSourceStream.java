@@ -267,7 +267,7 @@ public class RTPSourceStream
 
             value = com.sun.media.util.Registry.get(
                     "adaptive_jitter_buffer_SHRINK_DECREMENT");
-            int shrinkDecrement = 2;
+            int shrinkDecrement = 0; //disable shrinking
             try
             {
                 shrinkDecrement = Integer.parseInt((String)value);
@@ -287,7 +287,7 @@ public class RTPSourceStream
 
             value = com.sun.media.util.Registry.get(
                     "adaptive_jitter_buffer_MAX_SIZE");
-            int maxSize = 1000 / DEFAULT_MS_PER_PKT; //0.5sec delay
+            int maxSize = 8;
             try
             {
                 maxSize = Integer.parseInt((String)value);
@@ -363,6 +363,8 @@ public class RTPSourceStream
          * Inserts <tt>buffer</tt> in its proper place in this queue according
          * to its sequence number. The elements are always kept in ascending
          * order by sequence number.
+         *
+         * TODO: Check for duplicate packets
          *
          * @param buffer the <tt>Buffer</tt> to insert in this queue
          * @see #insert(Buffer)
@@ -1084,6 +1086,7 @@ public class RTPSourceStream
     private int nbInsert = 0;
     private int nbCutByHalf = 0;
     private int nbGrow = 0;
+    private int nbGrowFull = 0;
     private int nbPrepend = 0;
     private int nbRemoveAt = 0;
     private int nbReadWhileEmpty = 0;
@@ -1104,10 +1107,11 @@ public class RTPSourceStream
         //Log.info(cn+"Times insert() called: " + nbInsert);
         //Log.info(cn+"Times cutByHalf() called: " + nbCutByHalf);
         Log.info(cn+"Times grow() called: " + nbGrow);
-        Log.info(cn+"Times shrink() called: " + nbShrink);
+        //Log.info(cn+"Times grown when full:" + nbGrowFull);
+        //Log.info(cn+"Times shrink() called: " + nbShrink);
         //Log.info(cn+"Times prepend() called: " + nbPrepend);
         //Log.info(cn+"Times removeAt() called: " + nbRemoveAt);
-        Log.info(cn+"Times read() while empty:" + nbReadWhileEmpty);
+        //Log.info(cn+"Times read() while empty:" + nbReadWhileEmpty);
         Log.info(cn+"Packets dropped because full: " + nbDiscardedFull);
         Log.info(cn+"Packets dropped while shrinking: " + nbDiscardedShrink);
         Log.info(cn+"Packets dropped because they were late: " + nbDiscardedLate);
@@ -1121,6 +1125,11 @@ public class RTPSourceStream
     private static final int DEFAULT_AUDIO_RATE = 8000;
     private static final int DEFAULT_VIDEO_RATE = 15;
     private static final int NOT_SPECIFIED = -1;
+
+    /**
+     * Number of initial packets.
+     */
+    private static final int INITIAL_PACKETS = 300;
 
     private DataSource dsource;
 
@@ -1243,15 +1252,40 @@ public class RTPSourceStream
             pktQ.monitorQueueSize(buffer, rtprawreceiver);
             if (pktQ.noMoreFree())
             {
-                nbDiscardedFull++;
-                long l = pktQ.getFirstSeq();
-                if (l != NOT_SPECIFIED && bufferSN < l)
+                /*
+                 * If the queue is full and it hasn't reached it's maximum size,
+                 * grow it. This is to adapt to groups of packets arriving
+                 * in a short period of time.
+                 *
+                 * During the first few seconds after a stream is started,
+                 * the queue is often observed to be full. But this is likely
+                 * not due to bursts of packets from the network, so we
+                 * shouldn't try to adapt. Hence the INITIAL_PACKETS check.
+                 */
+                if (pktQ.AJB_ENABLED &&
+                        pktQ.size < pktQ.AJB_MAX_SIZE &&
+                        nbAdd > INITIAL_PACKETS &&
+                        format instanceof AudioFormat)
                 {
-                    //The incoming packet is the earliest, so "drop" it by
-                    //simply not adding it.
-                    return;
+                    int newSize = Math.min(pktQ.size * 2, pktQ.AJB_MAX_SIZE);
+                    nbGrowFull++;
+                    pktQ.grow(newSize);
                 }
-                pktQ.dropPkt();
+                else
+                {
+                    /*
+                     * The queue won't be resized, so we have to drop a packet
+                     */
+                    nbDiscardedFull++;
+                    long l = pktQ.getFirstSeq();
+                    if (l != NOT_SPECIFIED && bufferSN < l)
+                    {
+                        //The incoming packet is the earliest, so "drop" it by
+                        //simply not adding it.
+                        return;
+                    }
+                    pktQ.dropPkt();
+                }
             }
         }
         if (pktQ.totalFree() <= 1)
