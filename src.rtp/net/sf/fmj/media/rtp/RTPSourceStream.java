@@ -206,6 +206,12 @@ public class RTPSourceStream
          */
         protected int size;
 
+        /**
+         * The <tt>Buffer.FLAG_SKIP_FEC</tt> flag should be set on the next
+         * packet read from the queue.
+         */
+        private boolean skipFec = false;
+
         public PktQue(int size)
         {
             allocBuffers(size);
@@ -1285,6 +1291,14 @@ public class RTPSourceStream
                         return;
                     }
                     pktQ.dropPkt();
+
+                    /*
+                     * We deliberately dropped a packet, since we're full. If
+                     * FEC is extracted from the next packet, we are likely to
+                     * be in the same situation again very soon. So, avoid FEC
+                     * being decoded from the next packet read.
+                     */
+                    pktQ.skipFec = true;
                 }
             }
         }
@@ -1436,6 +1450,12 @@ public class RTPSourceStream
                     buffer.copy(bufferFromQueue);
                     bufferFromQueue.setData(bufferData);
                     bufferFromQueue.setHeader(bufferHeader);
+                    if (pktQ.skipFec)
+                    {
+                        buffer.setFlags(buffer.getFlags() |
+                                            Buffer.FLAG_SKIP_FEC);
+                        pktQ.skipFec = false;
+                    }
                 }
                 finally
                 {

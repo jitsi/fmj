@@ -205,6 +205,11 @@ public class Buffer
     public final static int FLAG_LIVE_DATA = (1 << 15);
 
     /**
+     * Indicates that FEC data should not be decoded for this <tt>Buffer</tt>
+     */
+    public final static int FLAG_SKIP_FEC = (1 << 16);
+
+    /**
      * The <tt>getTimeStamp</tt> method return this value if the time stamp of
      * the media is not known.
      */
