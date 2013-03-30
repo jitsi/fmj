@@ -287,8 +287,9 @@ public class RTPReceiver extends PacketFilter
                     rtpcontrolimpl.payload = -1;
                 }
             }
-            ssrcinfo.lastPayloadType = rtppacket.payloadType;
+            
             if (ssrcinfo.dsource != null)
+            {
                 try
                 {
                     Log.warning("Stopping stream because of payload type "
@@ -296,11 +297,14 @@ public class RTPReceiver extends PacketFilter
                             + ssrcinfo.lastPayloadType + ", got pt="
                             + rtppacket.payloadType);
                     ssrcinfo.dsource.stop();
-                } catch (IOException ioexception)
+                } 
+                catch (IOException ioexception)
                 {
                     System.err.println("Stopping DataSource after PCE "
                             + ioexception.getMessage());
                 }
+            }
+            ssrcinfo.lastPayloadType = rtppacket.payloadType;
             RemotePayloadChangeEvent remotepayloadchangeevent = new RemotePayloadChangeEvent(
                     cache.sm, (ReceiveStream) ssrcinfo,
                     ssrcinfo.lastPayloadType, rtppacket.payloadType);
