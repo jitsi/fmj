@@ -1,6 +1,5 @@
 package net.sf.fmj.media.util;
 
-import java.lang.reflect.*;
 
 /**
  * A thread class on which all FMJ created threads should based.
@@ -23,10 +22,6 @@ public class MediaThread extends Thread
 
     static
     {
-        Method m[] = new Method[1];
-        Class<?> cl[] = new Class[1];
-        Object args[][] = new Object[1][0];
-
         try
         {
             defaultMaxPriority = Thread.currentThread().getPriority();
@@ -167,21 +162,27 @@ public class MediaThread extends Thread
                     if ((javaVmName != null)
                             && javaVmName.equalsIgnoreCase("Dalvik"))
                     {
-                        Class<?> androidOsProcess = Class
-                                .forName("android.os.Process");
-                        int androidThreadPriority = androidOsProcess.getField(
-                                this.androidThreadPriority).getInt(null);
+                        Class<?> androidOsProcess
+                            = Class.forName("android.os.Process");
+                        int androidThreadPriority
+                            = androidOsProcess
+                                .getField(this.androidThreadPriority)
+                                    .getInt(null);
 
-                        androidOsProcess.getMethod("setThreadPriority",
-                                Integer.class).invoke(null,
-                                androidThreadPriority);
+                        androidOsProcess
+                            .getMethod("setThreadPriority",Integer.class)
+                                .invoke(null, androidThreadPriority);
 
                         /*
                          * Convert the android.os.Process thread priority to
                          * java.lang.Thread priority.
                          */
-                        int priority = 10 - Math
-                                .round(((androidThreadPriority + 20) / (float) 40) * 10);
+                        int priority
+                            = 10
+                                - Math.round(
+                                        ((androidThreadPriority + 20)
+                                                / (float) 40)
+                                            * 10);
 
                         if (priority < MIN_PRIORITY)
                             priority = MIN_PRIORITY;
@@ -190,8 +191,11 @@ public class MediaThread extends Thread
                         setPriority(priority);
                     }
                 }
-            } catch (Throwable t)
+            }
+            catch (Throwable t)
             {
+                if (t instanceof ThreadDeath)
+                    throw (ThreadDeath) t;
             }
         }
 

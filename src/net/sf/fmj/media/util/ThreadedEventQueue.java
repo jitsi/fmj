@@ -12,7 +12,7 @@ import javax.media.*;
  */
 public abstract class ThreadedEventQueue extends MediaThread
 {
-    private Vector eventQueue = new Vector();
+    private List<ControllerEvent> eventQueue = new Vector<ControllerEvent>();
     private boolean killed = false;
 
     public ThreadedEventQueue()
@@ -46,10 +46,7 @@ public abstract class ThreadedEventQueue extends MediaThread
 
             // Remove the event from the queue and dispatch it to the listeners.
             if (eventQueue.size() > 0)
-            {
-                evt = (ControllerEvent) eventQueue.firstElement();
-                eventQueue.removeElementAt(0);
-            }
+                evt = eventQueue.remove(0);
 
         } // end of synchronized
 
@@ -75,7 +72,7 @@ public abstract class ThreadedEventQueue extends MediaThread
      */
     public synchronized void postEvent(ControllerEvent evt)
     {
-        eventQueue.addElement(evt);
+        eventQueue.add(evt);
         notifyAll();
     }
 

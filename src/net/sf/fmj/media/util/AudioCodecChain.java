@@ -8,12 +8,10 @@ public class AudioCodecChain extends CodecChain
 {
     Component gainComp = null;
 
-    public AudioCodecChain(AudioFormat input) throws UnsupportedFormatException
+    public AudioCodecChain(AudioFormat af) throws UnsupportedFormatException
     {
-        AudioFormat af = input;
-
-        if (!buildChain(input))
-            throw new UnsupportedFormatException(input);
+        if (!buildChain(af))
+            throw new UnsupportedFormatException(af);
 
         // Do not open the renderer as yet.
         // We'll only do it when the data is being prefetched.

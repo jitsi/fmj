@@ -11,7 +11,6 @@ public class VideoCodecChain extends CodecChain
     public VideoCodecChain(VideoFormat vf) throws UnsupportedFormatException
     {
         Dimension size = vf.getSize();
-        VideoFormat inputFormat = vf;
 
         if (size == null || vf == null)
             throw new UnsupportedFormatException(vf);
