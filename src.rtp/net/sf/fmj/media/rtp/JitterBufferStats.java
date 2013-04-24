@@ -2,6 +2,7 @@ package net.sf.fmj.media.rtp;
 
 import java.awt.*;
 
+import javax.media.*;
 import javax.media.control.*;
 
 import net.sf.fmj.media.*;
@@ -14,7 +15,7 @@ import net.sf.fmj.media.*;
  * @author Lyubomir Marinov
  * @author Tom Denham
  */
-public class JitterBufferStats
+class JitterBufferStats
     implements PacketQueueControl
 {
     /**
@@ -65,22 +66,27 @@ public class JitterBufferStats
     private int nbReset;
 
     /**
-     * The queue of RTP packets for which this instance implements
+     * An average approximation of the size in bytes of an RTP packet.
+     */
+    private int sizePerPacket;
+
+    /**
+     * The {@link RTPSourceStream} for which this instance implements
      * {@link PacketQueueControl}.
      */
-    private final RTPSourceStream.PktQue q;
+    private final RTPSourceStream stream;
 
     /**
      * Initializes a new <tt>JitterBufferStats</tt> instance which is to
-     * implement {@link PacketQueueControl} for a specific queue of RTP packets
-     * utilized by an {@link RTPSourceStream}.
+     * implement {@link PacketQueueControl} for a specific
+     * {@link RTPSourceStream}.
      *
-     * @param q the queue of RTP packets utilized by an {@link RTPSourceStream}
-     * for which the new instance is to implement {@link PacketQueueControl}
+     * @param stream the <tt>RTPSourceStream</tt> for which the new instance is
+     * to implement {@link PacketQueueControl}
      */
-    JitterBufferStats(RTPSourceStream.PktQue q)
+    JitterBufferStats(RTPSourceStream stream)
     {
-        this.q = q;
+        this.stream = stream;
     }
 
     /**
@@ -100,7 +106,8 @@ public class JitterBufferStats
      */
     public int getCurrentDelayMs()
     {
-        return (int) (getCurrentDelayPackets() * q.msPerPkt);
+        // TODO Auto-generated method stub
+        return (int) (getCurrentDelayPackets() * 20);
     }
 
     /**
@@ -116,7 +123,7 @@ public class JitterBufferStats
      */
     public int getCurrentPacketCount()
     {
-        return q.totalPkts();
+        return stream.q.getFillCount();
     }
 
     /**
@@ -124,7 +131,7 @@ public class JitterBufferStats
      */
     public int getCurrentSizePackets()
     {
-        return q.size;
+        return stream.q.getCapacity();
     }
 
     /**
@@ -198,6 +205,16 @@ public class JitterBufferStats
     }
 
     /**
+     * Gets an average approximation of the size in bytes of an RTP packet.
+     *
+     * @return an average approximation of the size in bytes of an RTP packet
+     */
+    int getSizePerPacket()
+    {
+        return sizePerPacket;
+    }
+
+    /**
      * Increments the number of RTP packets that the associated queue has
      * discarded because it was full.
      */
@@ -267,7 +284,7 @@ public class JitterBufferStats
      */
     public boolean isAdaptiveBufferEnabled()
     {
-        return q.AJB_ENABLED;
+        return stream.getBehaviour().isAdaptive();
     }
 
     /**
@@ -301,5 +318,22 @@ public class JitterBufferStats
 
         if (maxSizeReached < size)
             maxSizeReached = size;
+    }
+
+    /**
+     * Updates the average approximation of the size in bytes of an RTP packet.
+     *
+     * @param buffer the <tt>Buffer</tt> which is to be taken into account for
+     * the purposes of calculating and maintaining an average approximation of
+     * the size in bytes of an RTP packet
+     */
+    void updateSizePerPacket(Buffer buffer)
+    {
+        int bufferLength = buffer.getLength();
+
+        sizePerPacket
+            = (sizePerPacket == 0)
+                ? bufferLength
+                : ((sizePerPacket + bufferLength) / 2);
     }
 }

@@ -12,16 +12,16 @@ public class BufferControlImpl implements BufferControl
 {
     private class BufferControlPanel extends Panel
     {
-        Panel buffersize;
-        Panel threshold;
+        Button bb;
+        Choice bchoice;
         TextField bsize;
         TextField btext;
-        Choice bchoice;
+        Panel buffersize;
+        Button tb;
         Choice tchoice;
+        Panel threshold;
         TextField tsize;
         TextField ttext;
-        Button bb;
-        Button tb;
 
         public BufferControlPanel()
         {
@@ -162,25 +162,23 @@ public class BufferControlImpl implements BufferControl
     private static final int AUDIO_DEFAULT_THRESHOLD = AUDIO_DEFAULT_BUFFER / 2;
     private static final int AUDIO_MAX_BUFFER = 4000;
     private static final int AUDIO_MAX_THRESHOLD = AUDIO_MAX_BUFFER / 2;
+    private static final int NOT_SPECIFIED = 0x7fffffff;
     private static final int VIDEO_DEFAULT_BUFFER = 135;
     private static final int VIDEO_DEFAULT_THRESHOLD = 0;
     private static final int VIDEO_MAX_BUFFER = 4000;
     private static final int VIDEO_MAX_THRESHOLD = 0;
-    private static final int NOT_SPECIFIED = 0x7fffffff;
 
+    BufferControlPanel controlComp = null;
     private long currBuffer = NOT_SPECIFIED;
     private long currThreshold = NOT_SPECIFIED;
     private long defBuffer = NOT_SPECIFIED;
     private long defThreshold = NOT_SPECIFIED;
+    private boolean inited = false;
     private long maxBuffer = NOT_SPECIFIED;
     private long maxThreshold = NOT_SPECIFIED;
-    BufferControlPanel controlComp = null;
-    boolean threshold_enabled = true;
-    private int bufValue = NOT_SPECIFIED;
-    private int threshValue = NOT_SPECIFIED;
-    private boolean inited = false;
     private Vector<RTPSourceStream> sourcestreamlist
         = new Vector<RTPSourceStream>(1);
+    boolean threshold_enabled = true;
 
     public BufferControlImpl()
     {
