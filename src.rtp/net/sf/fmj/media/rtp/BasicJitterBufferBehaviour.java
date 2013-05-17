@@ -23,7 +23,11 @@ class BasicJitterBufferBehaviour
      */
     protected final JitterBuffer q;
 
-    private int sockBufSize;
+    /**
+     * The value which has been applied by this instance with an invocation of
+     * {@link RTPRawReceiver#setRecvBufSize(int)}.
+     */
+    private int recvBufSize;
 
     /**
      * The statistics related to the RTP packet queue/jitter buffer associated
@@ -63,9 +67,6 @@ class BasicJitterBufferBehaviour
 
     /**
      * Removes an element from the queue and releases it to be reused.
-     * <p>
-     * <b>Note</b>: Blocks until the queue is non-empty.
-     * </p>
      */
     public void dropPkt()
     {
@@ -197,7 +198,6 @@ class BasicJitterBufferBehaviour
      */
     public void reset()
     {
-        // TODO Auto-generated method stub
     }
 
     protected void setRecvBufSize(
@@ -218,17 +218,19 @@ class BasicJitterBufferBehaviour
         int aprxThresholdInBytes
             = (aprxBufferLengthInPkts * sizePerPkt) / 2;
 
-        if (rtprawreceiver != null
-                && aprxThresholdInBytes > sockBufSize)
+        if ((rtprawreceiver != null)
+                && (aprxThresholdInBytes > this.recvBufSize))
         {
             rtprawreceiver.setRecvBufSize(aprxThresholdInBytes);
-            if (rtprawreceiver.getRecvBufSize() < aprxThresholdInBytes)
-                sockBufSize = 0x7fffffff /* BufferControlImpl.NOT_SPECIFIED? */;
-            else
-                sockBufSize = aprxThresholdInBytes;
+
+            int recvBufSize = rtprawreceiver.getRecvBufSize();
+
+            this.recvBufSize
+                = (recvBufSize < aprxThresholdInBytes)
+                    ? 0x7fffffff /* BufferControlImpl.NOT_SPECIFIED? */
+                    : aprxThresholdInBytes;
             Log.comment(
-                    "RTP socket receive buffer size: "
-                        + rtprawreceiver.getRecvBufSize()
+                    "RTP socket receive buffer size: " + recvBufSize
                         + " bytes.\n");
         }
     }
