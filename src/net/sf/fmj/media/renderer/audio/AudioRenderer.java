@@ -9,7 +9,7 @@ import net.sf.fmj.media.renderer.audio.device.*;
 
 /**
  * AudioRenderer
- * 
+ *
  * @version 1.23, 98/12/23
  */
 

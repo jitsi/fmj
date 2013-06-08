@@ -9,7 +9,7 @@ package javax.media;
  * A <tt>Buffer</tt> object maintains information such as the time stamp,
  * length, and <tt>Format</tt> of the data it carries, as well as any header
  * information that might be required to process the media data.
- * 
+ *
  * @see PlugIn
  * @see javax.media.protocol.PushBufferStream
  * @see javax.media.protocol.PullBufferStream
@@ -41,7 +41,7 @@ public class Buffer
      * A flag mask that describes the boolean attributes enabled for this
      * <tt>Buffer</tt>. This mask is set to the logical sum of all of the flags
      * that are set.
-     * 
+     *
      * @see #FLAG_EOM
      * @see #FLAG_DISCARD
      * @see #FLAG_SILENCE
@@ -173,7 +173,7 @@ public class Buffer
     /**
      * This is a marker bit for RTP. Indicates that the <tt>Buffer</tt> is the
      * last packet of a video frame.
-     * 
+     *
      */
     public final static int FLAG_RTP_MARKER = (1 << 11);
 
@@ -266,7 +266,7 @@ public class Buffer
     /**
      * Copy the attributes from the specified <tt>Buffer</tt> into this
      * <tt>Buffer</tt>
-     * 
+     *
      * @param buffer
      *            The input <tt>Buffer</tt> the copy the attributes from.
      */
@@ -279,7 +279,7 @@ public class Buffer
      * Copy the attributes from the specified <tt>Buffer</tt> into this
      * <tt>Buffer</tt>. If swapData is true, the data values are swapped between
      * the buffers, otherwise the data value is copied.
-     * 
+     *
      * @param buffer
      *            The input <tt>Buffer</tt> the copy the attributes from.
      * @param swapData
@@ -309,7 +309,7 @@ public class Buffer
     /**
      * Gets the internal data object that holds the media chunk contained in
      * this <tt>Buffer</tt>.
-     * 
+     *
      * @return The data object that holds the media chunk for this
      *         <tt>Buffer</tt>. It can be an array type (such as byte[]) or any
      *         other type of object. Use <tt>instanceOf</tt> to determine what
@@ -323,7 +323,7 @@ public class Buffer
 
     /**
      * Gets the duration of this <tt>Buffer</tt>.
-     * 
+     *
      * @return The <tt>Buffer</tt> duration, in nanoseconds.
      * @see #duration
      */
@@ -335,7 +335,7 @@ public class Buffer
     /**
      * Gets the mask of the flags set for this <tt>Buffer</tt>. The integer
      * value of the mask is equal to the logical sum of the flags that are set.
-     * 
+     *
      * @see #FLAG_EOM
      * @see #FLAG_DISCARD
      * @see #FLAG_SILENCE
@@ -365,7 +365,7 @@ public class Buffer
     /**
      * Gets the header information for the media chunk contained in this
      * <tt>Buffer</tt>.
-     * 
+     *
      * @return The object that holds the header information. Use
      *         <tt>instanceOf</tt> to determine what type the header object is.
      * @see #header
@@ -378,7 +378,7 @@ public class Buffer
     /**
      * Gets the length of the valid data in this <tt>Buffer</tt> if the data is
      * held in an array.
-     * 
+     *
      * @return The length of the valid data in the data array that holds the
      *         media chunk for this <tt>Buffer</tt>.
      * @see #length
@@ -391,7 +391,7 @@ public class Buffer
     /**
      * If the media chunk for this <tt>Buffer</tt> is held in an array, gets the
      * offset into the data array where the valid data begins.
-     * 
+     *
      */
     public int getOffset()
     {
@@ -400,7 +400,7 @@ public class Buffer
 
     /**
      * Gets the sequence number of this <tt>Buffer</tt>.
-     * 
+     *
      * @return The sequence number of this <tt>Buffer</tt>.
      * @see #sequenceNumber
      */
@@ -411,7 +411,7 @@ public class Buffer
 
     /**
      * Gets the time stamp of this <tt>Buffer</tt>.
-     * 
+     *
      * @return The <tt>Buffer</tt> time stamp, in nanoseconds.
      * @see #timeStamp
      */
@@ -425,7 +425,7 @@ public class Buffer
      * <p>
      * This method provides a convenient alternative to using <tt>getFlags</tt>
      * to check the DISCARD flag.
-     * 
+     *
      * @return <tt>true</tt> if the DISCARD flag is enabled, <tt>false</tt> if
      *         it is not.
      * @see #getFlags
@@ -443,7 +443,7 @@ public class Buffer
      * <p>
      * This method provides a convenient alternative to using <tt>getFlags</tt>
      * to check the EOM flag.
-     * 
+     *
      * @return <tt>true</tt> if the EOM flag is enabled, <tt>false</tt> if it is
      *         not.
      * @see #getFlags
@@ -456,7 +456,7 @@ public class Buffer
 
     /**
      * Sets the internal data object that holds the media chunk.
-     * 
+     *
      * @param data
      *            The data object that holds the media data chunk for this
      *            <tt>Buffer</tt>. It can be an array type (such as byte[]) or
@@ -474,7 +474,7 @@ public class Buffer
      * <p>
      * This method provides a convenient alternative to using <tt>setFlags</tt>
      * to enable or disable the DISCARD flag.
-     * 
+     *
      * @param discard
      *            A boolean value that contains the DISCARD status of the
      *            <tt>Buffer</tt>. Set to <tt>true</tt> to enable the EOM flag,
@@ -492,7 +492,7 @@ public class Buffer
 
     /**
      * Sets the duration of this <tt>Buffer</tt>.
-     * 
+     *
      * @param duration
      *            The duration for the <tt>Buffer</tt>, in nanoseconds.
      * @see #duration
@@ -508,7 +508,7 @@ public class Buffer
      * <p>
      * This method provides a convenient alternative to using <tt>setFlags</tt>
      * to enable or disable the EOM flag.
-     * 
+     *
      * @param eom
      *            A boolean value that contains the EOM status of the
      *            <tt>Buffer</tt>. Set to <tt>true</tt> to enable the EOM flag,
@@ -527,7 +527,7 @@ public class Buffer
     /**
      * Sets the flag mask for this <tt>Buffer</tt>. The integer value of the
      * mask is equal to the logical sum of the flags that are set.
-     * 
+     *
      * @see #FLAG_EOM
      * @see #FLAG_DISCARD
      * @see #FLAG_SILENCE
@@ -548,7 +548,7 @@ public class Buffer
 
     /**
      * Sets the <tt>Format</tt> of the data in this <tt>Buffer</tt>.
-     * 
+     *
      * @param format
      *            The <tt>Format</tt> of the data.
      */
@@ -559,7 +559,7 @@ public class Buffer
 
     /**
      * Sets the header information for the media chunk.
-     * 
+     *
      * @param header
      *            The header object that holds the media data chunk for this
      *            <tt>Buffer</tt>.
@@ -573,7 +573,7 @@ public class Buffer
     /**
      * Sets the length of the valid data stored in this <tt>Buffer</tt> if the
      * data is held in an array.
-     * 
+     *
      * @param length
      *            The length of the valid data in the data array that holds the
      *            media chunk for this <tt>Buffer</tt>.
@@ -587,7 +587,7 @@ public class Buffer
     /**
      * If the media chunk for this <tt>Buffer</tt> is held in an array, sets the
      * offset into the array where the valid data begins.
-     * 
+     *
      * @param offset
      *            The starting point for the valid data.
      * @see #offset
@@ -602,7 +602,7 @@ public class Buffer
      * increase or decrease by 1 for each sequential <tt>Buffer</tt>, indicating
      * the order in which the data is to be processed. Can be used to identify
      * lost samples of data.
-     * 
+     *
      * @param number
      *            The sequence number for the <tt>Buffer</tt>.
      * @see #sequenceNumber
@@ -614,7 +614,7 @@ public class Buffer
 
     /**
      * Sets the time stamp of this <tt>Buffer</tt>.
-     * 
+     *
      * @param timeStamp
      *            The time stamp for the <tt>Buffer</tt>, in nanoseconds.
      * @see #timeStamp

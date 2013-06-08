@@ -20,7 +20,7 @@ public class ReverseButton extends BasicArrowButton
 
     /**
      * Make it the right size.
-     * 
+     *
      * @return Always return (20,20)
      */
     @Override

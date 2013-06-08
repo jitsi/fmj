@@ -7,9 +7,9 @@ import javax.swing.*;
 
 /**
  * A multipanel panel
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class PluginTypesPanel extends JPanel
 {
@@ -32,7 +32,7 @@ public class PluginTypesPanel extends JPanel
 
     /**
      * This method initializes codecPanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.PluginsPanel
      */
     private PluginsPanel getCodecPanel()
@@ -46,7 +46,7 @@ public class PluginTypesPanel extends JPanel
 
     /**
      * This method initializes demuxPanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.PluginsPanel
      */
     private PluginsPanel getDemuxPanel()
@@ -60,7 +60,7 @@ public class PluginTypesPanel extends JPanel
 
     /**
      * This method initializes effectsPanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.PluginsPanel
      */
     private PluginsPanel getEffectsPanel()
@@ -74,7 +74,7 @@ public class PluginTypesPanel extends JPanel
 
     /**
      * This method initializes muxPanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.PluginsPanel
      */
     private PluginsPanel getMuxPanel()
@@ -88,7 +88,7 @@ public class PluginTypesPanel extends JPanel
 
     /**
      * This method initializes pluginTypesTabbedPane
-     * 
+     *
      * @return javax.swing.JTabbedPane
      */
     private JTabbedPane getPluginTypesTabbedPane()
@@ -111,7 +111,7 @@ public class PluginTypesPanel extends JPanel
 
     /**
      * This method initializes rendererPanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.PluginsPanel
      */
     private PluginsPanel getRendererPanel()

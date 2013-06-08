@@ -45,17 +45,17 @@ import javax.sound.sampled.*;
 /**
  * <titleabbrev>SimpleAudioRecorder</titleabbrev> <title>Recording to an audio
  * file (simple version)</title>
- * 
+ *
  * <formalpara><title>Purpose</title> <para>Records audio data and stores it in
  * a file. The data is recorded in CD quality (44.1 kHz, 16 bit linear, stereo)
  * and stored in a <filename>.wav</filename> file.</para></formalpara>
- * 
+ *
  * <formalpara><title>Usage</title> <para> <cmdsynopsis> <command>java
  * SimpleAudioRecorder</command> <arg choice="plain"><option>-h</option></arg>
  * </cmdsynopsis> <cmdsynopsis> <command>java SimpleAudioRecorder</command> <arg
  * choice="plain"><replaceable>audiofile</replaceable></arg> </cmdsynopsis>
  * </para></formalpara>
- * 
+ *
  * <formalpara><title>Parameters</title> <variablelist> <varlistentry>
  * <term><option>-h</option></term> <listitem><para>print usage information,
  * then exit</para></listitem> </varlistentry> <varlistentry>
@@ -63,12 +63,12 @@ import javax.sound.sampled.*;
  * <listitem><para>the file name of the audio file that should be produced from
  * the recorded data</para></listitem> </varlistentry> </variablelist>
  * </formalpara>
- * 
+ *
  * <formalpara><title>Bugs, limitations</title> <para> You cannot select audio
  * formats and the audio file type on the command line. See AudioRecorder for a
  * version that has more advanced options. Due to a bug in the Sun jdk1.3/1.4,
  * this program does not work with it. </para></formalpara>
- * 
+ *
  * <formalpara><title>Source code</title> <para> <ulink
  * url="SimpleAudioRecorder.java.html">SimpleAudioRecorder.java</ulink> </para>
  * </formalpara>
@@ -247,14 +247,14 @@ public class SimpleAudioRecorder extends Thread
 
     /**
      * Stops the recording.
-     * 
+     *
      * Note that stopping the thread explicitely is not necessary. Once no more
      * data can be read from the TargetDataLine, no more data be read from our
      * AudioInputStream. And if there is no more data from the AudioInputStream,
      * the method 'AudioSystem.write()' (called in 'run()' returns. Returning
      * from 'AudioSystem.write()' is followed by returning from 'run()', and
      * thus, the thread is terminated automatically.
-     * 
+     *
      * It's not a good idea to call this method just 'stop()' because stop() is
      * a (deprecated) method of the class 'Thread'. And we don't want to
      * override this method.

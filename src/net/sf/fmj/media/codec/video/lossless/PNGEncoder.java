@@ -8,9 +8,9 @@ import net.sf.fmj.media.format.*;
 
 /**
  * PNG encoder Codec.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class PNGEncoder extends ImageIOEncoder
 {

@@ -6,10 +6,10 @@ import javax.media.*;
  * A <tt>ManagedControllerErrorEvent</tt> indicates that a <tt>Controller</tt>
  * managed by a Player posted a ControllerErrorEvent and subsequently caused the
  * managing Player to close. Class is used by AbstractPlayer.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @author Steve Talley & Rob Gordon
  */
 public class ManagedControllerErrorEvent extends ControllerErrorEvent
@@ -19,10 +19,10 @@ public class ManagedControllerErrorEvent extends ControllerErrorEvent
     /**
      * Create a ManagedControllerErrorEvent for the given managing Player and
      * ControllerErrorEvent.
-     * 
+     *
      * @param manager
      *            The managing Player.
-     * 
+     *
      * @param event
      *            The original ControllerErrorEvent posted by a managed
      *            Controller.
@@ -37,14 +37,14 @@ public class ManagedControllerErrorEvent extends ControllerErrorEvent
     /**
      * Create a ManagedControllerErrorEvent for the given managing Player,
      * ControllerErrorEvent, and description.
-     * 
+     *
      * @param manager
      *            The managing Player.
-     * 
+     *
      * @param event
      *            The original ControllerErrorEvent posted by a managed
      *            Controller.
-     * 
+     *
      * @param message
      *            A message describing the error.
      */

@@ -6,9 +6,9 @@ import com.lti.utils.*;
 
 /**
  * URL utilities.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public final class URLUtils
 {
@@ -78,7 +78,7 @@ public final class URLUtils
      * relative path home/ken/foo.txt, not /home/ken/foo.txt. But we need to be
      * able to handle it. Assumes the local file system, checks for existance
      * for help.
-     * 
+     *
      * @param url
      * @return the file path, null if no valid path found.
      */

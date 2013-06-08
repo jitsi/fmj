@@ -4,9 +4,9 @@ import javax.swing.*;
 
 /**
  * Provides icons to {@link SwingLookControlPanel}.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public interface Skin
 {

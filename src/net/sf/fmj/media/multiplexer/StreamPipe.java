@@ -11,9 +11,9 @@ import net.sf.fmj.utility.*;
 /**
  * A way of converting an output stream to an input stream. TODO: Java has a way
  * of doing this already, using PipedInputStream and PipedOutputStream.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class StreamPipe
 {

@@ -10,9 +10,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * ALAW decoder Codec.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class Decoder extends AbstractCodec
 {

@@ -7,9 +7,9 @@ import javax.media.*;
 /**
  * Maintains a list of Control objects. The Controls may be retrieved by
  * classname or interface name.
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class ControlCollection
 {
@@ -19,7 +19,7 @@ public class ControlCollection
 
     /**
      * Add a Control to the list.
-     * 
+     *
      * @param control
      */
     public void addControl(Control control)
@@ -42,7 +42,7 @@ public class ControlCollection
      * Retrieve the first Control that implements the given Class or Interface.
      * The full class name must be used. If the control is not supported then
      * null is returned.
-     * 
+     *
      * @return the object that implements the control, or null.
      */
     public Control getControl(String controlType)
@@ -73,7 +73,7 @@ public class ControlCollection
     /**
      * Retrieve an array of Controls that control the object. If no controls are
      * supported, a zero length array is returned.
-     * 
+     *
      * @return the array of object controls
      */
     public Control[] getControls()
@@ -86,7 +86,7 @@ public class ControlCollection
 
     /**
      * Remove a Control from the list.
-     * 
+     *
      * @param control
      */
     public void removeControl(Control control)

@@ -14,9 +14,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * RTP DataSink.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class Handler extends AbstractDataSink
 {

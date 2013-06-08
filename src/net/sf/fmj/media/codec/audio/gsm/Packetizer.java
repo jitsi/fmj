@@ -7,7 +7,7 @@ import net.sf.fmj.media.*;
 
 /**
  * GSM/RTP packetizer Codec.
- * 
+ *
  * @author Martin Harvan
  * @author Damian Minkov
  */

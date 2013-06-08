@@ -18,12 +18,12 @@ import org.gstreamer.elements.*;
 import org.gstreamer.swing.*;
 
 /**
- * 
+ *
  * Handler for GStreamer, which bypasses most of JMF (parsers, codecs). TODO:
  * properly indicate EOM.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class Handler extends AbstractPlayer
 {

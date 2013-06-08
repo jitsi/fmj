@@ -9,9 +9,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * Media playback applet. Based on EJMF GenericPlayer.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FmjApplet extends PlayerDriver implements ControllerListener
 {
@@ -41,7 +41,7 @@ public class FmjApplet extends PlayerDriver implements ControllerListener
      * This controllerUpdate function must be defined in order to implement a
      * ControllerListener interface. This function will be called whenever there
      * is a media event.
-     * 
+     *
      * @param event
      *            the media event
      */

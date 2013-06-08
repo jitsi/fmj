@@ -3,7 +3,7 @@ package com.lti.utils.synchronization;
 /**
  * Useful class for setting a flag between threads. For simple uses, this class
  * is not that useful, since boolean access is guaranteed to be atomic.
- * 
+ *
  * @author Ken Larson
  */
 public class SynchronizedBoolean
@@ -21,7 +21,7 @@ public class SynchronizedBoolean
     }
 
     /**
-     * 
+     *
      * If the value is oldValue, set to newValue and return true, otherwise
      * return false.
      */

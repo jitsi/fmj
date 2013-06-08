@@ -58,12 +58,12 @@ import net.sf.fmj.ejmf.toolkit.media.event.*;
  * <LI>getPlayerStartLatency()</LI>
  * <LI>getPlayerDuration()</LI>
  * </UL>
- * 
+ *
  * <p>
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
  * </p>
- * 
+ *
  * @author Steve Talley
  */
 public abstract class AbstractPlayer extends AbstractController implements
@@ -96,17 +96,17 @@ public abstract class AbstractPlayer extends AbstractController implements
 
     /**
      * Adds a Controller to be controlled by this Player.
-     * 
+     *
      * @param newController
      *            The Controller to add
-     * 
+     *
      * @exception NotRealizedError
      *                If this Player or the new Controller are not Realized.
-     * 
+     *
      * @exception ClockStartedError
      *                If this Player or the new Controller are in the Started
      *                state.
-     * 
+     *
      * @exception IncompatibleTimeBaseException
      *                Thrown by newController.setTimeBase() if the new
      *                Controller cannot use this player's TimeBase
@@ -214,7 +214,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * Checks to see if the all of this Player's managed Controller have
      * stopped. Usually called from within endOfMedia() to see if an
      * EndOfMediaEvent can be posted.
-     * 
+     *
      * @return true if all of this Player's managed Controller have stopped,
      *         false otherwise.
      */
@@ -241,7 +241,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * <p>
      * This method is final because the controller-management functionality of
      * the AbstractPlayer will not work if it is overridden.
-     * 
+     *
      * @param e
      *            The ControllerEvent posted by one of the managed Controllers.
      */
@@ -385,7 +385,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * Implement to deallocate the Player.
      * <p>
      * This method should not be called directly. Instead, call deallocate().
-     * 
+     *
      * @return True if successful, false otherwise.
      */
     public abstract boolean doPlayerDeallocate();
@@ -394,7 +394,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * Implement to prefetch the Player.
      * <p>
      * This method should not be called directly. Instead, call prefetch().
-     * 
+     *
      * @return True if successful, false otherwise.
      */
     public abstract boolean doPlayerPrefetch();
@@ -403,7 +403,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * Implement to realize the Player.
      * <p>
      * This method should not be called directly. Instead, call realize().
-     * 
+     *
      * @return True if successful, false otherwise.
      */
     public abstract boolean doPlayerRealize();
@@ -414,7 +414,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * that the given time is within the Controller's duration.
      * <p>
      * This method should not be called directly. Instead, call setMediaTime().
-     * 
+     *
      * @param t
      *            The media time to set
      */
@@ -431,10 +431,10 @@ public abstract class AbstractPlayer extends AbstractController implements
      * method is called, it is guaranteed that the Controller is Stopped.
      * <p>
      * This method should not be called directly. Instead, call setRate().
-     * 
+     *
      * @param rate
      *            The requested rate to set
-     * 
+     *
      * @return The actual rate that was set
      */
     public abstract float doPlayerSetRate(float rate);
@@ -443,7 +443,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * Implement to stop the Player.
      * <p>
      * This method should not be called directly. Instead, call stop().
-     * 
+     *
      * @return True if successful, false otherwise.
      */
     public abstract boolean doPlayerStop();
@@ -458,7 +458,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * Implement to start the Player.
      * <p>
      * This method should not be called directly. Instead, call start().
-     * 
+     *
      * @return True if successful, false otherwise.
      */
     public abstract boolean doPlayerSyncStart(Time t);
@@ -582,7 +582,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * Sets the media time for this Player and all of its managed Controllers.
      * <p>
      * This method should not be called directly. Instead, call setMediaTime().
-     * 
+     *
      * @param t
      *            The media time to set.
      */
@@ -607,7 +607,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * 1.0 for all of the above.
      * <p>
      * This method should not be called directly. Instead, call setRate().
-     * 
+     *
      * @param rate
      *            The rate to set.
      */
@@ -772,7 +772,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * Indicates to the framework that the end of media has been reached. Marks
      * the media time, sets the current and target states to Prefetched, and
      * posts an EndOfMediaEvent.
-     * 
+     *
      * @exception ClockStoppedException
      *                If the AbstractController is not in the Started state.
      */
@@ -820,7 +820,7 @@ public abstract class AbstractPlayer extends AbstractController implements
 
     /**
      * Get the control panel Component for this Player.
-     * 
+     *
      * @return The control panel Component, or null if it has not been set.
      */
     public Component getControlPanelComponent()
@@ -851,7 +851,7 @@ public abstract class AbstractPlayer extends AbstractController implements
 
     /**
      * Get the Gain Control for this Player.
-     * 
+     *
      * @return The GainControl object, or null if it has not been set.
      */
     public GainControl getGainControl()
@@ -912,7 +912,7 @@ public abstract class AbstractPlayer extends AbstractController implements
      * Player may be managing. If any of the Controllers returns
      * LATENCY_UNKNOWN, it's value is skipped in the calculation of the maximum
      * latency.
-     * 
+     *
      * @return The maximum start latency of this Player and all its managed
      *         Controllers, or LATENCY_UNKNOWN if the Player and its managed
      *         Controllers all return LATENCY_UNKNOWN.
@@ -952,7 +952,7 @@ public abstract class AbstractPlayer extends AbstractController implements
 
     /**
      * Get the visual Component for this Player.
-     * 
+     *
      * @return The visual Component, or null if it has not been set.
      */
     public Component getVisualComponent()
@@ -970,10 +970,10 @@ public abstract class AbstractPlayer extends AbstractController implements
     /**
      * Checks to see if the given Controller state has been reached in a
      * forward-transitioning Controller.
-     * 
+     *
      * @param state
      *            The desired state.
-     * 
+     *
      * @return true if the state has been reached, false otherwise.
      */
     private boolean isStateReached(int state)
@@ -1011,7 +1011,7 @@ public abstract class AbstractPlayer extends AbstractController implements
 
     /**
      * Remove a Controller from the list of Controllers managed by this Player.
-     * 
+     *
      * @param oldController
      *            The Controller to remove
      */
@@ -1078,7 +1078,7 @@ public abstract class AbstractPlayer extends AbstractController implements
 
     /**
      * Set the control panal Component for this AbstractPlayer.
-     * 
+     *
      * @param c
      *            A java.awt.Component providing control over this
      *            AbstractPlayer's media.
@@ -1097,7 +1097,7 @@ public abstract class AbstractPlayer extends AbstractController implements
     /**
      * Set the GainControl for this AbstractPlayer. If the AbstractPlayer does
      * not support audio media, this method should return null.
-     * 
+     *
      * @param c
      *            The GainControl allowing control of the volume of this
      *            AbstractPlayer's media.
@@ -1115,10 +1115,10 @@ public abstract class AbstractPlayer extends AbstractController implements
     /**
      * Sets the media time. If the Player is in the Started state, it is stopped
      * before setting the media time and restarted afterwards.
-     * 
+     *
      * @param t
      *            The media time to set
-     * 
+     *
      * @exception NotRealizedError
      *                If the Controller is not Realized.
      */
@@ -1143,10 +1143,10 @@ public abstract class AbstractPlayer extends AbstractController implements
     /**
      * Sets the rate. If the Player is in the Started state, it is stopped
      * before setting the rate and restarted afterwards.
-     * 
+     *
      * @param rate
      *            The temporal scale factor (rate) to set.
-     * 
+     *
      * @exception NotRealizedError
      *                If the Controller is not Realized.
      */
@@ -1176,10 +1176,10 @@ public abstract class AbstractPlayer extends AbstractController implements
      * should throw a IncompatibleSourceException. Our only requirement here is
      * that the DataSource has not already been set. Subclasses may wish to
      * override this method to extend the acceptance criteria.
-     * 
+     *
      * @param source
      *            The DataSource to test
-     * 
+     *
      * @exception IncompatibleSourceException
      *                Thrown if the DataSource has already been set on this
      *                MediaHandler, or if the DataSource is not a PullDataSource
@@ -1200,7 +1200,7 @@ public abstract class AbstractPlayer extends AbstractController implements
     /**
      * Set the visual Component for this AbstractPlayer. If the AbstractPlayer
      * does not support video media, this method should return null.
-     * 
+     *
      * @param c
      *            A java.awt.Component on which the media is rendered.
      */

@@ -20,7 +20,7 @@ public class StartButton extends BasicArrowButton
 
     /**
      * Make it the right size.
-     * 
+     *
      * @return Always return (20, 20)
      */
     @Override

@@ -28,7 +28,7 @@ public class StandardStartControl extends ActionListenerControl
 
     /**
      * Create StartButton.
-     * 
+     *
      * @see net.sf.fmj.ejmf.toolkit.gui.controls.skins.ejmf.StartButton
      */
     @Override

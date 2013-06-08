@@ -5,12 +5,12 @@ import javax.media.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * Abstract implementation of Controls, useful for subclassing.
- * 
+ *
  * @author Ken Larson
  * @author Warren Bloomer
- * 
+ *
  */
 public abstract class AbstractControls implements Controls
 {
@@ -22,7 +22,7 @@ public abstract class AbstractControls implements Controls
 
     /**
      * Called by subclasses of this Abstract class to add a control.
-     * 
+     *
      * @param control
      *            The control object to add to the controls list.
      */
@@ -35,7 +35,7 @@ public abstract class AbstractControls implements Controls
      * Retrieve the first object that implements the given Class or Interface.
      * The full class name must be used. If the control is not supported then
      * null is returned.
-     * 
+     *
      * @return the object that implements the control, or null.
      */
     public Object getControl(String controlType)
@@ -46,7 +46,7 @@ public abstract class AbstractControls implements Controls
     /**
      * Retrieve an array of objects that control the object. If no controls are
      * supported, a zero length array is returned.
-     * 
+     *
      * @return the array of object controls
      */
     public Object[] getControls()
@@ -57,7 +57,7 @@ public abstract class AbstractControls implements Controls
     /**
      * Remove a control object from the list of controls for this object. Will
      * be used by subclasses of this Abstract class.
-     * 
+     *
      * @param control
      *            the control object to remove from the list.
      */

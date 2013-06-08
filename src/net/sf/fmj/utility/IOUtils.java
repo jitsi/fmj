@@ -4,9 +4,9 @@ import java.io.*;
 
 /**
  * I/O utilities.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class IOUtils
 {

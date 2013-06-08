@@ -6,9 +6,9 @@ import javax.media.protocol.*;
 
 /**
  * Implements an InputStream by wrapping a PullSourceStream.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class PullSourceStreamInputStream extends InputStream
 {

@@ -42,7 +42,7 @@ public abstract class AbstractListenerControl implements Control
 
     /**
      * Create an AbstractListenerControl
-     * 
+     *
      * @param controller
      *            Controller with which this control is associated.
      */
@@ -56,7 +56,7 @@ public abstract class AbstractListenerControl implements Control
      * Since different controls may have different types of listeners, each
      * subclass should define addControlListener to register the correct type of
      * listener with component.
-     * 
+     *
      * @param listener
      *            Listener object to be added.
      */
@@ -67,7 +67,7 @@ public abstract class AbstractListenerControl implements Control
      * must not return a null component.
      * <p>
      * Listener registration is handled by AbstractListenerControl.
-     * 
+     *
      * @return a Component
      */
     protected abstract Component createControlComponent(Skin skin);
@@ -77,14 +77,14 @@ public abstract class AbstractListenerControl implements Control
      * an EventListener to handle events originating from control's component.
      * <p>
      * Subclasses must not return a null listener.
-     * 
+     *
      * @return an EventListener
      */
     protected abstract EventListener createControlListener();
 
     /**
      * Return Control Component as required by Control inteface.
-     * 
+     *
      * @return Control component
      */
     public Component getControlComponent()
@@ -111,7 +111,7 @@ public abstract class AbstractListenerControl implements Control
     /**
      * Initializes listener, establishes it as default and registers it with
      * Control Compoent.
-     * 
+     *
      * @param listener
      *            Listener object for this control
      */
@@ -124,7 +124,7 @@ public abstract class AbstractListenerControl implements Control
 
     /**
      * Return the operational state of this Control.
-     * 
+     *
      * @return true if control is operational
      */
     public boolean isOperational()
@@ -136,7 +136,7 @@ public abstract class AbstractListenerControl implements Control
      * Since different controls may have different types of listeners, each
      * subclass should define removeControlListener to remove listener from
      * component listener list in a type-safe way.
-     * 
+     *
      * @param listener
      *            Listener object to be removed.
      */
@@ -147,7 +147,7 @@ public abstract class AbstractListenerControl implements Control
      * <p>
      * Subclasses should override this method to provide a type-safe public
      * version.
-     * 
+     *
      * @param component
      *            Component to associate with this control.
      */
@@ -161,7 +161,7 @@ public abstract class AbstractListenerControl implements Control
      * <p>
      * Subclasses should override this method to provide a type-safe public
      * version.
-     * 
+     *
      * @param component
      *            Component to associate with this control.
      * @param listener
@@ -176,7 +176,7 @@ public abstract class AbstractListenerControl implements Control
 
     /**
      * Associates Controller with this Control.
-     * 
+     *
      * @throws IllegalArgumentException
      *             is thrown if attempt is made to set Controller a second time.
      * @param controller
@@ -202,7 +202,7 @@ public abstract class AbstractListenerControl implements Control
     /**
      * Subclasses override and provide the guts to setControllerHook if they
      * want to augment the the work of setController.
-     * 
+     *
      * @param controller
      *            Controller with which this control is associated.
      */
@@ -215,7 +215,7 @@ public abstract class AbstractListenerControl implements Control
      * <p>
      * Subclasses should override this method to provide a type-safe public
      * version.
-     * 
+     *
      * @param listener
      *            Listener object for this control
      */
@@ -229,7 +229,7 @@ public abstract class AbstractListenerControl implements Control
 
     /**
      * Set the operational state of this Control.
-     * 
+     *
      * @param flag
      *            Set to true to make control operational.
      */

@@ -2,7 +2,7 @@ package net.sf.fmj.media.codec.audio.alaw;
 
 /**
  * Turns 8-bit A-law bytes back into 16-bit PCM values.
- * 
+ *
  * Adapted from code by Marc Sweetgall at
  * http://www.codeproject.com/csharp/g711audio.asp
  */
@@ -11,7 +11,7 @@ public class ALawDecoderUtil
     /**
      * An array where the index is the a-law input, and the value is the 16-bit
      * PCM result.
-     * 
+     *
      */
     private static short[] aLawToPcmMap;
 
@@ -33,7 +33,7 @@ public class ALawDecoderUtil
 
     /**
      * Decode one a-law byte
-     * 
+     *
      * @param alaw
      *            The encoded a-law byte
      * @return A short containing the 16-bit result
@@ -85,7 +85,7 @@ public class ALawDecoderUtil
 
     /**
      * Decode an array of a-law encoded bytes
-     * 
+     *
      * @param data
      *            An array of a-law encoded bytes
      * @param decoded
@@ -107,7 +107,7 @@ public class ALawDecoderUtil
 
     /**
      * Decode one a-law byte. For internal use only.
-     * 
+     *
      * @param alaw
      *            The encoded a-law byte
      * @return A short containing the 16-bit result

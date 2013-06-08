@@ -13,17 +13,17 @@ import net.sf.fmj.ejmf.toolkit.gui.controls.skins.two.*;
 /**
  * StandardControlPanel extends JPanel and arranges the standard controls in a
  * left-to-right fashion using FlowLayout and add(Component, index)
- * 
+ *
  * Setters are defined that allow the user to change the visual component
  * associated with any control. A version of these setters allows for the
  * definition of a new listener.
- * 
+ *
  * Two constructors are defined. The first builds all the default controls into
  * the control panel. The second takes a flag which defines the controls to be
  * built and displayed by the control panel. The flag values are defined by
  * public static values provided by the class. These values can be OR'd together
  * to set a flag value.
- * 
+ *
  * @see net.sf.fmj.ejmf.toolkit.gui.controlpanel.AbstractControlPanel
  */
 
@@ -38,7 +38,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Build a StandardControlPanel with all of the default controls.
-     * 
+     *
      * @param p
      *            A player with which control panel is associated.
      * @see javax.media.Player
@@ -51,7 +51,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Build a StandardControlPanel designating which controls are desired.
-     * 
+     *
      * @param p
      *            A player with which control panel is associated.
      * @param buttonFlags
@@ -78,10 +78,10 @@ public class StandardControlPanel extends AbstractControlPanel
      * Does the work of building the control components and adding them to the
      * layout. The default behavior is simply to use the components provided by
      * BasicControlPanel.
-     * 
+     *
      * This method may be over-ridden for a wholesale customization of the
      * control panel.
-     * 
+     *
      */
     @Override
     public void addComponents(int flags)
@@ -127,7 +127,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Creates Controls associated with this Control Panel.
-     * 
+     *
      * @param player
      *            Associated Player
      */
@@ -141,7 +141,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Get the fast forward button control
-     * 
+     *
      * @return An AbstractButton
      */
     public AbstractButton getFastForwardButton()
@@ -152,7 +152,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Get the gain button panel
-     * 
+     *
      * @return An AbstractGainButtonPanel
      */
     public AbstractGainButtonPanel getGainButtonPanel()
@@ -163,7 +163,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Get the gain meter button control
-     * 
+     *
      * @return An AbstractButton
      */
     public AbstractButton getGainMeterButton()
@@ -174,7 +174,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Get the pause button control
-     * 
+     *
      * @return An AbstractButton
      */
     public AbstractButton getPauseControl()
@@ -185,7 +185,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Get the progress control
-     * 
+     *
      * @return A ProgressSlider
      */
     public ProgressSlider getProgressComponent()
@@ -196,7 +196,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Get the reverse button control
-     * 
+     *
      * @return An AbstractButton
      */
     public AbstractButton getReverseButton()
@@ -207,7 +207,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Get the start button control
-     * 
+     *
      * @return An AbstractButton
      */
     public AbstractButton getStartButton()
@@ -218,7 +218,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Get the stop button control
-     * 
+     *
      * @return An AbstractButton
      */
     public AbstractButton getStopButton()
@@ -230,7 +230,7 @@ public class StandardControlPanel extends AbstractControlPanel
     /**
      * Set the control button for fast forwarding the player associated with
      * this control panel.
-     * 
+     *
      * @param c
      *            An AbstractButton
      */
@@ -244,7 +244,7 @@ public class StandardControlPanel extends AbstractControlPanel
     /**
      * Set the control button for fast forwarding the player associated with
      * this control panel. Supply a listener to implement control semantics.
-     * 
+     *
      * @param c
      *            An AbstractButton
      * @param l
@@ -259,7 +259,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Set the control component for gain Control
-     * 
+     *
      * @param c
      *            an AbstractGainButtonPanel
      * @see net.sf.fmj.ejmf.toolkit.gui.controls.AbstractGainButtonPanel
@@ -274,7 +274,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Set the control component and listener semantics for gain Control
-     * 
+     *
      * @param c
      *            an AbstractGainButtonPanel
      * @param l
@@ -290,7 +290,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Set the control component for gain meter Control
-     * 
+     *
      * @param c
      *            An AbstractButton
      */
@@ -303,7 +303,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Set the control component and listener semantics for gain meter Control
-     * 
+     *
      * @param c
      *            An AbstractButton
      * @param l
@@ -319,7 +319,7 @@ public class StandardControlPanel extends AbstractControlPanel
     /**
      * Set the control button for pausing the player associated with this
      * control panel.
-     * 
+     *
      * @param c
      *            An AbstractButton
      */
@@ -332,7 +332,7 @@ public class StandardControlPanel extends AbstractControlPanel
 
     /**
      * Set the pause button with use-supplied semantics.
-     * 
+     *
      * @param c
      *            An AbstractButton to affect pause.
      * @param l
@@ -348,7 +348,7 @@ public class StandardControlPanel extends AbstractControlPanel
     /**
      * Set the control component for progress bar associated with this control
      * panel.
-     * 
+     *
      * @param c
      *            A ProgressBar
      * @see net.sf.fmj.ejmf.toolkit.gui.controls.ProgressBar
@@ -364,7 +364,7 @@ public class StandardControlPanel extends AbstractControlPanel
      * Set the control component for displaying the player progress slider
      * associated with this control panel. Supply a ChangeListener to implement
      * control semantics.
-     * 
+     *
      * @param c
      *            A ProgressBar
      * @see net.sf.fmj.ejmf.toolkit.gui.controls.skins.ejmf.ProgressSlider
@@ -379,7 +379,7 @@ public class StandardControlPanel extends AbstractControlPanel
     /**
      * Set the control button for reversing the player associated with this
      * control panel.
-     * 
+     *
      * @param c
      *            An AbstractButton
      */
@@ -393,7 +393,7 @@ public class StandardControlPanel extends AbstractControlPanel
     /**
      * Set the control button for reversing the player associated with this
      * control panel. Supply a listener to implement control semantics.
-     * 
+     *
      * @param c
      *            An AbstractButton
      * @param l
@@ -409,7 +409,7 @@ public class StandardControlPanel extends AbstractControlPanel
     /**
      * Set the control button for starting the player associated with this
      * control panel.
-     * 
+     *
      * @param c
      *            An AbstractButton
      */
@@ -425,7 +425,7 @@ public class StandardControlPanel extends AbstractControlPanel
     /**
      * Set the control button for starting the player associated with this
      * control panel. Supply a listener to implement control semantics.
-     * 
+     *
      * @param c
      *            An AbstractButton
      * @param l
@@ -444,7 +444,7 @@ public class StandardControlPanel extends AbstractControlPanel
     /**
      * Set the control button for stopping the player associated with this
      * control panel.
-     * 
+     *
      * @param c
      *            An AbstractButton
      */
@@ -458,7 +458,7 @@ public class StandardControlPanel extends AbstractControlPanel
     /**
      * Set the control button for stopping the player associated with this
      * control panel. Supply a listener to implement control semantics.
-     * 
+     *
      * @param c
      *            An AbstractButton
      * @param l

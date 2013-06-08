@@ -2,9 +2,9 @@ package net.sf.fmj.utility;
 
 /**
  * Utility for measuring FPS, used for benchmarking and optimization.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FPSCounter
 {

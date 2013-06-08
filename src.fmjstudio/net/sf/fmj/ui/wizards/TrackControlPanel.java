@@ -7,7 +7,7 @@
 package net.sf.fmj.ui.wizards;
 
 /**
- * 
+ *
  * @author Ken Larson
  */
 public class TrackControlPanel extends javax.swing.JPanel

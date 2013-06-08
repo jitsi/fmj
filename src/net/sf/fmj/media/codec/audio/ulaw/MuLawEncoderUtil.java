@@ -26,7 +26,7 @@ public class MuLawEncoderUtil
 
     /**
      * Encode one mu-law byte from a 16-bit signed integer. Internal use only.
-     * 
+     *
      * @param pcm
      *            A 16-bit signed pcm value
      * @return A mu-law encoded byte
@@ -87,7 +87,7 @@ public class MuLawEncoderUtil
 
     /**
      * Encode a pcm value into a mu-law byte
-     * 
+     *
      * @param pcm
      *            A 16-bit pcm value
      * @return A mu-law encoded byte
@@ -99,7 +99,7 @@ public class MuLawEncoderUtil
 
     /**
      * Encode a pcm value into a mu-law byte
-     * 
+     *
      * @param pcm
      *            A 16-bit pcm value
      * @return A mu-law encoded byte
@@ -165,7 +165,7 @@ public class MuLawEncoderUtil
 
     /**
      * Encode an array of pcm values into a pre-allocated target array
-     * 
+     *
      * @param data
      *            An array of bytes in Little-Endian format
      * @param target

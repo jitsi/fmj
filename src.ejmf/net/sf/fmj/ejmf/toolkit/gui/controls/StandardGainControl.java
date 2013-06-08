@@ -10,7 +10,7 @@ import javax.swing.*;
 /**
  * Gain Control for Standard Control Panel. Provides two Components, one each
  * for increasing and decreasing gain.
- * 
+ *
  * @see net.sf.fmj.ejmf.toolkit.gui.controls.AbstractGainControl
  */
 
@@ -43,7 +43,7 @@ public class StandardGainControl extends AbstractGainControl implements
 
     /**
      * Create a StandardGainControl and associate it with a Controller.
-     * 
+     *
      * @param controller
      *            A Controller with which control is associated.
      */
@@ -56,7 +56,7 @@ public class StandardGainControl extends AbstractGainControl implements
      * Over-rides addControlListener from AbstractActionListener because this
      * Component is a JPanel and buttons need to be extracted from it. Same
      * listener is posted to both buttons.
-     * 
+     *
      * @param listener
      *            Listener that implements semantics for gain control.
      */
@@ -80,7 +80,7 @@ public class StandardGainControl extends AbstractGainControl implements
 
     /**
      * Create Control Component for Gain Control.
-     * 
+     *
      * @return component which acts as gain control.
      */
     @Override
@@ -93,7 +93,7 @@ public class StandardGainControl extends AbstractGainControl implements
      * Create and return the default listener for gain control. Default listener
      * increases gain level by 0.1 for each click of up button and decreases
      * gain level by 0.1 for each click of down button.
-     * 
+     *
      * @return Default listener for gain control.
      */
     @Override
@@ -124,7 +124,7 @@ public class StandardGainControl extends AbstractGainControl implements
      * Set enable state of gain buttons based on gain level. If level has
      * reached maximum, disable increase button. If level has reached minimum,
      * enable descrease button.
-     * 
+     *
      * @param e
      *            An GainChangeEvent triggerd by a GainControl
      * @see javax.media.GainControl
@@ -137,7 +137,7 @@ public class StandardGainControl extends AbstractGainControl implements
 
     /**
      * Remove listener from both gain increase button and gain decrease button.
-     * 
+     *
      * @param listener
      *            Listener is removed from listener list associated with this
      *            control.
@@ -162,7 +162,7 @@ public class StandardGainControl extends AbstractGainControl implements
 
     /**
      * Type-safe way to set Control Component.
-     * 
+     *
      * @param bp
      *            An AbstractGainButtonPanel that serves as Control component.
      */
@@ -173,7 +173,7 @@ public class StandardGainControl extends AbstractGainControl implements
 
     /**
      * Type-safe way to set Control Component and control listener.
-     * 
+     *
      * @param bp
      *            An AbstractGainButtonPanel that serves as Control component.
      * @param listener
@@ -188,7 +188,7 @@ public class StandardGainControl extends AbstractGainControl implements
     /**
      * This method is called when <tt>setController</tt> is called on an
      * AbstractListenerControl.
-     * 
+     *
      * @param newController
      *            A Controller with which this control is associated.
      */
@@ -208,7 +208,7 @@ public class StandardGainControl extends AbstractGainControl implements
 
     /**
      * Type-safe way to set Control listener.
-     * 
+     *
      * @param listener
      *            An ActionListener that implements gain control button
      *            semantics.

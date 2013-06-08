@@ -8,10 +8,10 @@ import javax.media.*;
  * The PackageUtility class provides methods to register or remove package
  * prefixes from the Java Media Framework's persistant lists of protocol and
  * content prefix lists.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @author Steve Talley & Rob Gordon
  */
 public class PackageUtility
@@ -20,7 +20,7 @@ public class PackageUtility
      * Adds a content prefix to the JMF content prefix list. If the content
      * prefix already exists in the list, no action is taken. The new content
      * prefix list will only be valid during the current session.
-     * 
+     *
      * @param prefix
      *            the content prefix to add
      */
@@ -35,7 +35,7 @@ public class PackageUtility
      * the list will be commited and become persistent over future JMF sessions.
      * Otherwise, the new content prefix list will only be valid during the
      * current session.
-     * 
+     *
      * @param prefix
      *            the content prefix to add
      * @param commit
@@ -60,7 +60,7 @@ public class PackageUtility
      * Adds a protocol prefix to the JMF protocol prefix list. If the protocol
      * prefix already exists in the list, no action is taken. The new protocol
      * prefix list will only be valid during the current session.
-     * 
+     *
      * @param prefix
      *            the protocol prefix to add
      */
@@ -75,7 +75,7 @@ public class PackageUtility
      * the list will be commited and become persistent over future JMF sessions.
      * Otherwise, the new protocol prefix list will only be valid during the
      * current session.
-     * 
+     *
      * @param prefix
      *            the protocol prefix to add
      * @param commit
@@ -101,7 +101,7 @@ public class PackageUtility
      * Removes a content prefix from the JMF content prefix list. If the content
      * prefix does not exist in the list, no action is taken. The new content
      * prefix list will only be valid during the current session.
-     * 
+     *
      * @param prefix
      *            the content prefix to remove
      */
@@ -116,7 +116,7 @@ public class PackageUtility
      * the list will be commited and become persistent over future JMF sessions.
      * Otherwise, the new content prefix list will only be valid during the
      * current session.
-     * 
+     *
      * @param prefix
      *            the content prefix to remove
      * @param commit
@@ -141,7 +141,7 @@ public class PackageUtility
      * Removes a protocol prefix from the JMF protocol prefix list. If the
      * protocol prefix does not exist in the list, no action is taken. The new
      * protocol prefix list will only be valid during the current session.
-     * 
+     *
      * @param prefix
      *            the protocol prefix to remove
      */
@@ -156,7 +156,7 @@ public class PackageUtility
      * is true, the list will be commited and become persistent over future JMF
      * sessions. Otherwise, the new protocol prefix list will only be valid
      * during the current session.
-     * 
+     *
      * @param prefix
      *            the protocol prefix to remove
      * @param commit

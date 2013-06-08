@@ -54,7 +54,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
 
     /**
      * Constructs a <tt>Format</tt> that has the specified encoding type.
-     * 
+     *
      * @param encoding
      *            A <tt>String</tt> that contains the encoding type of the
      *            <tt>Format</tt> to be constructed.
@@ -67,7 +67,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
     /**
      * Constructs a <tt>Format</tt> that has the specified encoding and data
      * types.
-     * 
+     *
      * @param encoding
      *            A <tt>String</tt> that contains the encoding type of the
      *            <tt>Format</tt> to be constructed.
@@ -85,7 +85,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
 
     /**
      * Creates a clone of this <tt>Format</tt>.
-     * 
+     *
      * @return A clone of this format.
      */
     @Override
@@ -99,7 +99,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
     /**
      * Copies the attributes from the specified <tt>Format</tt> into this
      * <tt>Format</tt>.
-     * 
+     *
      * @param f
      *            The <tt>Format</tt> to copy the attributes from.
      */
@@ -112,7 +112,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
      * Checks whether or not the specified <tt>Format</tt> is the same as this
      * <tt>Format</tt>. To be equal, the two <tt>Formats</tt> must be of the
      * same type and all of their attributes must be the same.
-     * 
+     *
      * @param format
      *            The <tt>Format</tt> to compare with this one.
      * @return <tt>true</tt> if the specified <tt>Format</tt> is the same as
@@ -134,7 +134,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
     /**
      * Gets the type of the data that this <tt>Format</tt> requires. For
      * example, for byte array it returns "<tt>byte[].class</tt>".
-     * 
+     *
      * @return The data type of this <tt>Format</tt>.
      */
     public Class<?> getDataType()
@@ -147,7 +147,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
      * <p>
      * In the reference implementation of JMF, these strings follow the
      * QuickTime codec strings.
-     * 
+     *
      * @return The encoding of the <tt>Format</tt>.
      */
     public String getEncoding()
@@ -187,7 +187,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
      * <P>
      * Attributes that are specific to the subclass will be carried forward to
      * the result.
-     * 
+     *
      * @param other
      *            The <tt>Format</tt> object to intersect with this
      *            <tt>Format</tt>.
@@ -214,7 +214,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
     /**
      * Checks if the encodings of both format objects are the same. Its faster
      * than calling String.equalsIgnoreCase to compare the two encodings.
-     * 
+     *
      * @return true if the encodings are the same, false otherwise.
      */
     public boolean isSameEncoding(Format other)
@@ -248,7 +248,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
     /**
      * Checks if the encoding of this format is same as the parameter. Its
      * faster than calling String.equalsIgnoreCase to compare the two encodings.
-     * 
+     *
      * @return true if the encodings are the same, false otherwise.
      */
     public boolean isSameEncoding(String encoding)
@@ -282,7 +282,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
      * match. For example, if "A" are "B" are being compared, a match is
      * possible if "A" is derived from "B" or "B" is derived from "A". (The
      * compared attributes must still match, or <tt>matches</tt> fails.)
-     * 
+     *
      * @param format
      *            The <tt>Format</tt> to compare with this one.
      * @return <tt>true</tt> if the specified <tt>Format</tt> matches this one,
@@ -303,7 +303,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
      * Generate a format that's less restrictive than this format but contains
      * the basic attributes that will make this resulting format useful for
      * format matching.
-     * 
+     *
      * @return A <tt>Format</tt> that's less restrictive than the this format.
      */
     public Format relax()
@@ -314,7 +314,7 @@ public class Format implements java.lang.Cloneable, java.io.Serializable
     /**
      * Gets a <tt>String</tt> representation of the <tt>Format</tt> attributes.
      * For example: "PCM, 44.1 KHz, Stereo, Signed".
-     * 
+     *
      * @return A <tt>String</tt> that describes the <tt>Format</tt> attributes.
      */
     @Override

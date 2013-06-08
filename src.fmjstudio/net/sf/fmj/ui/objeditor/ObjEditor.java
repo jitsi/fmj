@@ -4,9 +4,9 @@ import java.awt.*;
 
 /**
  * Generic interface for a control which edits an object.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public interface ObjEditor
 {

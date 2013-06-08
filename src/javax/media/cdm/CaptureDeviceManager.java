@@ -8,7 +8,7 @@ import net.sf.fmj.registry.*;
 
 /**
  * Internal implementation of javax.media.CaptureDeviceManager. Coding complete.
- * 
+ *
  * @author Ken Larson
  */
 public class CaptureDeviceManager extends javax.media.CaptureDeviceManager

@@ -16,7 +16,7 @@ import javax.media.protocol.*;
 import net.sf.fmj.ui.wizard.*;
 
 /**
- * 
+ *
  * @author Ken Larson
  */
 public class TranscodeWizard extends Wizard

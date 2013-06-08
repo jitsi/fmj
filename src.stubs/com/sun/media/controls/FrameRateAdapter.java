@@ -8,9 +8,9 @@ import com.sun.media.ui.*;
 
 /**
  * TODO: Stub
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FrameRateAdapter implements FrameRateControl
 {

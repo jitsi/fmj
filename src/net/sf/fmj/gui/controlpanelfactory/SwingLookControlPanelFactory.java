@@ -7,9 +7,9 @@ import javax.media.*;
 import net.sf.fmj.gui.controlpanel.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class SwingLookControlPanelFactory implements ControlPanelFactory
 {

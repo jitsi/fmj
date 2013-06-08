@@ -9,10 +9,10 @@ import javax.media.protocol.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * Adapted from
  * http://javasolution.blogspot.com/2007/04/sound-over-ip-with-jmf-rtp.html
- * 
+ *
  */
 public class SimpleVoiceTransmiter
 {

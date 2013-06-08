@@ -17,7 +17,7 @@ import net.sf.fmj.utility.*;
  * This type of MOV file just stores frames as a series of JPEG images. This
  * codec uses ImageIO classes to convert from the jpeg VideoFormat to
  * RGBFormats.
- * 
+ *
  * @author Jeremy Wood
  */
 public class JPEGDecoder implements Codec

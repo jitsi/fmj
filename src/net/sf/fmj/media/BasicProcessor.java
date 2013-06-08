@@ -16,7 +16,7 @@ public abstract class BasicProcessor extends BasicPlayer implements Processor
 
     /**
      * Return the output content-type.
-     * 
+     *
      * @return The current output content-type.
      * @exception NotConfiguredError
      *                if the Processor is Unrealized.
@@ -33,7 +33,7 @@ public abstract class BasicProcessor extends BasicPlayer implements Processor
      * Return the output DataSource of the Processor. The output DataSource is
      * the output connection of the Processor through which it supplies the
      * processed streams.
-     * 
+     *
      * @return The output DataSource of the Processor.
      * @exception NotRealizedError
      *                if the Processor is not realized.
@@ -51,7 +51,7 @@ public abstract class BasicProcessor extends BasicPlayer implements Processor
      * Processor builds the <tt>ContentDescriptor</tt> array according to the
      * input DataSource attached to the Processor and according to the codecs
      * and multiplexers installed in the system.
-     * 
+     *
      * @return An array of the the content-types supported by the Processor.
      * @exception NotConfiguredError
      *                if the Processor is Unrealized.
@@ -70,7 +70,7 @@ public abstract class BasicProcessor extends BasicPlayer implements Processor
      * Processor has been configured. A <tt>NotConfiguredError</tt> is thrown if
      * <tt>getTrackControls</tt> is called and the Processor is in the
      * <tt>Unrealized</tt> or <tt>Configuring</tt> states.
-     * 
+     *
      * @return An array of the tracks in the media. An emtpy array is returned
      *         if there is no <tt>TrackControl</tt> available for this
      *         Processor.
@@ -97,7 +97,7 @@ public abstract class BasicProcessor extends BasicPlayer implements Processor
     /**
      * Set the output content-type. If <tt>setContentDescriptor</tt> is not
      * called, the output DataSource's output will be on individual tracks.
-     * 
+     *
      * @param ocd the content-type of the output.
      * @exception NotConfiguredError if the Processor is Unrealized. realized
      * state and it does not support format changes after it has been realized.

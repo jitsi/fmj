@@ -8,9 +8,9 @@ import javax.media.protocol.*;
 
 /**
  * Merges multiple {@link PushDataSource}.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class MergingPushDataSource extends PushDataSource
 {

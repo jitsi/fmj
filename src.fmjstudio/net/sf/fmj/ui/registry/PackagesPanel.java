@@ -5,9 +5,9 @@ import java.awt.*;
 import javax.swing.*;
 
 /**
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class PackagesPanel extends JPanel
 {
@@ -26,7 +26,7 @@ public class PackagesPanel extends JPanel
 
     /**
      * This method initializes contentPrefixPanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.EntryPanel
      */
     private EntryPanel getContentPrefixPanel()
@@ -40,7 +40,7 @@ public class PackagesPanel extends JPanel
 
     /**
      * This method initializes protocolPrefixPanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.EntryPanel
      */
     private EntryPanel getProtocolPrefixPanel()
@@ -54,7 +54,7 @@ public class PackagesPanel extends JPanel
 
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize()
     {

@@ -2,7 +2,7 @@ package net.sf.jdshow;
 
 /**
  * Base class, holds a native pointer to a peer object.
- * 
+ *
  * @author Ken Larson
  */
 public class Peered

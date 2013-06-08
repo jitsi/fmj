@@ -17,7 +17,7 @@ import net.sf.fmj.ejmf.toolkit.util.*;
  * Registers as SourcedTimerListener and ControllerListener. As
  * ControllerListener, TimerDisplayControl listens for start/restart and stop
  * events to correctly turn SourcedTimer on and off.
- * 
+ *
  * @see net.sf.fmj.ejmf.toolkit.util.SourcedTimer
  * @see net.sf.fmj.ejmf.toolkit.util.SourcedTimerListener
  * @see net.sf.fmj.ejmf.toolkit.util.TimeSource
@@ -50,7 +50,7 @@ public class TimeDisplayControl implements Control, SourcedTimerListener,
     /**
      * Create a TimeDisplayControl for displaying the current media time of the
      * Controller passed as an argument.
-     * 
+     *
      * @param controller
      *            The Controller with which to associate control.
      */
@@ -81,12 +81,12 @@ public class TimeDisplayControl implements Control, SourcedTimerListener,
      * <p>
      * The <tt>timer</tt> is used as the SourcedTimer. This form of the
      * constructor allows reuse of an existing SourcedTimer.
-     * 
+     *
      * @param controller
      *            javax.media.Controller
      * @param timer
      *            ejmf.toolkit.util.SourcedTimer
-     * 
+     *
      * @see net.sf.fmj.ejmf.toolkit.util.SourcedTimer
      */
     public TimeDisplayControl(Controller controller, SourcedTimer timer)
@@ -112,7 +112,7 @@ public class TimeDisplayControl implements Control, SourcedTimerListener,
 
     /**
      * Listen for start/stop events and start/stop SourceTimer in response.
-     * 
+     *
      * @param e
      *            A controller event used to determine start/stop state of
      *            timer.
@@ -131,12 +131,12 @@ public class TimeDisplayControl implements Control, SourcedTimerListener,
     /**
      * Input value expected in nanoseconds and converted to a String in h:mm:ss
      * format.
-     * 
+     *
      * @param longTime
      *            time in unit such that <tt>longTime/d</tt> results in seconds.
      * @param value
      *            such that <tt>longTime/d</tt> results in seconds.
-     * 
+     *
      * @return java.awt.String representation of converted time
      */
     private String convertTime(long longTime, long d)
@@ -185,7 +185,7 @@ public class TimeDisplayControl implements Control, SourcedTimerListener,
 
     /**
      * Return the control component.
-     * 
+     *
      * @return java.awt.Component
      */
     public Component getControlComponent()
@@ -196,7 +196,7 @@ public class TimeDisplayControl implements Control, SourcedTimerListener,
     /**
      * Report value such that <tt>getTime()/number</tt> equals seconds.
      * <p>
-     * 
+     *
      * @return a long such that <tt>getTime()/number</tt> equals seconds.
      */
     public long getConversionDivisor()
@@ -209,7 +209,7 @@ public class TimeDisplayControl implements Control, SourcedTimerListener,
     /**
      * Report media time from associated Controller.
      * <p>
-     * 
+     *
      * @return media time in nanoseconds
      */
     public long getTime()
@@ -254,7 +254,7 @@ public class TimeDisplayControl implements Control, SourcedTimerListener,
     /**
      * Respond to 'tick' from SourcedTimer.
      * <p>
-     * 
+     *
      * @param e
      *            a SourcedTimerEvent containing TimeSource that generated tick.
      */

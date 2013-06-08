@@ -10,9 +10,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * Adapter from {@link InputStream} to {@link PushDataSource}.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class InputStreamPushDataSource extends PushDataSource
 {

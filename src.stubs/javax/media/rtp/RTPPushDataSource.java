@@ -4,9 +4,9 @@ import javax.media.*;
 import javax.media.protocol.*;
 
 /**
- * 
+ *
  * @deprecated
- * 
+ *
  */
 @Deprecated
 public class RTPPushDataSource extends PushDataSource

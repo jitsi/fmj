@@ -18,9 +18,9 @@ import net.sf.ffmpeg_java.AVFormatLibrary.AVOutputFormat;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * @author Stephan Goetter
- * 
+ *
  */
 public class ListFormats
 {

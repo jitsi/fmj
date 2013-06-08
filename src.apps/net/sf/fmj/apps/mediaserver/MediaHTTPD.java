@@ -15,9 +15,9 @@ import fi.iki.elonen.nanohttpd.*;
 
 /**
  * HTTP daemon which serves up transcoded media.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class MediaHTTPD extends NanoHTTPD
 {

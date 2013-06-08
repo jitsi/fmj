@@ -7,9 +7,9 @@ import com.lti.utils.*;
 /**
  * Utilities for serializing/de-serializing objects using standard Java
  * serialization.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class SerializationUtils
 {

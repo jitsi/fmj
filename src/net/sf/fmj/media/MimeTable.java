@@ -4,9 +4,9 @@ import java.util.*;
 
 /**
  * A table for holding mime type/file extension mappings.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class MimeTable
 {

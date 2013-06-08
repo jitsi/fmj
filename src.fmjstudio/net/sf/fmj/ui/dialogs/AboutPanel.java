@@ -11,7 +11,7 @@ import java.awt.*;
 import javax.swing.*;
 
 /**
- * 
+ *
  * @author ken
  */
 public class AboutPanel extends javax.swing.JPanel

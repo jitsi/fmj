@@ -22,9 +22,9 @@ import com.jcraft.jogg.*;
  * within them. Adapted from theora-java's jheora
  * net.sf.theora_java.jheora.example.PlayerExample, which is adapted from
  * player_example.c.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class JavaOggParser extends AbstractDemultiplexer
 {
@@ -167,7 +167,7 @@ public class JavaOggParser extends AbstractDemultiplexer
 
         // TODO: implement seeking using av_seek_frame
         /**
-         * 
+         *
          * @return nanos skipped, 0 if unable to skip.
          * @throws IOException
          */
@@ -302,7 +302,7 @@ public class JavaOggParser extends AbstractDemultiplexer
         }
 
         /**
-         * 
+         *
          * @return nanos skipped, 0 if unable to skip.
          * @throws IOException
          */

@@ -6,9 +6,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * Abstract base class to implement Codec.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractCodec extends AbstractPlugIn implements Codec
 {

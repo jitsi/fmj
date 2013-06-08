@@ -6,7 +6,7 @@ import javax.swing.*;
 
 /**
  * JComponent used for rendering video images.
- * 
+ *
  * TODO keep the aspect ratio provided by video format TODO provide controls for
  * scaling interpolation quality
  */

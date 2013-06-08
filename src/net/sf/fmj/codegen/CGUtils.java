@@ -2,9 +2,9 @@ package net.sf.fmj.codegen;
 
 /**
  * Generic code-generation utilities, useful for creating unit tests.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class CGUtils
 {

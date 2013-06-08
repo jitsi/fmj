@@ -9,9 +9,9 @@ import javax.media.*;
  * to be specified with a single URL. Does nothing but return "merge" content
  * type, for a special content handler to pick up on (
  * {@link net.sf.fmj.media.content.merge.Handler}).
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class DataSource extends javax.media.protocol.DataSource
 {

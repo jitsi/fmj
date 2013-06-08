@@ -28,7 +28,7 @@ public class StandardFastForwardControl extends MouseListenerControl
 
     /**
      * Create StandardFastForwardControl.
-     * 
+     *
      * @param controller
      *            Associates Controller with Control.
      */
@@ -39,7 +39,7 @@ public class StandardFastForwardControl extends MouseListenerControl
 
     /**
      * Create StandardFastForwardControl.
-     * 
+     *
      * @param controller
      *            Associates Controller with Control.
      * @param rate
@@ -55,7 +55,7 @@ public class StandardFastForwardControl extends MouseListenerControl
 
     /**
      * Create FastForwardButton
-     * 
+     *
      * @return a component for display by control.
      * @see net.sf.fmj.ejmf.toolkit.gui.controls.skins.ejmf.FastForwardButton
      */
@@ -67,7 +67,7 @@ public class StandardFastForwardControl extends MouseListenerControl
 
     /**
      * Create MouseListener that implements Control semantics.
-     * 
+     *
      * @return listener that listens on control's component and implements fast
      *         forward semantics.
      */

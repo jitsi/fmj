@@ -8,7 +8,7 @@ import javax.swing.*;
 
 /**
  * All button controls extends from ActionListenerControl.
- * 
+ *
  * ActionListenerControl supplies public methods for manipulating a control's
  * EventListener as an ActionListener thereby providing type-safety.
  */
@@ -25,7 +25,7 @@ public abstract class ActionListenerControl extends AbstractListenerControl
 
     /**
      * Create an ActionListenerControl and associate it with a Controller.
-     * 
+     *
      * @param controller
      *            A Controller with which listener is associated.
      */
@@ -42,7 +42,7 @@ public abstract class ActionListenerControl extends AbstractListenerControl
     /**
      * Add control semantics to this Control.
      * <p>
-     * 
+     *
      * @param listener
      *            java.util.EventListener representing control semantics to be
      *            added.
@@ -62,7 +62,7 @@ public abstract class ActionListenerControl extends AbstractListenerControl
      * Add control semantics to this Control. Remove the listener named by the
      * <tt>listener</tt> argument.
      * <p>
-     * 
+     *
      * @param listener
      *            java.util.EventListener representing control semantics to be
      *            removed.
@@ -83,7 +83,7 @@ public abstract class ActionListenerControl extends AbstractListenerControl
 
     /**
      * Type-way to set Control Component and control listener.
-     * 
+     *
      * @param button
      *            An AbstractButton that serves as Control component.
      * @param listener
@@ -97,7 +97,7 @@ public abstract class ActionListenerControl extends AbstractListenerControl
 
     /**
      * Type-way to set Control listener.
-     * 
+     *
      * @param listener
      *            An ActionListener that implements Control semantics.
      */

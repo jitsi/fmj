@@ -51,7 +51,7 @@ class JitterBuffer
      * of <tt>Buffer</tt>s.
      *
      * @param capacity the capacity of the new instance in terms of number of
-     * <tt>Buffer</tt>s 
+     * <tt>Buffer</tt>s
      */
     public JitterBuffer(int capacity)
     {

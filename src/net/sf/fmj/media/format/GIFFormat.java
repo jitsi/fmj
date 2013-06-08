@@ -9,9 +9,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * GIF video format. Used for MGIF, which is like MJPEG but with GIF.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class GIFFormat extends VideoFormat
 {

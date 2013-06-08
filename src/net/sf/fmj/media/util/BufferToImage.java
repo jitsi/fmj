@@ -9,9 +9,9 @@ import javax.media.format.*;
 
 /**
  * Implementation of javax.media.util.BufferToImage. In progress
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class BufferToImage
 {

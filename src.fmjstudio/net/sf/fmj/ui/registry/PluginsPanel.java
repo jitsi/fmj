@@ -6,9 +6,9 @@ import javax.media.*;
 import javax.swing.*;
 
 /**
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class PluginsPanel extends JPanel implements DetailsListener
 {
@@ -35,7 +35,7 @@ public class PluginsPanel extends JPanel implements DetailsListener
 
     /**
      * This method initializes detailsPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getDetailsPanel()
@@ -58,7 +58,7 @@ public class PluginsPanel extends JPanel implements DetailsListener
 
     /**
      * This method initializes detailsScrollPane
-     * 
+     *
      * @return javax.swing.JScrollPane
      */
     private JScrollPane getDetailsScrollPane()
@@ -75,7 +75,7 @@ public class PluginsPanel extends JPanel implements DetailsListener
 
     /**
      * This method initializes entryPanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.EntryPanel
      */
     EntryPanel getEntryPanel()

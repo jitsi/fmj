@@ -11,9 +11,9 @@ import com.lti.utils.synchronization.*;
 /**
  * Helper class to do BufferTransferHandler notifications in a background
  * thread.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class AsyncBufferTransferHandlerNotifier
 {

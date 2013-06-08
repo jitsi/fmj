@@ -75,7 +75,7 @@ public class YUVFormat extends VideoFormat
      * Constructs a <tt>YUVFormat</tt> with the specified properties. Use this
      * constructor for planar YUV formats. (YUV_411, YUV_420, YUV_422, YUV_111,
      * or YUV_YVU9.)
-     * 
+     *
      * @param size
      *            A <tt>Dimension</tt> that specifies the frame size.
      * @param maxDataLength
@@ -118,7 +118,7 @@ public class YUVFormat extends VideoFormat
     /**
      * Constructs a <tt>YUVFormat</tt> with the specified properties. Use this
      * constructor for interleaved YUV formats (YUV_YUYV).
-     * 
+     *
      * @param size
      *            A <tt>Dimension</tt> that specifies the frame size.
      * @param maxDataLength
@@ -147,7 +147,7 @@ public class YUVFormat extends VideoFormat
 
     /**
      * Constructs a <tt>YUVFormat</tt> object for a specific <tt>yuvType</tt>.
-     * 
+     *
      * @param yuvType
      *            The YUV type for this <tt>YUVFormat</tt>: YUV_411, YUV_420,
      *            YUV_422, YUV_111, YUV_YVU9, or YUV_YUYV.
@@ -160,7 +160,7 @@ public class YUVFormat extends VideoFormat
 
     /**
      * Creates a clone of this <tt>YUVFormat</tt>.
-     * 
+     *
      * @return A clone of this <tt>YUVFormat</tt>.
      */
     @Override
@@ -175,7 +175,7 @@ public class YUVFormat extends VideoFormat
     /**
      * Copies the attributes from the specified <tt>Format</tt> into this
      * <tt>YUVFormat</tt>.
-     * 
+     *
      * @param f
      *            The <tt>Format</tt> to copy the attributes from.
      */
@@ -200,7 +200,7 @@ public class YUVFormat extends VideoFormat
      * Returns <tt>true</tt> only if the specified <tt>Format</tt> is a
      * <tt>YUVFormat</tt> object and all of its attributes are identical to the
      * attributes in this <tt>YUVFormat</tt> .
-     * 
+     *
      * @param format
      *            The <tt>Format</tt> to compare.
      * @return true if the specified <tt>Format</tt> is the same as this one.
@@ -222,7 +222,7 @@ public class YUVFormat extends VideoFormat
 
     /**
      * Gets the U offset--the position in the data where the U values begin.
-     * 
+     *
      * @return An integer representing the U offset.
      */
     public int getOffsetU()
@@ -232,7 +232,7 @@ public class YUVFormat extends VideoFormat
 
     /**
      * Gets the V offset--the position in the data where the V values begin.
-     * 
+     *
      * @return An integer representing the V offset.
      */
     public int getOffsetV()
@@ -242,7 +242,7 @@ public class YUVFormat extends VideoFormat
 
     /**
      * Gets the Y offset--the position in the data where the Y values begin.
-     * 
+     *
      * @return An integer representing the Y offset.
      */
     public int getOffsetY()
@@ -252,7 +252,7 @@ public class YUVFormat extends VideoFormat
 
     /**
      * Gets the UV stride--the length of a row of U or V values.
-     * 
+     *
      * @return An integer representing the UV stride.
      */
     public int getStrideUV()
@@ -262,7 +262,7 @@ public class YUVFormat extends VideoFormat
 
     /**
      * Gets the Y stride--the length of a row of Y values.
-     * 
+     *
      * @return An integer representing the Y stride.
      */
     public int getStrideY()
@@ -272,7 +272,7 @@ public class YUVFormat extends VideoFormat
 
     /**
      * Gets the YUV data format.
-     * 
+     *
      * @return The YUV type: YUV_411, YUV_420, YUV_422, YUV_111, YUV_YVU9, or
      *         YUV_YUYV.
      */
@@ -285,7 +285,7 @@ public class YUVFormat extends VideoFormat
      * Finds the attributes shared by two matching <tt>Format</tt> objects. If
      * the specified <tt>Format</tt> does not match this one, the result is
      * undefined.
-     * 
+     *
      * @param format The matching <tt>Format</tt> to intersect with this
      * <tt>YUVFormat</tt>.
      * @return A <tt>Format</tt> object with its attributes set to those
@@ -322,7 +322,7 @@ public class YUVFormat extends VideoFormat
      * match. For example, if "A" are "B" are being compared, a match is
      * possible if "A" is derived from "B" or "B" is derived from "A". (The
      * compared attributes must still match, or <tt>matches</tt> fails.)
-     * 
+     *
      * @param format
      *            The <tt>Format</tt> to compare with this one.
      * @return <tt>true</tt> if the specified <tt>Format</tt> matches this one,
@@ -356,7 +356,7 @@ public class YUVFormat extends VideoFormat
      * Generate a format that's less restrictive than this format but contains
      * the basic attributes that will make this resulting format useful for
      * format matching.
-     * 
+     *
      * @return A <tt>Format</tt> that's less restrictive than the this format.
      */
     @Override
@@ -378,7 +378,7 @@ public class YUVFormat extends VideoFormat
     /**
      * Gets a <tt>String</tt> representation of the attributes of this
      * <tt>YUVFormat</tt>. For example: "YUV Video Format, 352x240, ...".
-     * 
+     *
      * @return A <tt>String</tt> that describes the format attributes.
      */
     @Override

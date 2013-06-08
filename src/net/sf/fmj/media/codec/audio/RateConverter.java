@@ -3,7 +3,7 @@ package net.sf.fmj.media.codec.audio;
 import javax.media.*;
 import javax.media.format.*;
 
-/* 
+/*
  * This audio codec does the rate conversion between any two of
  * 8k, 11.025k, 16k, 22.05k, 32k, 44.1k and 48k.
  */

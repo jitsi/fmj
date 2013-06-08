@@ -31,7 +31,7 @@ public class RTPReceiver extends PacketFilter
     /*
      * TODO Boris Grozev: The field mismatchprinted always equals false and may
      * be removed.
-     */ 
+     */
     private boolean mismatchprinted = false;
 
     private final String content;
@@ -287,7 +287,7 @@ public class RTPReceiver extends PacketFilter
                     rtpcontrolimpl.payload = -1;
                 }
             }
-            
+
             if (ssrcinfo.dsource != null)
             {
                 try
@@ -297,7 +297,7 @@ public class RTPReceiver extends PacketFilter
                             + ssrcinfo.lastPayloadType + ", got pt="
                             + rtppacket.payloadType);
                     ssrcinfo.dsource.stop();
-                } 
+                }
                 catch (IOException ioexception)
                 {
                     System.err.println("Stopping DataSource after PCE "

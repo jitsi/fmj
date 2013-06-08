@@ -9,9 +9,9 @@ import javax.sound.sampled.AudioFormat.Encoding;
 
 /**
  * Utilities for dealing with JavaSound formats.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class JavaSoundUtils
 {
@@ -228,7 +228,7 @@ public class JavaSoundUtils
     }
 
     /**
-     * 
+     *
      * @return null if doesn't match any mpeg encoding
      */
     private static Encoding toMpegEncoding(String encodingStr)
@@ -270,7 +270,7 @@ public class JavaSoundUtils
     }
 
     /**
-     * 
+     *
      * @return null if doesn't match any vorbis encoding
      */
     private static Encoding toVorbisEncoding(String encodingStr)

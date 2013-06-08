@@ -14,9 +14,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * AU Mux that doesn't use javasound.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class AUMux extends AbstractInputStreamMux
 {

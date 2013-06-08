@@ -4,7 +4,7 @@ package com.lti.utils.synchronization;
  * A base class for threads which need to be gracefully closed, since
  * Thread.stop() is deprecated. Subclass should check isClosing() in their main
  * loop in run(), and call setClosed() when run() completes.
- * 
+ *
  * @author Ken Larson
  */
 public abstract class CloseableThread extends Thread

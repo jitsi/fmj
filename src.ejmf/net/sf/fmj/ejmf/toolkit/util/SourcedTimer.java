@@ -9,20 +9,20 @@ import javax.swing.event.*;
  * The SourcedTimer class implements a timer dependent on a named source. This
  * is a generalization of a timer simply dependent on a monotonically increasing
  * clock.
- * 
+ *
  * An instance of SourcedTimer creates a java.swing.Timer and becomes a listener
  * on that timer. This timer is called the base timer. Every time the base timer
  * fires, the SourcedTimer object asks its source what time it is and then
  * notifies its listeners.
- * 
+ *
  * This class is used by the TimerPlayer to track media time.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * see java.awt.swing.Timer see ejmf.toolkit.TimeSource see
  * ejmf.examples.timerplayer.TimerPlayer
- * 
+ *
  * @version 1.0
  * @author Rob Gordon & Steve Talley
  */
@@ -58,7 +58,7 @@ public class SourcedTimer implements ActionListener
 
     /**
      * Create a SourcedTimer for the given source using default granularity.
-     * 
+     *
      * @param src
      *            An object that implements the TimeSource interface.
      */
@@ -70,7 +70,7 @@ public class SourcedTimer implements ActionListener
     /**
      * Create a SourcedTimer for the given source with the specified
      * granularity.
-     * 
+     *
      * @param src
      *            An object that implements the TimeSource interface.
      * @param granularity
@@ -87,7 +87,7 @@ public class SourcedTimer implements ActionListener
     /**
      * Create a SourcedTimer for the given source. Use the Timer passed as an
      * argument for the base timer.
-     * 
+     *
      * @param src
      *            An object that implements the TimeSource interface.
      * @param timer
@@ -103,7 +103,7 @@ public class SourcedTimer implements ActionListener
     /**
      * Called in response to an ActionEvent from the associated base timer.
      * Nominally this method is called every granularity milliseconds.
-     * 
+     *
      * @param e
      *            ActionEvent from base timer.
      */
@@ -114,7 +114,7 @@ public class SourcedTimer implements ActionListener
 
     /**
      * Add a listener to this object.
-     * 
+     *
      * @param l
      *            An object that implements SourcedTimerListener interface.
      */
@@ -131,8 +131,8 @@ public class SourcedTimer implements ActionListener
      * to listeners who have a reference to a SourcedTimer but not necessarily
      * the source itself. It simply delegates to the source and asks what number
      * are raw units divider by to arrive at seconds.
-     * 
-     * 
+     *
+     *
      * @return A number used to divide base timer time for conversion to
      *         seconds.
      */
@@ -144,7 +144,7 @@ public class SourcedTimer implements ActionListener
     /**
      * Starts a thread that is responsible for notifying any listeners on this
      * SourcedTimer. For each listener, its timerUpdate method is called.
-     * 
+     *
      * @param nsecs
      *            Time in nanoseconds from base timer.
      */
@@ -171,7 +171,7 @@ public class SourcedTimer implements ActionListener
     /**
      * Start the timer. The associated base timer is started if it is not
      * already running.
-     * 
+     *
      */
     public void start()
     {
@@ -184,7 +184,7 @@ public class SourcedTimer implements ActionListener
 
     /**
      * Stop the timer. The associated base timer is stopped.
-     * 
+     *
      */
     public void stop()
     {

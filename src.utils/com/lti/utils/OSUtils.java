@@ -4,9 +4,9 @@ import java.util.logging.*;
 
 /**
  * Helper functions to determine which OS we are running.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public final class OSUtils
 {

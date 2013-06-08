@@ -17,7 +17,7 @@ import org.xiph.speex.*;
 
 /**
  * Speex to PCM java decoder
- * 
+ *
  * @author Damian Minkov
  */
 public class JavaDecoder extends com.ibm.media.codec.audio.AudioCodec
@@ -57,7 +57,7 @@ public class JavaDecoder extends com.ibm.media.codec.audio.AudioCodec
 
     /**
      * Counts the samples in given data
-     * 
+     *
      * @param data
      *            byte[]
      * @param len

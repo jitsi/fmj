@@ -2,7 +2,7 @@ package net.sf.fmj.utility;
 
 /**
  * RingBuffer
- * 
+ *
  * @author mgodehardt
  * @version 1-1-alpha3
  */

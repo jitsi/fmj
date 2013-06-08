@@ -10,9 +10,9 @@ import net.sf.fmj.utility.*;
 /**
  * Intended to function as Sun's version in com.sun.media. Contains many other
  * mime types that Sun's does not have.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class MimeManager // not final so we can extend it to implement one in
 // com.sun.media

@@ -16,7 +16,7 @@ public class StopButton extends BasicControlButton
 
     /**
      * Paint a small square into BasicControlButton
-     * 
+     *
      * @param g
      *            Graphics into which rectangles are drawn.
      * @param x

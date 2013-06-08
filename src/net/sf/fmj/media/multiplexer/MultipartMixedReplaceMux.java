@@ -15,9 +15,9 @@ import net.sf.fmj.utility.*;
  * used for MJPG IP cameras. Also adds a nonstandard property header to each
  * part, X-FMJ-Timestamp, with the JMF/FMJ timestamp as a long integer string.
  * Always uses the same boundary string, "--ssBoundaryFMJ".
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class MultipartMixedReplaceMux extends AbstractInputStreamMux
 {

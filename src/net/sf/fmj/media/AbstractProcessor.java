@@ -8,9 +8,9 @@ import net.sf.fmj.ejmf.toolkit.media.*;
 
 /**
  * Abstract base class to implement Processor.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractProcessor extends AbstractPlayer implements
         Processor

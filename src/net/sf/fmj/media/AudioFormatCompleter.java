@@ -5,9 +5,9 @@ import javax.media.format.*;
 
 /**
  * Creates audio formats which have any unspecified values set to defaults
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class AudioFormatCompleter
 {

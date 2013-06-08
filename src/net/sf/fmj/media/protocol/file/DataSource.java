@@ -14,9 +14,9 @@ import com.lti.utils.*;
 
 /**
  * File protocol handler DataSource.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class DataSource extends PullDataSource implements SourceCloneable
 {

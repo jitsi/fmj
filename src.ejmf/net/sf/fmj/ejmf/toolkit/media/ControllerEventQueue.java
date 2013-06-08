@@ -15,10 +15,10 @@ import com.lti.utils.synchronization.*;
  * when the queue is constructed. Note that ControllerListeners may be added or
  * removed from this Vector from outside of this class, and these changes will
  * be reflected in the dispatching mechanism.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @author Steve Talley & Rob Gordon
  */
 public class ControllerEventQueue extends CloseableThread
@@ -31,7 +31,7 @@ public class ControllerEventQueue extends CloseableThread
     /**
      * Construct a ControllerEventQueue for the given list of
      * ControllerListeners.
-     * 
+     *
      * @param listeners
      *            The list of ControllerListeners to notify whenever a
      *            ControllerEvents is posted.

@@ -110,7 +110,7 @@ public class StandardProgressControl extends ChangeListenerControl implements
 
     /**
      * Create ProgressSlider
-     * 
+     *
      * @see net.sf.fmj.ejmf.toolkit.gui.controls.skins.ejmf.ProgressSlider
      */
     @Override
@@ -252,7 +252,7 @@ public class StandardProgressControl extends ChangeListenerControl implements
      * This method implements the SourcedTimerListener interface. Each timer
      * tick causes slider thumbnail to move if a ProgressBar was built for this
      * control panel.
-     * 
+     *
      * @see net.sf.fmj.ejmf.toolkit.util.SourcedTimer
      */
     public void timerUpdate(SourcedTimerEvent e)

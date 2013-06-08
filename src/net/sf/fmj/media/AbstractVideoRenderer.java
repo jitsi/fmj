@@ -8,9 +8,9 @@ import javax.media.renderer.*;
 
 /**
  * Abstract implementation of VideoRenderer, useful for subclassing.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractVideoRenderer extends AbstractRenderer implements
         VideoRenderer, FrameGrabbingControl

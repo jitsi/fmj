@@ -5,9 +5,9 @@ import javax.sound.sampled.*;
 
 /**
  * AIFF audio multiplexer. TODO: doesn't work?
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class AIFFMux extends JavaSoundMux
 {

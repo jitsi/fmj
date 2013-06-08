@@ -2,9 +2,9 @@ package net.sf.jdshow;
 
 /**
  * Helper to set up windowed rendering.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class WindowedRendering
 {

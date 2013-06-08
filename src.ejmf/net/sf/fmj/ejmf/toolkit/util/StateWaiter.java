@@ -14,10 +14,10 @@ import javax.media.*;
  * <LI>the Controller posts a ControllerErrorEvent, indicating that an error
  * occurred andthe transition failed</LI>
  * </UL>
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @author Steve Talley and Rob Gordon
  */
 public class StateWaiter implements ControllerListener
@@ -45,7 +45,7 @@ public class StateWaiter implements ControllerListener
 
     /**
      * Construct a StateWaiter object for the given Controller
-     * 
+     *
      * @param controller
      *            the Controller on which to wait for the desired state
      */
@@ -76,7 +76,7 @@ public class StateWaiter implements ControllerListener
     /**
      * Calls prefetch() on the Controller and blocks the current thread until
      * the Controller is Prefetched.
-     * 
+     *
      * @return boolean indicating whether the transition was successful.
      */
     public boolean blockingPrefetch()
@@ -89,7 +89,7 @@ public class StateWaiter implements ControllerListener
     /**
      * Calls realize() on the Controller and blocks the current thread until the
      * Controller is Realized.
-     * 
+     *
      * @return boolean indicating whether the transition was successful.
      */
     public boolean blockingRealize()
@@ -102,9 +102,9 @@ public class StateWaiter implements ControllerListener
     /**
      * Casts the Controller to a Player, calls start(), and blocks the current
      * thread until the player is Started.
-     * 
+     *
      * @return boolean indicating whether the transition was successful.
-     * 
+     *
      * @exception ClassCastException
      *                If the Controller is not a Player
      */
@@ -120,7 +120,7 @@ public class StateWaiter implements ControllerListener
      * Calls syncStart() on the Controller and blocks the current thread until
      * the Controller is Started. This could throw a ClockStartedError if the
      * Controller is not in the Prefetched state.
-     * 
+     *
      * @return boolean indicating whether the transition was successful.
      */
     public boolean blockingSyncStart(Time t)
@@ -146,7 +146,7 @@ public class StateWaiter implements ControllerListener
      * <LI>A StopEvent is posted</LI>
      * <LI>A ControllerClosedEvent is posted (indicating a failure)</LI>
      * </UL>
-     * 
+     *
      * @param event
      *            the media event
      */
@@ -198,7 +198,7 @@ public class StateWaiter implements ControllerListener
     /**
      * Blocks the current thread until the Controller has reached the previously
      * specified state or an error has occurred.
-     * 
+     *
      * @return boolean indicating whether the transition was successful.
      */
     private synchronized boolean waitForState()

@@ -6,7 +6,7 @@ package net.sf.fmj.media.util;
  * pause() and start() method is provided. To use it, you will: - subclass from
  * it; - overwrite the process() callback; - call start() to initiate the
  * thread.
- * 
+ *
  * @version 1.9, 98/09/28
  */
 public abstract class LoopThread extends MediaThread

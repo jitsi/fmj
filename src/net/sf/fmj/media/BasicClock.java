@@ -6,7 +6,7 @@ import javax.media.*;
  * BasicClock implements javax.media.Clock. This is not a running thread that
  * implements the clock ticks. It just implements the math and maintains the
  * correct states to perform the computations from media-time to time-base-time.
- * 
+ *
  * @version 1.7, 02/08/21
  */
 public class BasicClock implements Clock
@@ -30,7 +30,7 @@ public class BasicClock implements Clock
 
     /**
      * Get the current media time in nanoseconds.
-     * 
+     *
      * @return the current media time in nanoseconds.
      */
     public long getMediaNanoseconds()
@@ -58,7 +58,7 @@ public class BasicClock implements Clock
 
     /**
      * Return the current media time.
-     * 
+     *
      * @return the current media time.
      */
     public Time getMediaTime()
@@ -68,7 +68,7 @@ public class BasicClock implements Clock
 
     /**
      * Get the current presentation speed.
-     * 
+     *
      * @return the current presentation speed.
      */
     public float getRate()
@@ -78,7 +78,7 @@ public class BasicClock implements Clock
 
     /**
      * Return the current state of the clock in either started or stopped state.
-     * 
+     *
      * @return the current clock state.
      */
     public int getState()
@@ -117,7 +117,7 @@ public class BasicClock implements Clock
 
     /**
      * Return the preset stop time.
-     * 
+     *
      * @return the preset stop time.
      */
     public Time getStopTime()
@@ -135,7 +135,7 @@ public class BasicClock implements Clock
 
     /**
      * Get the Time Base that the clock is currently using.
-     * 
+     *
      * @return the Time Base that the clock is currently using.
      */
     public TimeBase getTimeBase()
@@ -145,7 +145,7 @@ public class BasicClock implements Clock
 
     /**
      * Map the the given media-time to time-base-time.
-     * 
+     *
      * @param t
      *            media time
      * @return time base time.
@@ -166,7 +166,7 @@ public class BasicClock implements Clock
 
     /**
      * Set the upper bound of the media time.
-     * 
+     *
      * @param t
      *            the upper bound of the media time.
      */
@@ -177,7 +177,7 @@ public class BasicClock implements Clock
 
     /**
      * Set the lower bound of the media time.
-     * 
+     *
      * @param t
      *            the lower bound of the media time.
      */
@@ -189,7 +189,7 @@ public class BasicClock implements Clock
     /**
      * Set the media time. This will be the media presented at the clock's start
      * time.
-     * 
+     *
      * @param now the media time to set to.
      */
     public void setMediaTime(Time now)
@@ -211,7 +211,7 @@ public class BasicClock implements Clock
     /**
      * Set the rate of presentation: 1.0: normal, 2.0: twice the speed. -2.0:
      * twice the speed in reverse.
-     * 
+     *
      * @param factor the speed factor.
      * @return the actual rate the clock is set to.
      */
@@ -228,7 +228,7 @@ public class BasicClock implements Clock
 
     /**
      * Preset a stop time in media time.
-     * 
+     *
      * @param t
      *            the preset stop time.
      */
@@ -245,7 +245,7 @@ public class BasicClock implements Clock
     /**
      * Set a time base on the clock. All media-time to time-base-time will be
      * computed with the given time base.
-     * 
+     *
      * @param master
      *            the new master time base.
      * @exception IncompatibleTimeBaseException
@@ -287,7 +287,7 @@ public class BasicClock implements Clock
 
     /**
      * Start the clock with the given time-base-time
-     * 
+     *
      * @param tbt the time base time to start the clock.
      */
     public void syncStart(Time tbt)

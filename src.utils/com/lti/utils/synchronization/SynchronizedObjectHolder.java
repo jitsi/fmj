@@ -1,9 +1,9 @@
 package com.lti.utils.synchronization;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class SynchronizedObjectHolder<T>
 {

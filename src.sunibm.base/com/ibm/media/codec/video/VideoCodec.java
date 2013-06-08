@@ -11,7 +11,7 @@ import net.sf.fmj.utility.*;
 import com.sun.media.*;
 
 /**
- * 
+ *
  * @author Ken Larson
  * @deprecated Don't use this unless you really have to.
  */

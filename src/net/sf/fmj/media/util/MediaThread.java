@@ -211,7 +211,7 @@ public class MediaThread extends Thread
      * Consequently, extenders overriding the <tt>run</tt> method will not have
      * the Android thread priority applied until they call back to the
      * <tt>MediaThread</tt> implementation.
-     * 
+     *
      * @param androidThreadPriority
      *            the name of the <tt>android.os.Process</tt> static final field
      *            which specifies the thread priority of this

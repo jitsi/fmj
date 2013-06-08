@@ -6,9 +6,9 @@ import javax.swing.*;
 
 /**
  * Generic OK cancel dialog with an ObjEditor inside.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class ObjEditorOKCancelDialog
 {

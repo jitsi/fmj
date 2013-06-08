@@ -38,14 +38,14 @@ public abstract class AbstractGainButtonPanel extends JPanel
 
     /**
      * Create a button for increasing gain.
-     * 
+     *
      * @return An AbstractButton
      */
     protected abstract AbstractButton createGainIncreaseButton(Skin skin);
 
     /**
      * Get button repsonsible for decreasing gain
-     * 
+     *
      * @return An AbstractButton
      */
     public AbstractButton getGainDecreaseButton()
@@ -55,7 +55,7 @@ public abstract class AbstractGainButtonPanel extends JPanel
 
     /**
      * Get button repsonsible for increasing gain
-     * 
+     *
      * @return An AbstractButton
      */
     public AbstractButton getGainIncreaseButton()

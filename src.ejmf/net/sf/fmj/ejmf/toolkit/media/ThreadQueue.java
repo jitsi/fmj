@@ -8,12 +8,12 @@ import com.lti.utils.synchronization.*;
  * The ThreadQueue class provides a mechanism to run threads serially. When a
  * thread is added, it will be started as soon as all threads added before it
  * have completed.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @author Steve Talley & Rob Gordon
- * 
+ *
  *         mgodehardt: this is now a closeable thread
  */
 public class ThreadQueue extends CloseableThread
@@ -33,7 +33,7 @@ public class ThreadQueue extends CloseableThread
 
     /**
      * Add a thread to this ThreadQueue.
-     * 
+     *
      * @param t
      *            The Thread to add.
      */

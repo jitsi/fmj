@@ -5,9 +5,9 @@ import java.awt.*;
 import javax.swing.*;
 
 /**
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class UserSettingsPanel extends JPanel
 {
@@ -28,7 +28,7 @@ public class UserSettingsPanel extends JPanel
 
     /**
      * This method initializes logFileTextField
-     * 
+     *
      * @return javax.swing.JTextField
      */
     private JTextField getLogFileTextField()
@@ -43,7 +43,7 @@ public class UserSettingsPanel extends JPanel
 
     /**
      * This method initializes regFileTextField
-     * 
+     *
      * @return javax.swing.JTextField
      */
     private JTextField getRegFileTextField()

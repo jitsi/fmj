@@ -8,7 +8,7 @@ import net.sf.fmj.media.*;
 
 /**
  * The contents of the registry.
- * 
+ *
  * @author Warren Bloomer
  * @author Ken Larson
  */

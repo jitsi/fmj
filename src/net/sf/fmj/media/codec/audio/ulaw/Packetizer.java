@@ -10,9 +10,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * ULAW/RTP packetizer codec.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class Packetizer extends AbstractPacketizer
 {

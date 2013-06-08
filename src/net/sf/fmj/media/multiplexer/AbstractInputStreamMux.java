@@ -13,9 +13,9 @@ import net.sf.fmj.utility.*;
  * An abstract Multiplexer which may be used as a base class for multiplexers
  * which need to simply write something to an output stream as each buffer comes
  * in.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractInputStreamMux extends AbstractMultiplexer
 {
@@ -58,7 +58,7 @@ public abstract class AbstractInputStreamMux extends AbstractMultiplexer
          * if (pipedInputStream != null) { try { pipedInputStream.close(); }
          * catch (IOException e) { logger.log(Level.WARNING, "" + e, e); }
          * finally { pipedInputStream = null; } }
-         * 
+         *
          * if (pipedOutputStream != null) { try { pipedOutputStream.close(); }
          * catch (IOException e) { logger.log(Level.WARNING, "" + e, e); }
          * finally { pipedOutputStream = null; } }

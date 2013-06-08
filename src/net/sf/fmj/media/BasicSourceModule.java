@@ -15,7 +15,7 @@ import net.sf.fmj.media.util.*;
  * It receives data from PullSourceStream and stream the data to the downstream
  * modules (in case of PushSourceStream an adapter should be written Push2Pull
  * such as the RTP "bucket" adapter).<br>
- * 
+ *
  * MediaSource are typically not threaded and use Pull protocol (URL connection
  * is really threaded but everything goes "under the hood" so we refer to it as
  * unthreaded one).<br>
@@ -34,7 +34,7 @@ import net.sf.fmj.media.util.*;
  * <li>Variable frame size file format (such as MPEG system layer) should
  * provide a method to perform the seek.</li>
  * </ul>
- * 
+ *
  */
 
 public class BasicSourceModule extends BasicModule implements Duration,
@@ -666,7 +666,7 @@ class SourceThread extends LoopThread implements TrackListener
 
         /*
          * For debugging.
-         * 
+         *
          * if (buffer.getFormat() instanceof javax.media.format.VideoFormat) {
          * System.err.println("BSM: readFrame: " + buffer.getSequenceNumber());
          * }
@@ -705,15 +705,15 @@ class SourceThread extends LoopThread implements TrackListener
     {
         /*
          * Commented out. Requires some more thinking. - ivg.
-         * 
+         *
          * if( lastRelativeTime < 0) { //System.out.println(
          * "relative time reset!"); // Shift the time by .01 sec to avoid
          * generating the // same time stamp after retart. currentTime +=
          * 10000000; } else { //System.out.println( "else..."); currentTime +=
          * buffer.getTimeStamp() - lastRelativeTime; }
-         * 
+         *
          * lastRelativeTime= buffer.getTimeStamp();
-         * 
+         *
          * buffer.setTimeStamp( currentTime);
          */
         buffer.setFlags((buffer.getFlags() & ~Buffer.FLAG_RELATIVE_TIME)

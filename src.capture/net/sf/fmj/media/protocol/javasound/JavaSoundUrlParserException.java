@@ -1,9 +1,9 @@
 package net.sf.fmj.media.protocol.javasound;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class JavaSoundUrlParserException extends Exception
 {

@@ -2,30 +2,30 @@
  * @(#)RTCPHeader.java
  * Created: 2005-04-21
  * Version: 2-0-alpha
- * Copyright (c) 2005-2006, University of Manchester All rights reserved. 
+ * Copyright (c) 2005-2006, University of Manchester All rights reserved.
  * Andrew G D Rowley
  * Christian Vincenot <sipcom@cyberspace7.net>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * Redistributions of source code must retain the above copyright notice, this
  * list of conditions and the following disclaimer. Redistributions in binary
  * form must reproduce the above copyright notice, this list of conditions and
- * the following disclaimer in the documentation and/or other materials 
- * provided with the distribution. Neither the name of the University of 
- * Manchester nor the names of its contributors may be used to endorse or 
+ * the following disclaimer in the documentation and/or other materials
+ * provided with the distribution. Neither the name of the University of
+ * Manchester nor the names of its contributors may be used to endorse or
  * promote products derived from this software without specific prior written
- * permission. 
- * 
+ * permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
@@ -37,7 +37,7 @@ import java.net.*;
 
 /**
  * Represents and parses an RTCP header
- * 
+ *
  * @author Andrew G D Rowley
  * @version 1-1-alpha
  */
@@ -121,7 +121,7 @@ public class RTCPHeader
 
     /**
      * Creates a new RTCPHeader
-     * 
+     *
      * @param data
      *            The data to read the header from
      * @param offset
@@ -151,7 +151,7 @@ public class RTCPHeader
 
     /**
      * Creates a new RTCPHeader
-     * 
+     *
      * @param packet
      *            The packet from which to parse the header
      * @throws IOException
@@ -166,7 +166,7 @@ public class RTCPHeader
      * Returns the RTCP header flags. This is a 16 bits short integer composed
      * by: . the version number: 2 bits . the padding bit . the reception report
      * count (RC): 5 bits . the packet type (PT): 8 bits
-     * 
+     *
      * @return the header flags (version|P|RC|PT)
      */
     public int getFlags()
@@ -176,7 +176,7 @@ public class RTCPHeader
 
     /**
      * Returns the length of the RTCP packet
-     * 
+     *
      * @return The length of the RTCP packet
      */
     public int getLength()
@@ -186,7 +186,7 @@ public class RTCPHeader
 
     /**
      * Returns the type of RTCP packet (SR || RR)
-     * 
+     *
      * @return The type of the RTCP packet (SR or RR)
      */
     public short getPacketType()
@@ -198,7 +198,7 @@ public class RTCPHeader
      * Returns the value of the padding bit, indicating if this individual RTCP
      * packet contains some additional padding octets at the end which are not
      * part of the control information but are included in the length field
-     * 
+     *
      * @return the padding value
      */
     public short getPadding()
@@ -210,7 +210,7 @@ public class RTCPHeader
      * Returns the reception report count (RC). This represents the number of
      * reception report blocks contained in this packet. A value of zero is
      * valid.
-     * 
+     *
      * @return The number of reception blocks in the packet (0 is valid)
      */
     public short getReceptionCount()
@@ -220,7 +220,7 @@ public class RTCPHeader
 
     /**
      * Returns the SSRC being described by this packet.
-     * 
+     *
      * @return The ssrc being described
      */
     public long getSsrc()
@@ -230,7 +230,7 @@ public class RTCPHeader
 
     /**
      * Returns the version of the RTCP packet
-     * 
+     *
      * @return The RTP version implemented
      */
     public short getVersion()
@@ -240,7 +240,7 @@ public class RTCPHeader
 
     /**
      * Displays the header
-     * 
+     *
      */
     public void print()
     {

@@ -13,27 +13,27 @@ import net.sf.fmj.utility.*;
  * This is a registry of Plugins, Protocol prefixes, Content prefixes, and MIME
  * types. The registry may be serialized to an XML. The XML file is nominally
  * located in ${user.home}/.fmj.registry.xml
- * 
+ *
  * This object is used by the PackageManager and the PluginManager for
  * persisting data across sessions.
- * 
+ *
  * Currently the Registry does not store the supported input and output formats
  * for Plugins. This may be supported by adding CDATA sections that are
  * serialized Format objects. However, it would be good to be able to clear the
  * stored formats, and refresh the supported formats by introspecting the
  * Plugins. Sometimes the installed plugins may be updated, and the list of
  * supported formats may change for the same plugin class.
- * 
+ *
  * Nevertheless, the present situation is that the PluginManager will need to
  * determine supported formats upon loading informatin from this Registry.
- * 
+ *
  * TODO separate the persistence mechanism from this object, so that it may be
  * updated/plugged-in. TODO perhaps remove reliance on JDOM. Although JDOM makes
  * it easy to program, it is another jar to ship.
- * 
+ *
  * @author Warren Bloomer
  * @author Ken Larson
- * 
+ *
  */
 public class Registry
 {
@@ -69,7 +69,7 @@ public class Registry
      * handlers or content handlers under javax.media in JMF or FMJ. It is just
      * a wasted to even check, especially in an applet. For strict
      * JMF-compatibility, this should be set to true.
-     * 
+     *
      * See also Manager.USE_MEDIA_PREFIX.
      */
     private static final boolean READD_JAVAX = false;
@@ -80,7 +80,7 @@ public class Registry
 
     /**
      * Get the singleton.
-     * 
+     *
      * @return The singleton JmfRegistry object.
      */
     public static Registry getInstance()
@@ -143,7 +143,7 @@ public class Registry
 
     /**
      * Write the registry to file.
-     * 
+     *
      */
     public synchronized void commit() throws IOException
     {
@@ -235,7 +235,7 @@ public class Registry
 
     /**
      * Get the registry resource stream.
-     * 
+     *
      * @return
      */
     private InputStream getRegistryResourceStream(int registryFormat)
@@ -324,9 +324,9 @@ public class Registry
 
     /**
      * Prefices for determining Handlers for content of particular MIME types.
-     * 
+     *
      * MIME types are converted to package names, e.g. text/html -> text.html
-     * 
+     *
      * These package names are added to the prefices in this list to determine
      * Handlers for them. i.e. "<i>prefix</i>.media.content.text.html.Handler"
      */
@@ -373,7 +373,7 @@ public class Registry
     /**
      * Plugin list of PluginInfo objects = { classname, inputFormats,
      * outputFormats, pluginType};
-     * 
+     *
      * @param pluginType
      *            range of [1..NUM_PLUGIN_TYPES]
      * @param plugins
@@ -389,13 +389,13 @@ public class Registry
     /**
      * Prefices for determining URL Handlers for content delivered via
      * particular protocol.
-     * 
+     *
      * Protocols are converted to package names, e.g. "http" -> "http" These
      * package names are added to the prefices in this list to determine
      * Handlers for them. i.e. "<i>prefix</i>.media.protocol.http.Handler"
-     * 
+     *
      * TODO perhaps use URLStreamHandlers
-     * 
+     *
      */
     public synchronized void setProtocolPrefixList(List<String> list)
     {

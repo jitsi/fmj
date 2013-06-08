@@ -8,9 +8,9 @@ import javax.swing.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class RegistryEditorPanel extends JPanel
 {
@@ -25,7 +25,7 @@ public class RegistryEditorPanel extends JPanel
 
     /**
      * This method initializes
-     * 
+     *
      */
     public RegistryEditorPanel()
     {
@@ -35,7 +35,7 @@ public class RegistryEditorPanel extends JPanel
 
     /**
      * This method initializes captureDevicePanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.CaptureDevicePanel
      */
     private CaptureDevicePanel getCaptureDevicePanel()
@@ -49,7 +49,7 @@ public class RegistryEditorPanel extends JPanel
 
     /**
      * This method initializes mimeTypesPanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.MimeTypesPanel
      */
     private MimeTypesPanel getMimeTypesPanel()
@@ -75,7 +75,7 @@ public class RegistryEditorPanel extends JPanel
 
     /**
      * This method initializes packagesPanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.PackagesPanel
      */
     private PackagesPanel getPackagesPanel()
@@ -89,7 +89,7 @@ public class RegistryEditorPanel extends JPanel
 
     /**
      * This method initializes pluginsPanel
-     * 
+     *
      * @return net.sf.fmj.ui.registry.PluginsPanel
      */
     private PluginTypesPanel getPluginsPanel()
@@ -103,7 +103,7 @@ public class RegistryEditorPanel extends JPanel
 
     /**
      * This method initializes registryTabbedPane
-     * 
+     *
      * @return javax.swing.JTabbedPane
      */
     private JTabbedPane getRegistryTabbedPane()
@@ -127,7 +127,7 @@ public class RegistryEditorPanel extends JPanel
 
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize()
     {

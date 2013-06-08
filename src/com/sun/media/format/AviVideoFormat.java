@@ -10,9 +10,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * TODO: test
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class AviVideoFormat extends VideoFormat
 {

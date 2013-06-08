@@ -8,9 +8,9 @@ import javax.media.*;
 
 /**
  * Base class to help implement {@link GainControl}.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractGainControl implements GainControl
 {

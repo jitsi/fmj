@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * Implementation of a FIFO.
- * 
+ *
  * @author Ken Larson
  */
 public class Queue<T>

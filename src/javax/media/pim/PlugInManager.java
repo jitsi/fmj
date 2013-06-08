@@ -10,7 +10,7 @@ import net.sf.fmj.utility.*;
 
 /**
  * Internal implementation of javax.media.PlugInManager. In progress.
- * 
+ *
  * @author Ken Larson
  */
 public class PlugInManager extends javax.media.PlugInManager
@@ -166,7 +166,7 @@ public class PlugInManager extends javax.media.PlugInManager
 
     /**
      * Get a list of plugins that match the given input and output formats.
-     * 
+     *
      * @param input
      * @param output
      * @param type
@@ -298,7 +298,7 @@ public class PlugInManager extends javax.media.PlugInManager
     /**
      * according to the docs, sets the search order. does not appear to add new
      * plugins.
-     * 
+     *
      * @param plugins
      * @param type
      */

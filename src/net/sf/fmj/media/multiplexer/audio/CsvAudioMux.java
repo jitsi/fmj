@@ -15,9 +15,9 @@ import com.lti.utils.*;
 /**
  * Experimental mux for dumping out audio to a delimited text file. Useful for
  * debugging endian/sign/conversion problems.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class CsvAudioMux extends AbstractInputStreamMux
 {

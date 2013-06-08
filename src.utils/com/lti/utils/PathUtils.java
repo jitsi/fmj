@@ -2,15 +2,15 @@ package com.lti.utils;
 
 /**
  * Path utilities. TODO: move to src.utils/com.lti.utils.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public final class PathUtils
 {
     /**
      * does not include the dot. s can be filename + ext or full path.
-     * 
+     *
      */
     public static String extractExtension(String s)
     {

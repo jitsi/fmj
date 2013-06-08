@@ -5,9 +5,9 @@ import java.awt.*;
 import javax.swing.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class BasicIconButton extends JButton implements SwingConstants
 {

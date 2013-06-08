@@ -3,9 +3,9 @@ package net.sf.fmj.ui.objeditor;
 import java.awt.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class ComponentValidationException extends Exception
 {

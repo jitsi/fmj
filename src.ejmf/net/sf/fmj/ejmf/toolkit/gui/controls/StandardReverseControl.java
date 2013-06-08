@@ -98,7 +98,7 @@ public class StandardReverseControl extends MouseListenerControl
      * Set the state of the listener. If <tt>isOperational</tt> is passed as
      * <tt>true</tt>, then the listener semantics are applied in response to
      * mouse activity. Otherwise, the listener semantics are not applied.
-     * 
+     *
      * This is used to disable default semantics if client control panel
      * simulates reversing media. In this case, <tt>setController</tt> will call
      * <tt>setOperational</tt> with a <tt>true</tt> value.

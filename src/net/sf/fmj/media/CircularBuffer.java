@@ -30,7 +30,7 @@ public class CircularBuffer
 
     /**
      * create a queue with max number of elements
-     * 
+     *
      * @param n
      *            the max number of elements
      */

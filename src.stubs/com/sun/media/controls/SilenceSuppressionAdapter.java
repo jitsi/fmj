@@ -7,9 +7,9 @@ import javax.media.control.*;
 
 /**
  * TODO: stub.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class SilenceSuppressionAdapter implements SilenceSuppressionControl
 {

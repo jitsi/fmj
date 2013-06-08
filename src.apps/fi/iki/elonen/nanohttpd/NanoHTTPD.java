@@ -6,15 +6,15 @@ import java.util.*;
 
 /**
  * A simple, tiny, nicely embeddable HTTP 1.0 server in Java
- * 
+ *
  * <p>
  * NanoHTTPD version 1.02, Copyright &copy; 2001,2005 Jarno Elonen
  * (elonen@iki.fi, http://iki.fi/elonen/)
- * 
+ *
  * <p>
  * <b>Features & limitations: </b>
  * <ul>
- * 
+ *
  * <li>Only one Java file</li>
  * <li>Java 1.1 compatible</li>
  * <li>Released as open source, Modified BSD licence</li>
@@ -31,20 +31,20 @@ import java.util.*;
  * <li>File server uses current directory as a web root</li>
  * <li>File server serves also very long files without memory overhead</li>
  * <li>Contains a built-in list of most common mime types</li>
- * 
+ *
  * </ul>
- * 
+ *
  * <p>
  * <b>Ways to use: </b>
  * <ul>
- * 
+ *
  * <li>Run as a standalone app, serves files from current directory and shows
  * requests</li>
  * <li>Subclass serve() and embed to your own program</li>
  * <li>Call serveFile() from serve() with your own base directory</li>
- * 
+ *
  * </ul>
- * 
+ *
  * See the end of the source file for distribution license (Modified BSD
  * licence)
  */
@@ -545,9 +545,9 @@ public class NanoHTTPD
     /**
      * Override this to customize the server.
      * <p>
-     * 
+     *
      * (By default, this delegates to serveFile() and allows directory listing.)
-     * 
+     *
      * @param uri
      *            Percent-decoded URI without parameters, for example
      *            "/index.cgi"

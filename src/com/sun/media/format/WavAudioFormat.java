@@ -9,9 +9,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * Coding complete.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class WavAudioFormat extends AudioFormat
 {

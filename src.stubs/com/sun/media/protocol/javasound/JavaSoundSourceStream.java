@@ -9,10 +9,10 @@ public class JavaSoundSourceStream
         // mgodehardt: disabled , dunno who is using this class
         /*
          * final Format[] formats = DataSource.querySupportedFormats();
-         * 
+         *
          * final CaptureDeviceInfo jmfInfo = new CaptureDeviceInfo("JavaSound",
          * new MediaLocator("javasound:" + "//"), formats);
-         * 
+         *
          * return new CaptureDeviceInfo[] {jmfInfo};
          */
 

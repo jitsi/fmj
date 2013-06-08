@@ -16,11 +16,11 @@ public class Com
 
 	public static final int WS_CHILD         = 0x40000000;
 	public static final int WS_MINIMIZE      = 0x20000000;
-	
+
 	public static final int WS_VISIBLE       = 0x10000000;
 
-	
-	
+
+
 	public static final int WS_DISABLED      = 0x08000000;
 	public static final int WS_CLIPSIBLINGS  = 0x04000000;
 	public static final int WS_CLIPCHILDREN  = 0x02000000;
@@ -50,19 +50,19 @@ public class Com
 	public static final GUID IID_IMediaSeeking = IMediaSeeking.Init_IID(new GUID());
 	public static final GUID CLSID_FilterGraph = new GUID(0xe436ebb3, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70);
 	public static final GUID IID_IGraphBuilder = IGraphBuilder.Init_IID(new GUID());
-	
+
 	//enum tagCLSCTX
-    //{	
+    //{
 	public static final int CLSCTX_INPROC_SERVER	= 0x1;
 
 	public static final int CLSCTX_INPROC_HANDLER	= 0x2;
 
 	public static final int CLSCTX_LOCAL_SERVER	= 0x4;
-	
+
 	public static final int CLSCTX_INPROC_SERVER16	= 0x8;
-	
+
 	public static final int CLSCTX_REMOTE_SERVER	= 0x10;
-	
+
 	public static final int CLSCTX_INPROC_HANDLER16	= 0x20;
 	public static final int CLSCTX_RESERVED1	= 0x40;
 	public static final int CLSCTX_RESERVED2	= 0x80;
@@ -80,9 +80,9 @@ public class Com
 	public static final int  CLSCTX_INPROC           = (CLSCTX_INPROC_SERVER|CLSCTX_INPROC_HANDLER);
 	//	 With DCOM, CLSCTX_REMOTE_SERVER should be included
 //	#if (_WIN32_WINNT >= 0x0400 ) || defined(_WIN32_DCOM) // DCOM
-	public static final int  CLSCTX_ALL 			 = (CLSCTX_INPROC_SERVER| 
-						                                 CLSCTX_INPROC_HANDLER| 
-						                                 CLSCTX_LOCAL_SERVER| 
+	public static final int  CLSCTX_ALL 			 = (CLSCTX_INPROC_SERVER|
+						                                 CLSCTX_INPROC_HANDLER|
+						                                 CLSCTX_LOCAL_SERVER|
 						                                 CLSCTX_REMOTE_SERVER);
 	public static final int  CLSCTX_SERVER           = (CLSCTX_INPROC_SERVER|CLSCTX_LOCAL_SERVER|CLSCTX_REMOTE_SERVER);
 //	#else

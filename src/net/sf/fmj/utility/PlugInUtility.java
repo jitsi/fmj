@@ -8,9 +8,9 @@ import javax.media.protocol.*;
 /**
  * Helper class to register plugins with the PlugInManager, but only requiring
  * the class name. The rest is done by reflection/instantiation/querying.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class PlugInUtility
 {

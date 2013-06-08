@@ -11,9 +11,9 @@ import net.sf.fmj.gui.controlpanel.images.*;
 
 /**
  * A slider look-and-feel that is nice(ish).
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class CustomSliderUI extends BasicSliderUI
 {

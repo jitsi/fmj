@@ -3,9 +3,9 @@ package net.sf.fmj.media.datasink.rtp;
 /**
  * Parsed RTP URL. Contains an array of ParsedRTPUrlElement, each of which
  * corresponds to a subcomponent of the URL (audio or video).
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class ParsedRTPUrl
 {

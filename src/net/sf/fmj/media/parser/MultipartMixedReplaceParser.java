@@ -27,19 +27,19 @@ import net.sf.fmj.utility.*;
  * http://136.165.99.86/axis-cgi/mjpg/video.cgi Works:
  * http://217.114.115.192/axis-cgi/mjpg/video.cgi Works:
  * http://129.78.249.81/axis-cgi/mjpg/video.cgi
- * 
+ *
  * Others: Works:
  * http://camera.baywatch.tv/axis-cgi/mjpg/video.cgi?camera=1&resolution
  * =352x240&compression=50 Works:
  * http://www.surfshooterhawaii.com//cgi-bin/axispush555.cgi?dummy=garb
- * 
+ *
  * More camera links: http://www.axis.com/solutions/video/gallery.htm
- * 
+ *
  * TODO: support end-of-message, with 2 dashes after separator, see
  * http://wp.netscape.com/assist/net_sites/pushpull.html
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class MultipartMixedReplaceParser extends AbstractDemultiplexer
 {
@@ -601,7 +601,7 @@ public class MultipartMixedReplaceParser extends AbstractDemultiplexer
         }
 
         /**
-         * 
+         *
          * @return nanos skipped, 0 if unable to skip.
          * @throws IOException
          */

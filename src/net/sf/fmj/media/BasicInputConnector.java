@@ -4,7 +4,7 @@ import javax.media.*;
 
 /**
  * implementation of the inputConnector interface
- * 
+ *
  */
 public class BasicInputConnector extends BasicConnector implements
         InputConnector

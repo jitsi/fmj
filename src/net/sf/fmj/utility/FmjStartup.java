@@ -8,9 +8,9 @@ import net.sf.fmj.media.*;
 
 /**
  * Perform default initialization of FMJ/JMF/logging for an FMJ application.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FmjStartup
 {

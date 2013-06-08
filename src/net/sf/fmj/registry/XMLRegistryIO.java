@@ -17,10 +17,10 @@ import org.xml.sax.*;
 
 /**
  * Implementation of RegistryIO using XML.
- * 
+ *
  * @author Ken Larson
  * @author Warren Bloomer
- * 
+ *
  */
 class XMLRegistryIO implements RegistryIO
 {
@@ -69,7 +69,7 @@ class XMLRegistryIO implements RegistryIO
 
     /**
      * Builds a Document from the registry data structures.
-     * 
+     *
      * @return the Document.
      * @throws IOException
      */
@@ -500,7 +500,7 @@ class XMLRegistryIO implements RegistryIO
     }
 
     /**
-     * 
+     *
      * @param type
      */
     private void loadPlugins(Element element, int type)

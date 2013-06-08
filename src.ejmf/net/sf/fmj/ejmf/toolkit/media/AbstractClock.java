@@ -8,13 +8,13 @@ import javax.media.*;
  * setStopTime() and getStopTime(). These methods will invariably require
  * implementation-specific functionality and therefore are left to the
  * subclasses to implement.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @see AbstractController
  * @see StopTimeMonitor
- * 
+ *
  * @author Steve Talley & Rob Gordon
  */
 public class AbstractClock implements Clock
@@ -84,7 +84,7 @@ public class AbstractClock implements Clock
     /**
      * Calculates the current media time based on the current time-base time,
      * the time-base start time, the media start time, and the rate.
-     * 
+     *
      * @return The current media time
      */
     public synchronized Time getMediaTime()
@@ -122,7 +122,7 @@ public class AbstractClock implements Clock
     /**
      * Get the last value successfully set by setStopTime. Returns the constant
      * Clock.RESET if no stop time is set
-     * 
+     *
      * @return The current stop time.
      */
     public synchronized Time getStopTime()
@@ -132,7 +132,7 @@ public class AbstractClock implements Clock
 
     /**
      * Gets the time until the Clock's media synchronizes with its time-base.
-     * 
+     *
      * @return The time remaining until the time-base start-time if this Clock
      *         is Started and the time-base start-time has not yet been reached,
      *         or the media time otherwise.
@@ -175,12 +175,12 @@ public class AbstractClock implements Clock
      * Given a media time, returns the corresponding time-base time. Uses the
      * current rate, the time-base start time, and the media start time to
      * calculate.
-     * 
+     *
      * @param t
      *            A media time to be mapped to a time-base time.
-     * 
+     *
      * @return A time-base time.
-     * 
+     *
      * @exception ClockStoppedException
      *                If the clock has not started.
      */
@@ -201,10 +201,10 @@ public class AbstractClock implements Clock
 
     /**
      * Sets the media time.
-     * 
+     *
      * @param t
      *            The media time to set
-     * 
+     *
      * @exception ClockStartedError
      *                If the Clock is Started.
      */
@@ -228,15 +228,15 @@ public class AbstractClock implements Clock
      * requested value as possible, but are not required to set the rate to the
      * exact value of any argument other than 1.0. A <tt>Clock</tt> is only
      * guaranteed to set its rate exactly to 1.0.
-     * 
+     *
      * @param rate
      *            The temporal scale factor (rate) to set.
-     * 
+     *
      * @exception ClockStartedError
      *                If the Clock is Started.
-     * 
+     *
      * @return The actual rate set.
-     * 
+     *
      */
     public synchronized float setRate(float rate)
     {
@@ -265,7 +265,7 @@ public class AbstractClock implements Clock
      * <I>once</I>. A <tt>StopTimeSetError</tt> is thrown if
      * <tt>setStopTime</tt> is called and the <i>media stop-time</i> has already
      * been set.
-     * 
+     *
      * @param mediaStopTime
      *            The time at which you want the <tt>Clock</tt> to stop, in
      *            <i>media time</i>.
@@ -290,11 +290,11 @@ public class AbstractClock implements Clock
      * A <tt>Clock</tt> has a default <tt>TimeBase</tt> that is determined by
      * the implementation. To reset a <tt>Clock</tt> to its default
      * <tt>TimeBase</tt>, call <tt>setTimeBase(null)</tt>.
-     * 
+     *
      * @param timebase
      *            The new <tt>TimeBase</tt> or <tt>null</tt> to reset the
      *            <tt>Clock</tt> to its default <tt>TimeBase</tt>.
-     * 
+     *
      * @exception IncompatibleTimeBaseException
      *                Thrown if the <tt>Clock</tt> can't use the specified
      *                <tt>TimeBase</tt>.

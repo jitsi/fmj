@@ -13,9 +13,9 @@ import net.sf.fmj.media.util.*;
 /**
  * Codec that scales images from one size to another. Interestingly,
  * cross-platform JMF does not appear to have a corresponding codec.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class ImageScaler extends AbstractCodec implements Codec
 {

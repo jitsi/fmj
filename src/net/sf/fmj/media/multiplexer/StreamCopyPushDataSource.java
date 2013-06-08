@@ -14,9 +14,9 @@ import com.lti.utils.synchronization.*;
  * PushDataSource implemented by copying streams. By default, just copies the
  * input streams to the output. Subclasses can override to modify the copy
  * operation.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class StreamCopyPushDataSource extends PushDataSource
 {

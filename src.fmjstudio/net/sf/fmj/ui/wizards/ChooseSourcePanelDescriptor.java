@@ -6,9 +6,9 @@ import net.sf.fmj.ui.wizard.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class ChooseSourcePanelDescriptor extends WizardPanelDescriptor
 {

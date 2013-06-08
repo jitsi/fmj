@@ -53,7 +53,7 @@ class VideoJitterBufferBehaviour
     /**
      * Initializes a new <tt>VideoJitterBufferBehaviour</tt> instance for the
      * purposes of a specific <tt>RTPSourceStream</tt>.
-     * 
+     *
      * @param stream the <tt>RTPSourceStream</tt> which has requested the
      * initialization of the new instance
      */

@@ -9,9 +9,9 @@ import net.sf.fmj.utility.*;
 /**
  * A simple FMJ player application. Does not contain the large number of
  * features that FMJ studio has. Based on EJMF GenericPlayer.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FmjPlay extends PlayerDriver implements ControllerListener
 {
@@ -43,7 +43,7 @@ public class FmjPlay extends PlayerDriver implements ControllerListener
      * This controllerUpdate function must be defined in order to implement a
      * ControllerListener interface. This function will be called whenever there
      * is a media event.
-     * 
+     *
      * @param event
      *            the media event
      */

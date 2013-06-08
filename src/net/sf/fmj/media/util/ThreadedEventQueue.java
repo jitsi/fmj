@@ -7,7 +7,7 @@ import javax.media.*;
 /**
  * A utility class to manage an event queue in a thread. To use it, subclass
  * from it and implement the processEvent() method.
- * 
+ *
  * @version 1.4, 02/08/21
  */
 public abstract class ThreadedEventQueue extends MediaThread

@@ -2,9 +2,9 @@ package net.sf.fmj.registry;
 
 /**
  * Factory singleton to create RegistryIO.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 class RegistryIOFactory
 {

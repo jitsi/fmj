@@ -1,6 +1,6 @@
 package org.rubycoder.gsm;
 
-//    $Id: GSMDecoder.java,v 1.3 2012/04/03 07:31:54 lyub0m1r Exp $	
+//    $Id: GSMDecoder.java,v 1.3 2012/04/03 07:31:54 lyub0m1r Exp $
 
 //    This file is part of the GSM 6.10 audio decoder library for Java
 //    Copyright (C) 1998 Steven Pickles (pix@test.at)
@@ -20,8 +20,8 @@ package org.rubycoder.gsm;
 //    Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 //  This software is a port of the GSM Library provided by
-//  Jutta Degener (jutta@cs.tu-berlin.de) and 
-//  Carsten Bormann (cabo@cs.tu-berlin.de), 
+//  Jutta Degener (jutta@cs.tu-berlin.de) and
+//  Carsten Bormann (cabo@cs.tu-berlin.de),
 //  Technische Universitaet Berlin
 
 public final class GSMDecoder

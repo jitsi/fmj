@@ -10,9 +10,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * ULAW encoder Codec.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class Encoder extends AbstractCodec
 {

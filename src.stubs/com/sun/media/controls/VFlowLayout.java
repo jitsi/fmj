@@ -4,9 +4,9 @@ import java.awt.*;
 
 /**
  * TODO: stub.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class VFlowLayout implements LayoutManager
 {

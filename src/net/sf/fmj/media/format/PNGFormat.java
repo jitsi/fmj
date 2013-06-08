@@ -9,9 +9,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * PNG video format. Used for MPNG, which is like MJPEG but with PNG.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class PNGFormat extends VideoFormat
 {

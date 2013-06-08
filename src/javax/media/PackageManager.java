@@ -19,11 +19,11 @@ import net.sf.fmj.utility.*;
  * org.foo.media.content.video.foovid.Handler. This class does not actually do
  * the searching for these classes, it only provides the list. The prefixes are
  * to be searched in order until a suitable class is found.
- * 
+ *
  * Coding complete.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class PackageManager
 {

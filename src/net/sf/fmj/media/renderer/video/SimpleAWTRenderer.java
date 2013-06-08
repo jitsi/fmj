@@ -13,11 +13,11 @@ import net.sf.fmj.media.util.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * The simplest possible AWT Renderer.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class SimpleAWTRenderer extends AbstractVideoRenderer implements
         VideoRenderer

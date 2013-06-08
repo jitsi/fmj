@@ -9,9 +9,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * Adapater from {@link InputStream} to {@link PushSourceStream}.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class InputStreamPushSourceStream implements PushSourceStream
 {

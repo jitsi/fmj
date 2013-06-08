@@ -4,9 +4,9 @@ import javax.media.*;
 
 /**
  * Holds information about a plugin.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class PlugInInfo
 {

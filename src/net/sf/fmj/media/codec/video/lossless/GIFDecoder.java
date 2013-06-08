@@ -7,9 +7,9 @@ import net.sf.fmj.media.format.*;
 
 /**
  * GIF decoder Codec.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class GIFDecoder extends ImageIODecoder
 {

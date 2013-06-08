@@ -2,7 +2,7 @@ package com.lti.utils.synchronization;
 
 /**
  * A useful base class for a thread that wishes to simply respond to messages.
- * 
+ *
  * @author Ken Larson
  */
 public class MessageDrivenThread extends CloseableThread

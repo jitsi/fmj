@@ -29,12 +29,12 @@ import com.sun.jna.*;
 import com.sun.jna.ptr.*;
 
 /**
- * 
+ *
  * Demultiplexer which uses ffmpeg.java native wrapper around ffmpeg
  * (libavformat, libavcodec, libavutil, libswscale).
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FFMPEGParser extends AbstractDemultiplexer
 {
@@ -239,7 +239,7 @@ public class FFMPEGParser extends AbstractDemultiplexer
 
         // TODO: implement seeking using av_seek_frame
         /**
-         * 
+         *
          * @return nanos skipped, 0 if unable to skip.
          * @throws IOException
          */
@@ -513,7 +513,7 @@ public class FFMPEGParser extends AbstractDemultiplexer
 
         // TODO: implement seeking using av_seek_frame
         /**
-         * 
+         *
          * @return nanos skipped, 0 if unable to skip.
          * @throws IOException
          */
@@ -702,7 +702,7 @@ public class FFMPEGParser extends AbstractDemultiplexer
         /*
          * final AVRational time_base = getTimeBase(stream,
          * codecCtx);//codecCtx.time_base;
-         * 
+         *
          * // TODO: the frame rate is in frames, where half of an interlaced
          * frame counts as 1. so for interlaced video, // this has to be taken
          * into account. // for example safexmas.move is reported as : //
@@ -712,13 +712,13 @@ public class FFMPEGParser extends AbstractDemultiplexer
          * http://www.dranger.com/ffmpeg/tutorial05.html // for a good
          * discussion on pts. // TODO: for now, we'll just use the packetDts,
          * since pts seems to always be zero.
-         * 
+         *
          * if (packetDts == AVCodecLibrary.AV_NOPTS_VALUE) // TODO: with some
          * movies, pts is just always zero, so we'll handle it the same way. {
          * // If AV_NOPTS_VALUE then frame_rate = 1/time_base will be assumed.
          * // therefore we need to know the frame # return (1000000000L *
          * frameNo * (long) time_base.num) / (long) time_base.den;
-         * 
+         *
          * } else { // TODO: the code to do the calculation based on the dts is
          * wrong, so we'll just use the frame number based // calculation for
          * now. // not sure how to calculate the correct dts for a frame. // try
@@ -727,8 +727,8 @@ public class FFMPEGParser extends AbstractDemultiplexer
          * * packetDts * (long) time_base.num) / (long) time_base.den; // TODO:
          * is this correct? it appears to be based on the AVFrame comment, but
          * has not been tested yet.
-         * 
-         * 
+         *
+         *
          * }
          */
         double pts;
@@ -846,7 +846,7 @@ public class FFMPEGParser extends AbstractDemultiplexer
     }
 
     /**
-     * 
+     *
      * @param streamIndex
      *            the track/stream index
      * @return null on EOM

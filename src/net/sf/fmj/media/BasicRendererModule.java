@@ -23,7 +23,7 @@ import net.sf.fmj.media.util.*;
  * <i>Common functionality of renderers would be put here as we start the
  * implementation</i><br>
  * <i>We need the level 3 design to continue working on this class</i>
- * 
+ *
  */
 public class BasicRendererModule extends BasicSinkModule implements
         RTPTimeReporter

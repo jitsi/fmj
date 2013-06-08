@@ -6,9 +6,9 @@ import javax.media.*;
 
 /**
  * A factory for a control panel component.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public interface ControlPanelFactory
 {

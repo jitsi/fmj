@@ -20,9 +20,9 @@ import com.lti.utils.*;
  * with fmj but might be in the classpath (like fobs4jmf). The flags give us the
  * flexibility to make the registry the same as JMF's or JMF's + FMJ's, or just
  * FMJ's. Making it the same as JMF's is useful for unit testing.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class RegistryDefaults
 {

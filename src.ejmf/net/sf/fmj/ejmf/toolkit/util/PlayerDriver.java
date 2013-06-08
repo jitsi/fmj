@@ -13,10 +13,10 @@ import net.sf.fmj.utility.*;
 /**
  * The PlayerDriver class provides a basis for displaying a Java Media Player as
  * either an applet or an application.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @author Steve Talley & Rob Gordon
  */
 public abstract class PlayerDriver extends JApplet
@@ -175,10 +175,10 @@ public abstract class PlayerDriver extends JApplet
 
     /**
      * Initializes the PlayerDriver with the given MediaLocator.
-     * 
+     *
      * @exception IOException
      *                If an I/O error occurs while accessing the media.
-     * 
+     *
      * @exception NoPlayerException
      *                If a Player cannot be created from the given MediaLocator.
      */

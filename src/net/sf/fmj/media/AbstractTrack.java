@@ -4,9 +4,9 @@ import javax.media.*;
 
 /**
  * Abstract base class to implement Track.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractTrack implements Track
 {

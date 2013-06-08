@@ -72,7 +72,7 @@ public class RGBFormat extends VideoFormat
      * type and bits per pixel. The line stride is initialized using the default
      * pixel stride and specified frame width. The image is not flipped and the
      * endian is LITTLE_ENDIAN.
-     * 
+     *
      * @param size
      *            A <tt>Dimension</tt> that specifies the frame size.
      * @param maxDataLength
@@ -120,7 +120,7 @@ public class RGBFormat extends VideoFormat
 
     /**
      * Constructs an <tt>RGBFormat</tt> object with the specified properties.
-     * 
+     *
      * @param size
      *            A <tt>Dimension</tt> that specifies the frame size.
      * @param maxDataLength
@@ -165,7 +165,7 @@ public class RGBFormat extends VideoFormat
 
     /**
      * Creates a clone of this <tt>RGBFormat</tt>.
-     * 
+     *
      * @return A clone of this <tt>RGBFormat</tt>.
      */
     @Override
@@ -181,7 +181,7 @@ public class RGBFormat extends VideoFormat
     /**
      * Copies the attributes from the specified <tt>Format</tt> into this
      * <tt>RGBFormat</tt>.
-     * 
+     *
      * @param f
      *            The <tt>Format</tt> to copy the attributes from.
      */
@@ -208,7 +208,7 @@ public class RGBFormat extends VideoFormat
      * Returns <tt>true</tt> only if the specified <tt>Format</tt> is a
      * <tt>RGBFormat</tt> object and all of its attributes are identical to the
      * attributes in this <tt>RGBFormat</tt> .
-     * 
+     *
      * @param format
      *            The <tt>Format</tt> to compare.
      * @return true if the specified <tt>Format</tt> is the same as this one.
@@ -232,7 +232,7 @@ public class RGBFormat extends VideoFormat
 
     /**
      * Gets the number of bits required per pixel of data.
-     * 
+     *
      * @return An integer representing the number of bits per pixel.
      */
     public int getBitsPerPixel()
@@ -242,7 +242,7 @@ public class RGBFormat extends VideoFormat
 
     /**
      * Gets the mask for the blue component.
-     * 
+     *
      * @return The blue mask.
      */
     public int getBlueMask()
@@ -252,7 +252,7 @@ public class RGBFormat extends VideoFormat
 
     /**
      * Gets the endian ordering of the data for unpacked 16-bit data.
-     * 
+     *
      * @return An integer representing the endian ordering: BIG_ENDIAN,
      *         LITTLE_ENDIAN or NOT_SPECIFIED
      */
@@ -263,7 +263,7 @@ public class RGBFormat extends VideoFormat
 
     /**
      * Checks whether or not the video image is vertically flipped.
-     * 
+     *
      * @return <tt>Format.TRUE</tt> if the video is flipped,
      *         <tt>Format.FALSE</tt> if it is not.
      */
@@ -274,7 +274,7 @@ public class RGBFormat extends VideoFormat
 
     /**
      * Gets the mask for the green component.
-     * 
+     *
      * @return The green mask.
      */
     public int getGreenMask()
@@ -285,7 +285,7 @@ public class RGBFormat extends VideoFormat
     /**
      * Gets the line stride--the number of array elements between adjacent rows
      * of pixels.
-     * 
+     *
      * @return An integer representing the line stride.
      */
     public int getLineStride()
@@ -296,7 +296,7 @@ public class RGBFormat extends VideoFormat
     /**
      * Gets the pixel stride--the number of array elements between adjacent
      * pixels.
-     * 
+     *
      * @return An integer representing the pixel stride.
      */
     public int getPixelStride()
@@ -306,7 +306,7 @@ public class RGBFormat extends VideoFormat
 
     /**
      * Gets the mask for the red component.
-     * 
+     *
      * @return The red mask.
      */
     public int getRedMask()
@@ -318,7 +318,7 @@ public class RGBFormat extends VideoFormat
      * Finds the attributes shared by two matching <tt>Format</tt> objects. If
      * the specified <tt>Format</tt> does not match this one, the result is
      * undefined.
-     * 
+     *
      * @param format The matching <tt>Format</tt> to intersect with this
      * <tt>RGBFormat</tt>.
      * @return A <tt>Format</tt> object with its attributes set to those
@@ -360,7 +360,7 @@ public class RGBFormat extends VideoFormat
      * match. For example, if "A" are "B" are being compared, a match is
      * possible if "A" is derived from "B" or "B" is derived from "A". (The
      * compared attributes must still match, or <tt>matches</tt> fails.)
-     * 
+     *
      * @param format
      *            The <tt>Format</tt> to compare with this one.
      * @return <tt>true</tt> if the specified <tt>Format</tt> matches this one,
@@ -403,7 +403,7 @@ public class RGBFormat extends VideoFormat
      * Generate a format that's less restrictive than this format but contains
      * the basic attributes that will make this resulting format useful for
      * format matching.
-     * 
+     *
      * @return A <tt>Format</tt> that's less restrictive than the this format.
      */
     @Override
@@ -422,7 +422,7 @@ public class RGBFormat extends VideoFormat
     /**
      * Gets a <tt>String</tt> representation of the attributes of this
      * <tt>RGBFormat</tt>. For example: "RGB, 352x240, ...".
-     * 
+     *
      * @return A <tt>String</tt> that describes the format attributes.
      */
     @Override

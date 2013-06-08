@@ -6,7 +6,7 @@ import javax.media.*;
  * Abstract class from which AbstractListenerControls that depend on a
  * GainControl should extend. Upon construction it properly set the operational
  * state of the Control.
- * 
+ *
  */
 
 public abstract class AbstractGainControl extends ActionListenerControl
@@ -23,7 +23,7 @@ public abstract class AbstractGainControl extends ActionListenerControl
 
     /**
      * Create an AbstractGainControl and associate with controller.
-     * 
+     *
      * @param controller
      *            Controller with which this control is associated.
      */
@@ -44,7 +44,7 @@ public abstract class AbstractGainControl extends ActionListenerControl
      * Invoked when Controller is associated with Control. Properly sets
      * operational state and initializes initializes private reference to
      * GainControl if Controller is a Player and it has a one.
-     * 
+     *
      * @param controller
      *            Controller with which this control is associated.
      */

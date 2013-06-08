@@ -23,9 +23,9 @@ import com.lti.utils.synchronization.*;
  * PullBufferDataSource, because otherwise it has to constantly poll javasound
  * to see if new data is available. JMF's is a PushBufferDataSource though.
  * TODO: do transfer handler notifications asynchronously
- * 
+ *
  * @author Ken Larson
- * 
+ *
  *         mgodehardt: added double buffering thru a ringbuffer, the buffer is
  *         filled by the AvailabilityThread, the TrackThread is fetching the
  *         data from the buffer, this can lead to dropped frames, increasing the

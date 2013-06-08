@@ -9,9 +9,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * Abstract base class to implement Multiplexer.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractMultiplexer extends AbstractPlugIn implements
         Multiplexer

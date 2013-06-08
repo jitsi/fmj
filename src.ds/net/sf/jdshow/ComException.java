@@ -1,9 +1,9 @@
 package net.sf.jdshow;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class ComException extends Exception
 {

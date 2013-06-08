@@ -444,7 +444,7 @@ public class Handler extends BasicDataSink implements SourceTransferHandler,
     /**
      * Set the output <tt>MediaLocator</tt>. This method should only be called
      * once; an error is thrown if the locator has already been set.
-     * 
+     *
      * @param output
      *            <tt>MediaLocator</tt> that describes where the output goes.
      */

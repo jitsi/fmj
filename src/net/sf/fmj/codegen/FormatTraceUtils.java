@@ -4,9 +4,9 @@ import javax.media.*;
 
 /**
  * For tracing format operations.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FormatTraceUtils
 {

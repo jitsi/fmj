@@ -107,7 +107,7 @@ class JitterBufferStats
     public int getCurrentDelayMs()
     {
         // TODO Auto-generated method stub
-        return (int) (getCurrentDelayPackets() * 20);
+        return getCurrentDelayPackets() * 20;
     }
 
     /**

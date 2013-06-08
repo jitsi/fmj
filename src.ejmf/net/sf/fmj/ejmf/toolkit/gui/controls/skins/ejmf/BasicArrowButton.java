@@ -25,7 +25,7 @@ import javax.swing.*;
 
 /**
  * JButton object that draws a scaled Arrow in one of the cardinal directions.
- * 
+ *
  * @version 1.8 11/11/97
  * @author David Kloba
  */

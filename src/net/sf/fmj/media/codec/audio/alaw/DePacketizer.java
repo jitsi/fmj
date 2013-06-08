@@ -9,13 +9,13 @@ import net.sf.fmj.media.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * DePacketizer for ALAW/RTP. Doesn't have to do much, just copies input to
  * output. Uses buffer-swapping observed in debugging and seen in other
  * open-source DePacketizer implementations.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class DePacketizer extends AbstractDePacketizer
 {

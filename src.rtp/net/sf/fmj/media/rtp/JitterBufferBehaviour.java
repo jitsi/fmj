@@ -14,7 +14,7 @@ interface JitterBufferBehaviour
 {
     /**
      * Drops a packet from the associated <tt>JitterBuffer</tt>. Usually, the
-     * dropped packet is the oldest (in terms of receipt). 
+     * dropped packet is the oldest (in terms of receipt).
      */
     void dropPkt();
 

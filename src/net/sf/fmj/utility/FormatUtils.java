@@ -8,9 +8,9 @@ import javax.media.format.*;
 /**
  * Utilities to help implement Format subclasses. Cannot be part of Format class
  * because then serialization becomes incompatible with reference impl.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FormatUtils
 {

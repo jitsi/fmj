@@ -8,7 +8,7 @@ import javax.swing.*;
 /**
  * Adapted Robert Eckstein's sample at
  * http://java.sun.com/developer/technicalArticles/GUI/swing/wizard/
- * 
+ *
  * The model for the Wizard component, which tracks the text, icons, and enabled
  * state of each of the buttons, as well as the current panel that is displayed.
  * Note that the model, in its current form, is not intended to be subclassed.
@@ -130,7 +130,7 @@ public class WizardModel
 
     /**
      * Returns the currently displayed WizardPanelDescriptor.
-     * 
+     *
      * @return The currently displayed WizardPanelDescriptor
      */
     WizardPanelDescriptor getCurrentPanelDescriptor()
@@ -175,7 +175,7 @@ public class WizardModel
     /**
      * Registers the WizardPanelDescriptor in the model using the
      * Object-identifier specified.
-     * 
+     *
      * @param id
      *            Object-based identifier
      * @param descriptor
@@ -258,7 +258,7 @@ public class WizardModel
 
     /**
      * Sets the current panel to that identified by the Object passed in.
-     * 
+     *
      * @param id
      *            Object-based panel identifier
      * @return boolean indicating success or failure

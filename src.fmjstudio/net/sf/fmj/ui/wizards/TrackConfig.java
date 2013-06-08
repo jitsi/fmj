@@ -3,9 +3,9 @@ package net.sf.fmj.ui.wizards;
 import javax.media.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class TrackConfig
 {

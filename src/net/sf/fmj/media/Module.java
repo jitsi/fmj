@@ -11,18 +11,18 @@ import javax.media.*;
  * protocols</center></h2> We define four protocols of data transfer between
  * Modules:
  * <ul>
- * 
+ *
  * <li><b>Push - Output Data Driven</b> the upstream Module runs in its own
  * thread. The Module loops on its "process" method and when it finishes one
  * frame it calls the writeReport() method it triggers a call in the downstream
  * Module to its "process" method which is executed in the current thread. When
  * The downstream Module finishes, it call its downstream Module, recursively.
  * This is the natural protocol for capture.
- * 
+ *
  * <br>
  * Here is a sample call graph for a push protocol (Source is pushing data to
  * the Drain).<br>
- * 
+ *
  * <pre>
  * Source.process calls MediaOutputConnector.getEmptyBuffer()
  * Source.process puts  buffer in the empty buffer container
@@ -33,7 +33,7 @@ import javax.media.*;
  *                     Drain.process proccesses the Buffer
  *                     Drain.process calls MediaInputConnector.readReport
  * </pre>
- * 
+ *
  * <li><b>Safe - Buffer Driven</b> both the downstream Module and the upstream
  * Module run in separate threads. Both the Modules loops on their "process"
  * method and a call to either readReport() in the downstream Module or
@@ -41,7 +41,7 @@ import javax.media.*;
  * running. When one of the threads is blocked, it waits until it is wakened by
  * the other thread. This is the natural protocol for multiple threads.</li>
  * </ul>
- * 
+ *
  * @see Control
  * @see Connector
  * @see InputConnector
@@ -54,7 +54,7 @@ public interface Module extends javax.media.Controls
      * Connectors. This function is needed in case of <b>Push</b> protocol
      * Typical reaction of the module is to process one frame in the calling
      * thread and return.
-     * 
+     *
      * @param inputConnector
      *            the inputConnector of the connection which have received data.
      */
@@ -65,7 +65,7 @@ public interface Module extends javax.media.Controls
      * typically constructed in the Module's constructor, but their construction
      * can be delayed until the Player <b>Realizing</b> state. Returns null if
      * the string doesn't match any of the Module's InputConnectors.
-     * 
+     *
      * @param connectorName
      *            the name of the connector.
      * @return InputConnector associated with this name.
@@ -76,7 +76,7 @@ public interface Module extends javax.media.Controls
      * Return an array of strings containing this Module's input connectors
      * names (both connected and unconnected). If this Module contains no inputs
      * an array of length zero is returned.
-     * 
+     *
      * @return list of input connectors as strings.
      */
     public String[] getInputConnectorNames();
@@ -90,7 +90,7 @@ public interface Module extends javax.media.Controls
      * Return the specified output connector. Connectors and their names are
      * typically constructed in the Module's constructor. Returns null if the
      * String doesn't match any of the Module's OutputConnectors.
-     * 
+     *
      * @param connectorName
      *            the name of the connector
      * @return OutputConnector associated with this name.
@@ -101,14 +101,14 @@ public interface Module extends javax.media.Controls
      * Return an array of strings containing this Module's output connectors
      * names (both connected and unconnected). If this Module contains no
      * outputs an array of length zero is returned.
-     * 
+     *
      * @return list of output connectors as strings.
      */
     public String[] getOutputConnectorNames();
 
     /**
      * Query to see if the module has just been interrupted.
-     * 
+     *
      * @return true if the module has just been interrupted.
      */
     public boolean isInterrupted();
@@ -145,7 +145,7 @@ public interface Module extends javax.media.Controls
     /**
      * Specify a <tt>ModuleListener</tt> to which this <tt>Module</tt> will send
      * events.
-     * 
+     *
      * @param listener
      *            The listener to which the <tt>Module</tt> will post events.
      */

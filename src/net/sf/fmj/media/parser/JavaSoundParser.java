@@ -13,9 +13,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * Demultiplexer (parser) which uses JavaSound.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class JavaSoundParser extends AbstractDemultiplexer
 {
@@ -67,7 +67,7 @@ public class JavaSoundParser extends AbstractDemultiplexer
         }
 
         /**
-         * 
+         *
          * @return -1L if cannot convert, because frame size and frame rate are
          *         not known.
          */
@@ -166,7 +166,7 @@ public class JavaSoundParser extends AbstractDemultiplexer
         }
 
         /**
-         * 
+         *
          * @return -1L if cannot convert, because frame size and frame rate are
          *         not known.
          */
@@ -246,7 +246,7 @@ public class JavaSoundParser extends AbstractDemultiplexer
         }
 
         /**
-         * 
+         *
          * @return nanos skipped, 0 if unable to skip.
          * @throws IOException
          */
@@ -282,25 +282,25 @@ public class JavaSoundParser extends AbstractDemultiplexer
      * AudioInputStream. But if we don't use a codec, then the renderer will get
      * the header, which will come out as a short click or noise before the
      * sound.
-     * 
+     *
      * I see two options: 1. the header data gets passed using some special
      * mechanism, like in a buffer header or in a buffer with a special flag
      * set, so the codec knows to use it but a renderer will ignore it. 2. the
      * codec reconstructs a header based on the format.
-     * 
+     *
      * However, it is potentially worse than that, since WAV files are
      * potentially stored as chunks, meaning there is more than just one header
      * up front. So I don't see that option 1 is very good.
-     * 
+     *
      * Another possibility is we could change the reported output format to not
      * be a standard AudioFormat, but to be a WAV audio format, then let there
      * be a specific codec for that.
-     * 
+     *
      * With #2, we could have some luck, because any internal headers will be
      * stripped out by the audio input stream. So we don't have to have the
      * codec put on the exact correct header, it just has to be one that allows
      * getAudioInputStream to work.
-     * 
+     *
      * Method 2 works.
      */
 

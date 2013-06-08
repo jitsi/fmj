@@ -14,10 +14,10 @@ import net.sf.fmj.utility.*;
 
 /**
  * Audio Renderer which uses JavaSound.
- * 
+ *
  * @author Warren Bloomer
  * @author Ken Larson
- * 
+ *
  */
 public class JavaSoundRenderer implements Renderer
 {
@@ -331,7 +331,7 @@ public class JavaSoundRenderer implements Renderer
     /**
      * Open the plugin. Must be called after the formats have been determined
      * and before "process" is called.
-     * 
+     *
      * Open the DataLine.
      */
     public void open() throws ResourceUnavailableException

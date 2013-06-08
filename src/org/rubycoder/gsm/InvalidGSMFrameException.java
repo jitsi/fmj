@@ -6,7 +6,7 @@
 package org.rubycoder.gsm;
 
 /**
- * 
+ *
  * @author kane
  */
 public class InvalidGSMFrameException extends Exception
@@ -22,7 +22,7 @@ public class InvalidGSMFrameException extends Exception
     /**
      * Constructs an instance of <tt>InvalidGSMFrameException</tt> with the
      * specified detail message.
-     * 
+     *
      * @param msg
      *            the detail message.
      */

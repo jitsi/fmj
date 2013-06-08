@@ -15,7 +15,7 @@ import net.sf.fmj.utility.*;
 import com.lti.utils.*;
 
 /**
- * 
+ *
  * Renderer which renders JPEG directly. There is a comparable class in JMF,
  * hence this implementation. However, it seems like this is not really needed
  * if there is a JPEGDecoder Codec registered. However, the original
@@ -24,9 +24,9 @@ import com.lti.utils.*;
  * render images that BufferToImage does not support yet. This is not really
  * anything good, it is only worth pointing out because it can be confusing when
  * testing JPEG playback.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class JPEGRenderer extends AbstractVideoRenderer implements
         VideoRenderer

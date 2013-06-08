@@ -13,12 +13,12 @@ import net.sf.fmj.media.*;
  * are added to a global static list, so they take effect for future RTPManager
  * instances. FMJ does not implement this, they have to be added to every
  * instance.
- * 
+ *
  * See http://archives.java.sun.com/cgi-bin/wa?A2=ind0107&L=jmf-interest&P=33617
- * 
- * 
+ *
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class RTPBonusFormatsMgr
 {

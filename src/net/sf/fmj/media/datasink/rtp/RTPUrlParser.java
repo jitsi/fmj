@@ -5,9 +5,9 @@ import java.util.regex.*;
 /**
  * Parses JMF RTP URLs into ParsedRTPUrl. May only contain 1 or 2 elements (see
  * examples). An element is like: 192.168.1.4:8000/audio/16
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class RTPUrlParser
 {

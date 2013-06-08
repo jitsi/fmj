@@ -7,14 +7,14 @@ import com.lti.utils.*;
 /**
  * A JPEG/RTP header. A special header is added to each packet that immediately
  * follows the RTP header:
- * 
+ *
  * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ | Type
  * specific | Fragment Offset |
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ | Type | Q
  * | Width | Height |
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
+ *
  * @author Ken Larson
  * @author Martin Harvan
  */
@@ -28,7 +28,7 @@ public class JpegRTPHeader
     /**
      * Creates header containing Quantization tables (used when Q is set to
      * values greater than 127).
-     * 
+     *
      * @param length
      *            length for the headers (usually 128 - two 64 bytes long
      *            tables)
@@ -72,7 +72,7 @@ public class JpegRTPHeader
 
     /**
      * Creates RST header for JPEG/RTP packet.
-     * 
+     *
      * @param dri
      *            Restart interval - number of MCUs between restart markers
      * @param f

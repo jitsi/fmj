@@ -12,9 +12,9 @@ import net.sf.fmj.media.util.*;
 
 /**
  * Base class for image encoder Codecs which use ImageIO.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class ImageIOEncoder extends AbstractCodec implements Codec
 {

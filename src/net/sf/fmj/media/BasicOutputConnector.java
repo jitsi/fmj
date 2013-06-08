@@ -112,7 +112,7 @@ public class BasicOutputConnector extends BasicConnector implements
 
     /**
      * put media chunk in the queue
-     * 
+     *
      */
     public void writeReport()
     {

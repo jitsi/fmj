@@ -14,7 +14,7 @@ import net.sf.fmj.media.format.*;
 /**
  * A class for converting Format objects to and from strings that can be used as
  * arguments in command-line programs, or as parameters in URLs.
- * 
+ *
  * The syntax is this: all elements are separated by a colon. Everything is
  * uppercase by default, but case is ignored. Only thing that is lowercase is x
  * in dimension. Generally, each item corresponds to a constructor argument. The
@@ -24,16 +24,16 @@ import net.sf.fmj.media.format.*;
  * unsigned is U Data types: B is byte[], S is short[], I is int[] Dimension:
  * [width]x[height], like "640x480" Trailing not specified values may be
  * omitted.
- * 
+ *
  * new AudioFormat(AudioFormat.LINEAR, 44100.0, 16, 2) would be
  * LINEAR:44100:16:2
- * 
- * 
- * 
+ *
+ *
+ *
  * TODO: support WavAudioFormat, video formats, and other missing audio formats.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FormatArgUtils
 {

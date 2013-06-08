@@ -3,9 +3,9 @@ package net.sf.fmj.ui.wizards;
 import javax.media.protocol.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class ProcessorWizardConfig
 {

@@ -3,9 +3,9 @@ package net.sf.fmj.ui.wizards;
 /**
  * Exception with an (ideally) human-readable message, as a result of processing
  * a wizard step.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class WizardStepException extends Exception
 {

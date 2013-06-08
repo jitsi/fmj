@@ -10,7 +10,7 @@ import javax.swing.*;
  * PauseButton over-rides BasicControlButton's paintIcon method to draw two
  * vertical bars as button icon.
  * <p>
- * 
+ *
  * @see net.sf.fmj.ejmf.toolkit.gui.controls.skins.ejmf.BasicControlButton
  */
 
@@ -26,7 +26,7 @@ public class PauseButton extends BasicControlButton
 
     /**
      * Draw two rectangles into button.
-     * 
+     *
      * @param g
      *            Graphics into which rectangles are drawn.
      * @param x

@@ -9,9 +9,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * Abstract base class to implement a packetizer codec.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractPacketizer extends AbstractCodec
 {

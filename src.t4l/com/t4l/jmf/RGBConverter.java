@@ -9,9 +9,9 @@ import javax.media.format.*;
 /**
  * Alternate implementation of BufferToImage. TODO: move the best of this code
  * into BufferToImage.
- * 
+ *
  * @author Jeremy Wood
- * 
+ *
  */
 public class RGBConverter
 {
@@ -48,7 +48,7 @@ public class RGBConverter
     }
 
     /**
-     * 
+     *
      * @param mask
      *            the component mask
      * @return the number of bits to shift an object with this mask.
@@ -83,7 +83,7 @@ public class RGBConverter
     /**
      * Extracts the image data from the BufferedImage and stores it in the array
      * provided.
-     * 
+     *
      * @param image
      *            this needs to be of type INT_ARGB, INT_RGB or INT_ARGB_PRE for
      *            best performance
@@ -157,7 +157,7 @@ public class RGBConverter
     /**
      * Takes the data in <tt>array</tt> and fills the BufferedImage with that
      * image.
-     * 
+     *
      * @param array
      *            the array of pixel data
      * @param image
@@ -203,7 +203,7 @@ public class RGBConverter
      * <P>
      * This method rewrites <tt>array</tt> so it is simply RGB data. (Or ARGB
      * data, if targetType is TYPE_INT_ARGB)
-     * 
+     *
      * @param array
      *            the raw data
      * @param vf

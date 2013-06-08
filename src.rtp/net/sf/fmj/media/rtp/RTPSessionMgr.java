@@ -1200,7 +1200,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     /**
      * Emcho: Returns the SSRC ID that we are currently using or -1 if we don't
      * know it just yet.
-     * 
+     *
      * @return the SSRC ID that we are currently using or -1 if we don't know it
      *         just yet.
      */

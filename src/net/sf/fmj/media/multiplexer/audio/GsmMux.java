@@ -8,7 +8,7 @@ import net.sf.fmj.media.multiplexer.*;
 
 /**
  * Gsm Multiplexer class, actually just provides unmodified input to the output.
- * 
+ *
  * @author Martin Harvan
  */
 public class GsmMux extends AbstractStreamCopyMux

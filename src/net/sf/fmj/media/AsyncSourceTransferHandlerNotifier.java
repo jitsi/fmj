@@ -11,9 +11,9 @@ import com.lti.utils.synchronization.*;
 /**
  * Helper class to do SourceTransferHandler notifications in a background
  * thread.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class AsyncSourceTransferHandlerNotifier
 {

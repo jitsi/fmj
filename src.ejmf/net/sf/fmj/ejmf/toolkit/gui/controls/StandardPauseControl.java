@@ -21,7 +21,7 @@ public class StandardPauseControl extends ActionListenerControl
 
     /**
      * Create a StandardPauseControl and associate it with a Controller.
-     * 
+     *
      * @param controller
      *            A Controller with which control is associated.
      */
@@ -33,7 +33,7 @@ public class StandardPauseControl extends ActionListenerControl
 
     /**
      * Create PauseButton.
-     * 
+     *
      * @return The component that acts as pause button.
      * @see net.sf.fmj.ejmf.toolkit.gui.controls.skins.ejmf.PauseButton
      */
@@ -45,7 +45,7 @@ public class StandardPauseControl extends ActionListenerControl
 
     /**
      * Create and return an ActionListener that implements pause semantics.
-     * 
+     *
      * @return An ActionListener for pausing controller.
      */
     @Override

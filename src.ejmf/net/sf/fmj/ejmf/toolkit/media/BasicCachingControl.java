@@ -11,12 +11,12 @@ import javax.swing.*;
  * provides a progress bar to monitor the media download. Its control Component
  * is simply a button that stops the media download. Whenever there is a change
  * in this BasicCachingControl, a CachingControlEvent is posted automatically.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @see net.sf.fmj.ejmf.toolkit.media.AbstractController
- * 
+ *
  * @author Steve Talley & Rob Gordon
  */
 public class BasicCachingControl implements CachingControl
@@ -35,12 +35,12 @@ public class BasicCachingControl implements CachingControl
     /**
      * Constructs a BasicCachingControl for the given AbstractController. Uses
      * the length arg to initialize the progress bar.
-     * 
+     *
      * @param c
      *            The AbstractController from which CachingControlEvents are
      *            posted whenever the status of this BasicCachingControl
      *            changes.
-     * 
+     *
      * @param length
      *            The length of the media to be downloaded.
      */
@@ -83,7 +83,7 @@ public class BasicCachingControl implements CachingControl
 
     /**
      * Adds an amount of bytes to the media already downloaded.
-     * 
+     *
      * @param toAdd
      *            Number of bytes that have been downloaded since the last time
      *            this method or setContentProgress have been called.
@@ -112,7 +112,7 @@ public class BasicCachingControl implements CachingControl
     /**
      * Get the total number of bytes in the media being downloaded. Returns
      * LENGTH_UNKNOWN if this information is not available.
-     * 
+     *
      * @return The media length in bytes, or LENGTH_UNKNOWN.
      */
     public long getContentLength()
@@ -123,7 +123,7 @@ public class BasicCachingControl implements CachingControl
     /**
      * Get the total number of bytes of media data that have been downloaded so
      * far.
-     * 
+     *
      * @return The number of bytes downloaded.
      */
     public long getContentProgress()
@@ -134,7 +134,7 @@ public class BasicCachingControl implements CachingControl
     /**
      * Get a Component that provides additional download control. Returns null
      * if only a progress bar is provided.
-     * 
+     *
      * @return Download control GUI Component.
      */
     public Component getControlComponent()
@@ -144,7 +144,7 @@ public class BasicCachingControl implements CachingControl
 
     /**
      * Get a Component for displaying the download progress.
-     * 
+     *
      * @return Progress bar GUI Component.
      */
     public Component getProgressBarComponent()
@@ -171,7 +171,7 @@ public class BasicCachingControl implements CachingControl
     /**
      * Resets this BasicCachingControl. Sets the media length, reinitializes the
      * progress bar, and posts a CachingControlEvent.
-     * 
+     *
      * @param length
      *            The length of the media.
      */
@@ -199,7 +199,7 @@ public class BasicCachingControl implements CachingControl
 
     /**
      * Set the length of the media without reinitializing the progress bar.
-     * 
+     *
      * @param length
      *            The length of the media.
      */
@@ -217,7 +217,7 @@ public class BasicCachingControl implements CachingControl
 
     /**
      * Set the current progress of the media download.
-     * 
+     *
      * @param progress
      *            Number of bytes that have been downloaded.
      */
@@ -249,7 +249,7 @@ public class BasicCachingControl implements CachingControl
     /**
      * Sets whether the AbstractController is downloading or not. Other methods
      * in the BasicCachingControl call this method automatically.
-     * 
+     *
      * @param isDownloading
      *            boolean indicating whether the media is downloading.
      */
@@ -264,7 +264,7 @@ public class BasicCachingControl implements CachingControl
 
     /**
      * Sets whether the AbstractController is paused or not.
-     * 
+     *
      * @param isPaused
      *            boolean indicating whether the media is paused.
      */

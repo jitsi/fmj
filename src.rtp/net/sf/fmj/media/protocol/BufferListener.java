@@ -8,7 +8,7 @@ public interface BufferListener
 {
     /*
      * public void overFlown(javax.media.protocol.DataSource ds);
-     * 
+     *
      * public void underFlown(javax.media.protocol.DataSource ds);
      */
 

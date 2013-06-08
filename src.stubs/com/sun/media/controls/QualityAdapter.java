@@ -6,9 +6,9 @@ import javax.media.control.*;
 
 /**
  * TODO: Stub
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class QualityAdapter implements QualityControl
 {

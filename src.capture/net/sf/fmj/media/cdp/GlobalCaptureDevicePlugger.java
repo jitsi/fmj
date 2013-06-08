@@ -4,9 +4,9 @@ package net.sf.fmj.media.cdp;
  * Global singleton CaptureDevicePlugger. Calls all specific
  * CaptureDevicePluggers. Dynamically adds CaptureDeviceInfo to the
  * CaptureDeviceManager. Does not commit.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public final class GlobalCaptureDevicePlugger
 {

@@ -10,10 +10,10 @@ import javax.swing.*;
 
 /**
  * Static utilites for common JMF routines
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @author Steve Talley & Rob Gordon
  */
 public class Utility
@@ -24,7 +24,7 @@ public class Utility
      * URL using the full path name of the specified file. The return value of
      * this routine should be checked to ensure that a URL was successfully
      * created.
-     * 
+     *
      * @param arg
      *            the url string to convert
      * @return a URL if successful, null otherwise
@@ -57,7 +57,7 @@ public class Utility
 
     /**
      * Converts an applet argument to a MediaLocator.
-     * 
+     *
      * @return A MediaLocator for the given argument.
      */
     public static MediaLocator appletArgToMediaLocator(Applet applet, String arg)
@@ -95,10 +95,10 @@ public class Utility
 
     /**
      * Convert a File to a URL using file: protocol.
-     * 
+     *
      * @param fileName
      *            The file to convert
-     * 
+     *
      * @return a java.net.URL representing file named by input File argument.
      */
     public static URL fileToURL(String fileName) throws IOException,
@@ -118,7 +118,7 @@ public class Utility
     /**
      * Given a File object, return a String representing the file's extension.
      * If there is no extension, return null.
-     * 
+     *
      * @param f
      *            A java.io.File object
      * @return A String representing file extension
@@ -131,7 +131,7 @@ public class Utility
     /**
      * Given a String representing a file name, return a String representing the
      * file's extension. If there is no extension, return null.
-     * 
+     *
      * @param filename
      *            A filename as a java.lang.String object
      * @return A String representing file extension
@@ -157,7 +157,7 @@ public class Utility
      * If all Controllers report LATENCY_UNKNOWN, return LATENCY_UNKNOWN and let
      * the caller worry about what to do.
      * <p>
-     * 
+     *
      * @param controllers
      *            An array of javax.media.Controller objects all at least
      *            realized.
@@ -189,15 +189,15 @@ public class Utility
     /**
      * Pick a master Player for an array of Players. Return first Player that
      * has a gain control. If no Player has a gain control, return 0.
-     * 
+     *
      * All the input Players are assumed to be realized, else they will return a
      * null gain control.
-     * 
+     *
      * @param players
      *            an array of Players
      * @return an index into the Player array of the Player chosen as the master
      *         Player.
-     * 
+     *
      */
     public static int pickAMaster(Player[] players)
     {
@@ -238,7 +238,7 @@ public class Utility
 
     /**
      * Convert a Controller state to a string
-     * 
+     *
      * @param state
      *            the state to convert
      * @return a String representing the given state

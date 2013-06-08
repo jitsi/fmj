@@ -16,9 +16,9 @@ import com.lti.utils.synchronization.*;
  * Data sink that writes its output to an arbitrary OutputStream. Cannot be
  * constructed by Manager, must be constructed explicitly, because the
  * OutputStream must be specified on construction.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class StreamDataSink extends AbstractDataSink
 {

@@ -13,9 +13,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * ContainerPlayer.
- * 
+ *
  * Slider update code adapted from EJMF StandardProgressControl.
- * 
+ *
  * @author Warren Bloomer
  */
 public class ContainerPlayer
@@ -114,7 +114,7 @@ public class ContainerPlayer
 
     /**
      * Constructor.
-     * 
+     *
      * @param container
      */
     public ContainerPlayer(Container container)
@@ -311,7 +311,7 @@ public class ContainerPlayer
 
     /**
      * Set the visdual component.
-     * 
+     *
      * @param newVisualComponent
      */
     private void setVisualComponent(final Component newVisualComponent)
@@ -343,7 +343,7 @@ public class ContainerPlayer
     }
 
     /**
-	 * 
+	 *
 	 */
     public void start()
     {
@@ -371,7 +371,7 @@ public class ContainerPlayer
     }
 
     /**
-	 * 
+	 *
 	 */
     public void stop()
     {

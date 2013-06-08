@@ -956,7 +956,7 @@ public class PlaybackEngine extends BasicController implements ModuleListener
 
     /**
      * The stub function to perform the steps to prefetch the controller.
-     * 
+     *
      * @return true if successful.
      */
     @Override
@@ -1532,7 +1532,7 @@ public class PlaybackEngine extends BasicController implements ModuleListener
      * Return a list of <b>Control</b> objects this <b>Controller</b> supports.
      * In this case, it is all the controls from all the modules controlled by
      * this engine.
-     * 
+     *
      * @return list of <b>Controller</b> controls.
      */
     @Override
@@ -1635,7 +1635,7 @@ public class PlaybackEngine extends BasicController implements ModuleListener
     /**
      * Return the duration of the media. It's unknown until we implement a
      * particular node.
-     * 
+     *
      * @return the duration of the media.
      */
     @Override
@@ -1693,7 +1693,7 @@ public class PlaybackEngine extends BasicController implements ModuleListener
     /**
      * Returns the start latency. Don't know until the particular node is
      * implemented.
-     * 
+     *
      * @return the start latency.
      */
     @Override

@@ -8,9 +8,9 @@ import javax.swing.event.*;
 
 /**
  * A slider with a nice look-and-feel.
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class CustomSlider extends JSlider
 {
@@ -51,7 +51,7 @@ public class CustomSlider extends JSlider
 
     /**
      * Constructor
-     * 
+     *
      */
     public CustomSlider()
     {
@@ -60,7 +60,7 @@ public class CustomSlider extends JSlider
 
     /**
      * Returns the Linear listeners.
-     * 
+     *
      * @return the Linear listeners
      */
     private HashSet getLinearListeners()

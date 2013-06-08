@@ -4,10 +4,10 @@ import java.io.*;
 
 /**
  * Interface to read/write registry contents from/to somewhere.
- * 
+ *
  * @author Ken Larson
  * @author Warren Bloomer
- * 
+ *
  */
 interface RegistryIO
 {

@@ -39,7 +39,7 @@ public class StandardGainMeterControl extends AbstractGainControl implements
 
     /**
      * Create a StandardGainMeterControl and associate it with a Controller.
-     * 
+     *
      * @param controller
      *            A Controller with which control is associated.
      */
@@ -50,7 +50,7 @@ public class StandardGainMeterControl extends AbstractGainControl implements
 
     /**
      * Create the GainMeter Component.
-     * 
+     *
      * @return The component that acts as gain meter control.
      * @see net.sf.fmj.ejmf.toolkit.gui.controls.skins.ejmf.GainMeterButton
      */
@@ -62,7 +62,7 @@ public class StandardGainMeterControl extends AbstractGainControl implements
 
     /**
      * Return the ActionListener used to toggle mute button.
-     * 
+     *
      * @return An ActionListener for toggling mute state.
      */
     @Override
@@ -84,7 +84,7 @@ public class StandardGainMeterControl extends AbstractGainControl implements
      * Implements GainChangeListener. Level and mute are set appropriately and
      * the view updated for every change to the GainControl on which this
      * GainMeter is a listener.
-     * 
+     *
      * @param gce
      *            An GainChangeEvent triggerd by a GainControl
      * @see javax.media.GainControl
@@ -99,7 +99,7 @@ public class StandardGainMeterControl extends AbstractGainControl implements
     /**
      * This method is called when <tt>setController</tt> is called on an
      * AbstractListenerControl.
-     * 
+     *
      * @param newController
      *            A Controller with which this control is associated.
      */
@@ -120,7 +120,7 @@ public class StandardGainMeterControl extends AbstractGainControl implements
      * Set the level value for this GainMeter. The input argument is a level
      * value from the Player's GainControl. It is the GainMeter's responsibility
      * to convert it to a value that can be meaningfully rendered.
-     * 
+     *
      * @param level
      *            This argument represents a level value returned by a Player's
      *            GainControl.
@@ -132,7 +132,7 @@ public class StandardGainMeterControl extends AbstractGainControl implements
 
     /**
      * Set the mute value for this GainMeter.
-     * 
+     *
      * @param muted
      *            If muted is true, audio signal is suppressed. Otherwise, audio
      *            signal is rendered.

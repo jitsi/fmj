@@ -13,9 +13,9 @@ import net.sf.fmj.utility.*;
  * Mux that can be implemented simply by copying streams. Override
  * createInputStreamPushDataSource and create an overridden version of
  * StreamCopyPushDataSource overriding write.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractStreamCopyMux extends AbstractMultiplexer
 {

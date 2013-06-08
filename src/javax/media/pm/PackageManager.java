@@ -9,9 +9,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * Internal implementation of javax.media.PackageManager.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public final class PackageManager extends javax.media.PackageManager
 {

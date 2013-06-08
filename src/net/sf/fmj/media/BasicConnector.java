@@ -4,7 +4,7 @@ import javax.media.*;
 
 /**
  * Defines implementation of the Connector interface.
- * 
+ *
  */
 public abstract class BasicConnector implements Connector
 {
@@ -21,7 +21,7 @@ public abstract class BasicConnector implements Connector
     /**
      * the data transfer protocol chosen for this Connector.<br>
      * either <i>ProtocolPush, ProtocolSafe</i>
-     * 
+     *
      * @see Connector#ProtocolPush
      * @see Connector#ProtocolSafe
      */
@@ -29,7 +29,7 @@ public abstract class BasicConnector implements Connector
 
     /**
      * returns the circular buffer
-     * 
+     *
      * @see #circularBuffer
      */
     public Object getCircularBuffer()
@@ -39,7 +39,7 @@ public abstract class BasicConnector implements Connector
 
     /**
      * The selected format.
-     * 
+     *
      * @see #format
      */
     public Format getFormat()
@@ -49,7 +49,7 @@ public abstract class BasicConnector implements Connector
 
     /**
      * Returns the Module which owns this Connector.
-     * 
+     *
      * @see #module
      */
     public Module getModule()
@@ -59,7 +59,7 @@ public abstract class BasicConnector implements Connector
 
     /**
      * returns the name of this Connector
-     * 
+     *
      * @see #name
      */
     public String getName()
@@ -69,7 +69,7 @@ public abstract class BasicConnector implements Connector
 
     /**
      * returns the data transfer protocol used by this connector.
-     * 
+     *
      * @see #protocol
      */
     public int getProtocol()
@@ -80,7 +80,7 @@ public abstract class BasicConnector implements Connector
     /**
      * gets the <b>minimum</b> number of buffer objects this Connector should
      * create.
-     * 
+     *
      * @see #minSize
      */
     public int getSize()
@@ -103,7 +103,7 @@ public abstract class BasicConnector implements Connector
 
     /**
      * sets the CircularBuffer of this Connector.
-     * 
+     *
      * @see #circularBuffer
      */
     public void setCircularBuffer(Object cicularBuffer)
@@ -114,7 +114,7 @@ public abstract class BasicConnector implements Connector
     /**
      * Selects a format for this Connector. Delegates this call to its owning
      * Module
-     * 
+     *
      * @see #format
      */
     public void setFormat(Format format)
@@ -125,9 +125,9 @@ public abstract class BasicConnector implements Connector
 
     /**
      * sets the Module which owns this Connector.
-     * 
+     *
      * @see #module
-     * 
+     *
      */
     public void setModule(Module module)
     {
@@ -136,7 +136,7 @@ public abstract class BasicConnector implements Connector
 
     /**
      * sets the name of this Connector
-     * 
+     *
      * @see #name
      */
     public void setName(String name)
@@ -146,7 +146,7 @@ public abstract class BasicConnector implements Connector
 
     /**
      * sets the data transfer protocol used by this connector.
-     * 
+     *
      * @see #protocol
      */
     public void setProtocol(int protocol)
@@ -157,7 +157,7 @@ public abstract class BasicConnector implements Connector
     /**
      * sets the <b>minimum</b> number of buffer objects this Connector should
      * create. The default value should be one buffer object.
-     * 
+     *
      * @see #minSize
      */
     public void setSize(int numOfBufferObjects)

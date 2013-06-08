@@ -8,9 +8,9 @@ import java.util.logging.Formatter;
 
 /**
  * Copied and modified from SimpleFormatter, to not use the date/class line.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FmjLoggingFormatter extends Formatter
 {
@@ -27,7 +27,7 @@ public class FmjLoggingFormatter extends Formatter
 
     /**
      * Format the given LogRecord.
-     * 
+     *
      * @param record
      *            the log record to be formatted.
      * @return a formatted log record

@@ -25,7 +25,7 @@ public class ALawEncoderUtil
 
     /**
      * Encode an array of pcm values into a pre-allocated target array
-     * 
+     *
      * @param data
      *            An array of bytes in Little-Endian format
      * @param target
@@ -43,7 +43,7 @@ public class ALawEncoderUtil
 
     /**
      * Encode a pcm value into a a-law byte
-     * 
+     *
      * @param pcm
      *            A 16-bit pcm value
      * @return A a-law encoded byte
@@ -55,7 +55,7 @@ public class ALawEncoderUtil
 
     /**
      * Encode a pcm value into a a-law byte
-     * 
+     *
      * @param pcm
      *            A 16-bit pcm value
      * @return A a-law encoded byte
@@ -132,7 +132,7 @@ public class ALawEncoderUtil
 
     /**
      * Encode one a-law byte from a 16-bit signed integer. Internal use only.
-     * 
+     *
      * @param pcm
      *            A 16-bit signed pcm value
      * @return A a-law encoded byte
@@ -171,7 +171,7 @@ public class ALawEncoderUtil
          * two, meaning we will shift our four bits (exponent + 3) bits. For
          * convenience, we will actually just shift the number, then AND with
          * 0x0f.
-         * 
+         *
          * NOTE: If the exponent is 0: 1 2 3 4 5 6 7 8 9 A B C D E F G S 0 0 0 0
          * 0 0 0 Z Y X W V U T S (we know nothing about bit 9) . . . . . . . . .
          * . . . 1 1 1 1 We want to get ZYXW, which means a shift of 4 instead

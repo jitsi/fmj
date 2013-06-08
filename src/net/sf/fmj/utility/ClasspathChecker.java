@@ -7,9 +7,9 @@ import javax.media.*;
 
 /**
  * Used to help recognize when JMF is in the classpath ahead of FMJ.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public final class ClasspathChecker
 {
@@ -77,7 +77,7 @@ public final class ClasspathChecker
 
     /**
      * Check if JMF is in the classpath (regardless of position).
-     * 
+     *
      * @return true if JMF is in the classpath.
      */
     public static boolean checkJMFInClassPath()
@@ -96,7 +96,7 @@ public final class ClasspathChecker
     }
 
     /**
-     * 
+     *
      * @return true if FMJ manager, false if JMF.
      */
     public static boolean checkManagerImplementation()

@@ -8,16 +8,16 @@ import javax.media.format.*;
 import net.sf.fmj.media.*;
 
 /**
- * 
+ *
  * This is the Graph builder to generate the data flow graph for rendering an
  * input format.
- * 
+ *
  * It contains 3 parts: 1) Routines to search for all the supported output
  * formats; 2) Routines to build a default flow graph -- buildGraph;
- * 
+ *
  * A default graph is such that no customised option is specified on the
  * TrackControl.
- * 
+ *
  * It operates on a breath-first search algorithm until the final target is
  * reached as defined by the findTarget() method. Intermediate search paths are
  * stored as GraphNode's in the "candidates" vector.
@@ -235,7 +235,7 @@ public class SimpleGraphBuilder
      * output (for the upstream) or as input (for the downstream). Either of the
      * plugin arguments can be null. In which case the verification step will be
      * skipped accordingly.
-     * 
+     *
      * @param outs the supported output formats from the upstream node.
      * @param ins the supported input formats from the downstream node.
      * @param up the upstream node.
@@ -262,7 +262,7 @@ public class SimpleGraphBuilder
      * output (for the upstream) or as input (for the downstream). Either of the
      * plugin arguments can be null. In which case the verification step will be
      * skipped accordingly.
-     * 
+     *
      * @return a matching format.
      */
     static public Format matches(Format out, Format ins[], PlugIn up,
@@ -769,7 +769,7 @@ public class SimpleGraphBuilder
          * candidates.elements(); while (enum.hasMoreElements()) { n =
          * (GraphNode)enum.nextElement(); if (n.plugin == failed.plugin)
          * candidates.removeElement(n); }
-         * 
+         *
          * if ((n = (GraphNode)plugIns.get(failed.plugin.getClass().getName()))
          * != null) n.failed = true;
          ******/

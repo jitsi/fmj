@@ -22,11 +22,11 @@ import javax.media.protocol.*;
  * Calling <tt>connect</tt>, <tt>disconnect</tt>, <tt>start</tt>, <tt>stop</tt>
  * on the CloneableDataSource (master) will propagate the same calls to the
  * cloned (slave) DataSources.
- * 
+ *
  * This is a class used by the CloneablePullDataSource, CloneablePushDataSource,
  * CloneablePullBufferDataSource, CloneablePushDataSource and shouldn't be used
  * explicitly by developers.
- * 
+ *
  * @see javax.media.protocol.DataSource
  */
 class SuperCloneableDataSource extends DataSource
@@ -205,7 +205,7 @@ class SuperCloneableDataSource extends DataSource
 
     /**
      * Constructor that takes a DataSource object for cloning.
-     * 
+     *
      * @param input
      *            the DataSource for cloning.
      */
@@ -232,9 +232,9 @@ class SuperCloneableDataSource extends DataSource
     /**
      * Open a connection to the source described by the <tt>MediaLocator</tt>.
      * <p>
-     * 
+     *
      * The <tt>connect</tt> method initiates communication with the source.
-     * 
+     *
      * @exception IOException
      *                Thrown if there are IO problems when <tt>connect</tt> is
      *                called.
@@ -251,7 +251,7 @@ class SuperCloneableDataSource extends DataSource
      * data source was a PullDataSource, then this will be a PushDataSource
      * which pushes at the same rate at which the CloneableDataSource is being
      * pulled.
-     * 
+     *
      * @return a slave DataSource for this DataSource.
      */
     javax.media.protocol.DataSource createClone()
@@ -285,7 +285,7 @@ class SuperCloneableDataSource extends DataSource
      * connection to the source. If no resources are in use, <tt>disconnect</tt>
      * is ignored. If <tt>stop</tt> hasn't already been called, calling
      * <tt>disconnect</tt> implies a stop.
-     * 
+     *
      */
     @Override
     public void disconnect()
@@ -299,7 +299,7 @@ class SuperCloneableDataSource extends DataSource
      * <p>
      * It is an error to call <tt>getContentType</tt> if the source is not
      * connected.
-     * 
+     *
      * @return The name that describes the media content.
      */
     @Override
@@ -312,9 +312,9 @@ class SuperCloneableDataSource extends DataSource
      * Obtain the object that implements the specified <tt>Class</tt> or
      * <tt>Interface</tt> The full class or interface name must be used.
      * <p>
-     * 
+     *
      * If the control is not supported then <tt>null</tt> is returned.
-     * 
+     *
      * @return the object that implements the control, or <tt>null</tt>.
      */
     @Override
@@ -327,9 +327,9 @@ class SuperCloneableDataSource extends DataSource
      * Obtain the collection of objects that control the object that implements
      * this interface.
      * <p>
-     * 
+     *
      * If no controls are supported, a zero length array is returned.
-     * 
+     *
      * @return the collection of object controls
      */
     @Override
@@ -343,7 +343,7 @@ class SuperCloneableDataSource extends DataSource
      * returned is the media's duration when played at the default rate. If the
      * duration can't be determined (for example, the media object is presenting
      * live video) <tt>getDuration</tt> returns <tt>DURATION_UNKNOWN</tt>.
-     * 
+     *
      * @return A <tt>Time</tt> object representing the duration or
      *         DURATION_UNKNOWN.
      */
@@ -357,7 +357,7 @@ class SuperCloneableDataSource extends DataSource
      * Initiate data-transfer. The <tt>start</tt> method must be called before
      * data is available. (You must call <tt>connect</tt> before calling
      * <tt>start</tt>.)
-     * 
+     *
      * @exception IOException
      *                Thrown if there are IO problems with the source when
      *                <tt>start</tt> is called.

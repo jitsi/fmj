@@ -83,7 +83,7 @@ public class FramePositioningAdapter implements FramePositioningControl,
     /**
      * Converts the given frame number to the corresponding media time.
      * <p>
-     * 
+     *
      * @param frameNumber
      *            the input frame number for the conversion.
      * @return the converted media time for the given frame. If the conversion
@@ -100,7 +100,7 @@ public class FramePositioningAdapter implements FramePositioningControl,
      * The frame returned is the nearest frame that has a media time less than
      * or equal to the given media time.
      * <p>
-     * 
+     *
      * @param mediaTime
      *            the input media time for the conversion.
      * @return the converted frame number the given media time. If the
@@ -113,7 +113,7 @@ public class FramePositioningAdapter implements FramePositioningControl,
 
     /**
      * Seek to a given video frame.
-     * 
+     *
      * @param frameNumber
      *            the frame to seek to.
      * @return the actual frame that the Player has seeked to.
@@ -139,7 +139,7 @@ public class FramePositioningAdapter implements FramePositioningControl,
 
     /**
      * Skip a given number of frames from the current position.
-     * 
+     *
      * @param framesToSkip
      *            the number of frames to skip from the current position. If
      *            framesToSkip is positive, it will seek forward by framesToSkip

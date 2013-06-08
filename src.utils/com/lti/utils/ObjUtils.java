@@ -3,7 +3,7 @@ package com.lti.utils;
 /**
  * Utilities for performing equality tests, and doing deep copies and deep
  * compares of objects.
- * 
+ *
  * @author Ken Larson
  */
 public final class ObjUtils

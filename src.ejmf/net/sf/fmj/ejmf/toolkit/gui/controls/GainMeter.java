@@ -9,7 +9,7 @@ public interface GainMeter
     /**
      * Transform a gain control level value [0.0...1.0] to a value appropriate
      * for this GainMeter.
-     * 
+     *
      * @param level
      *            A value returned by getLevel method of a GainControl object.
      * @return An integer value that represents a legal level value for this
@@ -19,7 +19,7 @@ public interface GainMeter
 
     /**
      * Set the gain value for this GainMeter.
-     * 
+     *
      * @param level
      *            A gain value in GainMeter coordinates.
      */
@@ -28,7 +28,7 @@ public interface GainMeter
 
     /**
      * Sets the mute status of the GainMeter.
-     * 
+     *
      * @param flag
      *            If true, GainMeter is muted. Otherwise gain is not muted.
      */

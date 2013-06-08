@@ -224,7 +224,7 @@ public abstract class BasicPlugIn implements PlugIn
 
     /**
      * validate that the Buffer object's data size is at least newSize.
-     * 
+     *
      * @return array with sufficient capacity
      */
     protected byte[] validateByteArraySize(Buffer buffer, int newSize)
@@ -284,7 +284,7 @@ public abstract class BasicPlugIn implements PlugIn
 
     /**
      * validate that the Buffer object's data size is at least newSize.
-     * 
+     *
      * @return array with sufficient capacity
      */
     protected int[] validateIntArraySize(Buffer buffer, int newSize)
@@ -318,7 +318,7 @@ public abstract class BasicPlugIn implements PlugIn
 
     /**
      * validate that the Buffer object's data size is at least newSize.
-     * 
+     *
      * @return array with sufficient capacity
      */
     protected short[] validateShortArraySize(Buffer buffer, int newSize)

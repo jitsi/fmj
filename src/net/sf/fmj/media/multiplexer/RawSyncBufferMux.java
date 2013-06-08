@@ -74,7 +74,7 @@ public class RawSyncBufferMux extends RawBufferMux
     /**
      * Process the buffer and multiplex it with data from other tracks. The
      * multiplexed output is sent to the output <tt>DataSource</tt>.
-     * 
+     *
      * @param buffer
      *            the input buffer
      * @param trackID

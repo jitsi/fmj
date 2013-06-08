@@ -28,7 +28,7 @@ public class Registry
      * specific key if such an association exists and it is possible to parse
      * the value as a <tt>boolean</tt>; otherwise, returns a specific default
      * value.
-     * 
+     *
      * @param key the key whose associated value is to be returned in the form
      * of a <tt>boolean</tt>
      * @param defaultValue a <tt>boolean</tt> value to be returned if no value
@@ -53,7 +53,7 @@ public class Registry
      * specific key if such an association exists and it is possible to parse
      * the value as an <tt>int</tt>; otherwise, returns a specific default
      * value.
-     * 
+     *
      * @param key the key whose associated value is to be returned in the form
      * of an <tt>int</tt>
      * @param defaultValue an <tt>int</tt> value to be returned if no value is

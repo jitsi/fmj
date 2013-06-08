@@ -13,7 +13,7 @@ import net.sf.fmj.media.renderer.audio.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * Audio multiplexer base class implemented using JavaSound. This mux has the
  * job of taking buffers passed in to process, and converting them to a stream
  * to be read by Javasound, and then converting the stream written by Javasound
@@ -22,12 +22,12 @@ import net.sf.fmj.utility.*;
  * beginning and rewriting of the header is not yet implemented. JMF appears to
  * do this with a hack, casting the SourceTransferHandler to a Seekable, and
  * seeking the output, then rewriting.
- * 
+ *
  * TODO: not so sure of all the open/close/connect/disconnect and which should
  * call what when.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class JavaSoundMux extends AbstractStreamCopyMux
 {

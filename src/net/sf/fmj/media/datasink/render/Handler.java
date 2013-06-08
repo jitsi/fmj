@@ -14,9 +14,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * DataSink that creates a player and renders. Really only for testing.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class Handler extends AbstractDataSink
 {

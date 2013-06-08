@@ -17,7 +17,7 @@ import net.sf.fmj.media.util.*;
  * <li>Two ThreadedEventQueues for incoming and outgoing ControllerEvents.
  * </ul>
  * <p>
- * 
+ *
  * @version 1.9, 98/11/19
  */
 public abstract class BasicController implements Controller, Duration
@@ -47,7 +47,7 @@ public abstract class BasicController implements Controller, Duration
      * time-base-time will be computed with the given time base. The subclass
      * should implement and further specialized this method to do the real work.
      * But it should also invoke this method to maintain the correct states.
-     * 
+     *
      * @param tb
      *            the time base to set to.
      * @exception IncompatibleTimeBaseException
@@ -61,7 +61,7 @@ public abstract class BasicController implements Controller, Duration
      * It starts a wait thread to wait for the given tbt. At tbt, it will wake
      * up and call doStart(). A subclass should implement the doStart() method
      * to do the real work.
-     * 
+     *
      * @param tbt
      *            the timebase time to start the controller.
      */
@@ -72,7 +72,7 @@ public abstract class BasicController implements Controller, Duration
      * states. The subclass should implement and further specialized this method
      * to do the real work. But it should also invoke this method to maintain
      * the correct states.
-     * 
+     *
      * @param t
      *            the time to stop.
      */
@@ -83,7 +83,7 @@ public abstract class BasicController implements Controller, Duration
      * states. The subclass should implement and further specialized this method
      * to do the real work. But it should also invoke this method to maintain
      * the correct states.
-     * 
+     *
      * @param now
      *            the media time to set to.
      */
@@ -91,7 +91,7 @@ public abstract class BasicController implements Controller, Duration
 
     /**
      * Get the current time base.
-     * 
+     *
      * @return the current time base.
      */
     static String GetTimeBaseError = "Cannot get Time Base from an unrealized controller";
@@ -105,7 +105,7 @@ public abstract class BasicController implements Controller, Duration
      * doSetRate method, subclass Conrollers can support negative rates,
      * fractional rates etc., but they should guard against illegal rates from
      * going into the clock calculations.
-     * 
+     *
      * @param factor
      *            the rate to set to.
      * @return the actual rate used.
@@ -115,7 +115,7 @@ public abstract class BasicController implements Controller, Duration
     /**
      * Returns the start latency. Don't know until the particular node is
      * implemented.
-     * 
+     *
      * @return the start latency.
      */
     static String LatencyError = "Cannot get start latency from an unrealized controller";
@@ -124,7 +124,7 @@ public abstract class BasicController implements Controller, Duration
      * Release the resouces held by the controller. It obeys strict rules as
      * specified in the spec. Implement the abortRealize and abortPrefetch
      * methods to actually do the work.
-     * 
+     *
      * This is a blocking call. It returns only when the Controller has done
      * deallocating the resources. This should be called from an external thread
      * outside of the controller. Take caution if this is being call from inside
@@ -488,7 +488,7 @@ public abstract class BasicController implements Controller, Duration
      * Secondly if this is synchronized, then other synchronized methods,
      * deallocate() and processEvent() will be blocked since they are
      * synchronized methods. Override this to implement subclass behavior.
-     * 
+     *
      * @return true if successful.
      */
     protected abstract boolean doPrefetch();
@@ -507,7 +507,7 @@ public abstract class BasicController implements Controller, Duration
      * Secondly if this is synchronized, then other synchronized methods,
      * deallocate() and processEvent() will be blocked since they are
      * synchronized methods. Override this to implement subclass behavior.
-     * 
+     *
      * @return true if successful.
      */
     protected abstract boolean doRealize();
@@ -548,7 +548,7 @@ public abstract class BasicController implements Controller, Duration
      * Get the <tt>Control</tt> that supports the class or interface specified.
      * The full class or interface name should be specified. <tt>Null</tt> is
      * returned if the <tt>Control</tt> is not supported.
-     * 
+     *
      * @return <tt>Control</tt> for the class or interface name.
      */
     public Control getControl(String type)
@@ -573,7 +573,7 @@ public abstract class BasicController implements Controller, Duration
     /**
      * Return a list of <b>Control</b> objects this <b>Controller</b> supports.
      * If there are no controls, then an array of length zero is returned.
-     * 
+     *
      * @return list of <b>Controller</b> controls.
      */
     public Control[] getControls()
@@ -586,7 +586,7 @@ public abstract class BasicController implements Controller, Duration
     /**
      * Return the duration of the media. It's unknown until we implement a
      * particular node.
-     * 
+     *
      * @return the duration of the media.
      */
     public Time getDuration()
@@ -596,7 +596,7 @@ public abstract class BasicController implements Controller, Duration
 
     /**
      * Get the current media time in nanoseconds.
-     * 
+     *
      * @return the media time in nanoseconds.
      */
     public long getMediaNanoseconds()
@@ -607,7 +607,7 @@ public abstract class BasicController implements Controller, Duration
     /**
      * Return the current media time. Uses the clock to do the computation. A
      * subclass can override this method to do the right thing for itself.
-     * 
+     *
      * @return the current media time.
      */
     public Time getMediaTime()
@@ -617,7 +617,7 @@ public abstract class BasicController implements Controller, Duration
 
     /**
      * Get the current presentation speed.
-     * 
+     *
      * @return the current presentation speed.
      */
     public float getRate()
@@ -636,7 +636,7 @@ public abstract class BasicController implements Controller, Duration
 
     /**
      * Get the current state of the controller.
-     * 
+     *
      * @return the current state of the controller.
      */
     final public int getState()
@@ -646,7 +646,7 @@ public abstract class BasicController implements Controller, Duration
 
     /**
      * Get the preset stop time.
-     * 
+     *
      * @return the preset stop time.
      */
     public Time getStopTime()
@@ -664,7 +664,7 @@ public abstract class BasicController implements Controller, Duration
 
     /**
      * Get the current target state.
-     * 
+     *
      * @return the current target state.
      */
     final public int getTargetState()
@@ -711,7 +711,7 @@ public abstract class BasicController implements Controller, Duration
 
     /**
      * Map the given media-time to time-base-time.
-     * 
+     *
      * @param t
      *            given media time.
      * @return timebase time.

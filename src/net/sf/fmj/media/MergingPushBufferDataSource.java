@@ -8,9 +8,9 @@ import javax.media.protocol.*;
 
 /**
  * Merges multiple {@link PushBufferDataSource}.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class MergingPushBufferDataSource extends PushBufferDataSource
 {

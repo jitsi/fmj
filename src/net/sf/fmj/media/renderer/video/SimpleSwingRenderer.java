@@ -14,12 +14,12 @@ import net.sf.fmj.media.util.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * The simplest possible Swing Renderer. Same as SimpleAWTRenderer, but uses a
  * JComponent
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class SimpleSwingRenderer extends AbstractVideoRenderer implements
         VideoRenderer

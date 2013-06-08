@@ -43,7 +43,7 @@ class BasicJitterBufferBehaviour
     /**
      * Initializes a new <tt>BasicJitterBufferBehaviour</tt> instance for the
      * purposes of a specific <tt>RTPSourceStream</tt>.
-     * 
+     *
      * @param stream the <tt>RTPSourceStream</tt> which has requested the
      * initialization of the new instance
      */

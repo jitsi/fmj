@@ -20,7 +20,7 @@ import com.lti.utils.*;
  * http://www.rfc-archive.org/getrfc.php?rfc=2035 TODO: support restart markers
  * TODO: support q table headers TODO: lunarphases.mov: when received, JMF puts
  * extra stuff on the end that we don't.
- * 
+ *
  * @author Ken Larson
  * @author Martin Harvan
  */
@@ -29,7 +29,7 @@ public class DePacketizer extends AbstractCodec implements Codec
     /**
      * Compares buffers by the fragment offset. Assumes buffers have enough data
      * in them for a JpegRTPHeader.
-     * 
+     *
      * @author Ken Larson
      */
     private static class BufferFragmentOffsetComparator
@@ -57,7 +57,7 @@ public class DePacketizer extends AbstractCodec implements Codec
 
     /**
      * Used to assemble fragments with the same timestamp into a single frame.
-     * 
+     *
      * @author Ken Larson
      */
     static class FrameAssembler
@@ -324,7 +324,7 @@ public class DePacketizer extends AbstractCodec implements Codec
         /**
          * Add the buffer (which contains a fragment) to the assembler. Should
          * be a clone of a real buffer, since the buffer will be kept around.
-         * 
+         *
          * @param buffer
          *            clone of real buffer
          */
@@ -367,7 +367,7 @@ public class DePacketizer extends AbstractCodec implements Codec
     /**
      * Keeps track of multiple FrameAssemblers for different timestamps. This is
      * needed because packets may arrive out of order.
-     * 
+     *
      * @author Ken Larson
      */
     private static class FrameAssemblerCollection
@@ -485,7 +485,7 @@ public class DePacketizer extends AbstractCodec implements Codec
     /**
      * info on JFIF header at
      * http://www.obrador.com/essentialjpeg/headerinfo.htm
-     * 
+     *
      * @return new offset
      */
     private static int buildJFIFHeader(byte[] data, int offset)

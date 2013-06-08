@@ -17,16 +17,16 @@ public class Utils
      * the byte array. If the length of the byte array is odd, the length of the
      * short array will be <tt>(byteArray.length - 1)/2</tt>, i.e., the last
      * byte is discarded.
-     * 
+     *
      * @param byteArray
      *            a byte array
      * @param offset
      *            which byte to start from
      * @param length
      *            how many bytes to convert
-     * 
+     *
      * @return a short array, or <tt>null</tt> if byteArray is of zero length
-     * 
+     *
      * @throws java.lang.ArrayIndexOutOfBoundsException
      */
     public static short[] byteToShortArray(byte[] byteArray, int offset,
@@ -79,7 +79,7 @@ public class Utils
 
     /**
      * Get a pair of bytes representing a short value.
-     * 
+     *
      * @param v
      *            short
      * @param little

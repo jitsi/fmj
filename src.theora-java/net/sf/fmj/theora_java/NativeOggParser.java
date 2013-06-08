@@ -33,9 +33,9 @@ import com.sun.jna.ptr.*;
  * Uses theora-jna to parse Ogg files, and decode vorbis and theora data within
  * them. Adapted from theora-jna's PlayerExample, which is adapted from
  * player_example.c.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class NativeOggParser extends AbstractDemultiplexer
 {
@@ -178,7 +178,7 @@ public class NativeOggParser extends AbstractDemultiplexer
 
         // TODO: implement seeking using av_seek_frame
         /**
-         * 
+         *
          * @return nanos skipped, 0 if unable to skip.
          * @throws IOException
          */
@@ -313,7 +313,7 @@ public class NativeOggParser extends AbstractDemultiplexer
         }
 
         /**
-         * 
+         *
          * @return nanos skipped, 0 if unable to skip.
          * @throws IOException
          */

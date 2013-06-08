@@ -46,14 +46,14 @@ public interface StateTransistor
 
     /**
      * This function performs the steps to prefetch a module or Player.
-     * 
+     *
      * @return true if successful.
      */
     public boolean doPrefetch();
 
     /**
      * This function performs the steps of realizing a module or a Player.
-     * 
+     *
      * @return true if successful.
      */
     public boolean doRealize();

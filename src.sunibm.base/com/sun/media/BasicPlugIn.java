@@ -6,10 +6,10 @@ import javax.media.*;
 
 /**
  * In progress.
- * 
+ *
  * @author Ken Larson
  * @deprecated Don't use this unless you really have to.
- * 
+ *
  */
 @Deprecated
 public abstract class BasicPlugIn implements PlugIn

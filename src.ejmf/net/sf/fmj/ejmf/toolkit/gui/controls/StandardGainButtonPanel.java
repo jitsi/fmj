@@ -17,7 +17,7 @@ class StandardGainButtonPanel extends AbstractGainButtonPanel
 
     /**
      * Create button for decreasing gain.
-     * 
+     *
      * @return An AbstractButton that acts as gain decrease control.
      */
     @Override
@@ -28,7 +28,7 @@ class StandardGainButtonPanel extends AbstractGainButtonPanel
 
     /**
      * Create button for increasing gain.
-     * 
+     *
      * @return An AbstractButton that acts as gain increase control.
      */
     @Override

@@ -128,7 +128,7 @@ class AudioJitterBufferBehaviour
      * {@link #AJB_SHRINK_INTERVAL} has elapsed i.e. the time expressed in
      * number of packets which has elapsed from the current
      * <tt>AJB_SHRINK_INTERVAL</tt>. At the end of the interval in question, a
-     * decision will be made whether the associated queue will be shrunk. 
+     * decision will be made whether the associated queue will be shrunk.
      */
     private int shrinkCount = 0;
 
@@ -142,7 +142,7 @@ class AudioJitterBufferBehaviour
     /**
      * Initializes a new <tt>AudioJitterBufferBehaviour</tt> instance for the
      * purposes of a specific <tt>RTPSourceStream</tt>.
-     * 
+     *
      * @param stream the <tt>RTPSourceStream</tt> which has requested the
      * initialization of the new instance
      */
@@ -362,7 +362,7 @@ class AudioJitterBufferBehaviour
              * AJB_MAX_SIZE, it is too late to take it into account and,
              * consequently, is ignored.
              */
-            if(lastSeqSent - bufferSN < (long) AJB_MAX_SIZE)
+            if(lastSeqSent - bufferSN < AJB_MAX_SIZE)
             {
                 recordInHistory(true);
                 stats.incrementDiscardedLate();

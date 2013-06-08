@@ -8,9 +8,9 @@ import javax.media.protocol.*;
 
 /**
  * Merges multiple {@link PushDataSource} that implement {@link CaptureDevice}.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class MergingCaptureDevicePushDataSource extends MergingPushDataSource
         implements CaptureDevice

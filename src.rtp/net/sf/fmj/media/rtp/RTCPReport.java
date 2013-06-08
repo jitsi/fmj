@@ -2,30 +2,30 @@
  * @(#)RTCPReport.java
  * Created: 02-Dec-2005
  * Version: 1-1-alpha3
- * Copyright (c) 2005-2006, University of Manchester All rights reserved. 
+ * Copyright (c) 2005-2006, University of Manchester All rights reserved.
  * Andrew G D Rowley
  * Christian Vincenot <sipcom@cyberspace7.net>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * Redistributions of source code must retain the above copyright notice, this
  * list of conditions and the following disclaimer. Redistributions in binary
  * form must reproduce the above copyright notice, this list of conditions and
- * the following disclaimer in the documentation and/or other materials 
- * provided with the distribution. Neither the name of the University of 
- * Manchester nor the names of its contributors may be used to endorse or 
+ * the following disclaimer in the documentation and/or other materials
+ * provided with the distribution. Neither the name of the University of
+ * Manchester nor the names of its contributors may be used to endorse or
  * promote products derived from this software without specific prior written
- * permission. 
- * 
+ * permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
@@ -40,7 +40,7 @@ import javax.media.rtp.rtcp.*;
 
 /**
  * Represents an RTCP Report
- * 
+ *
  * @author Andrew G D Rowley
  * @author Christian Vincenot
  * @version 1-1-alpha3
@@ -76,7 +76,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Creates a new <tt>RTCPReport</tt> instance.
-     * 
+     *
      * @param data the data of the report
      * @param offset the offset in the data where the report starts
      * @param length the length of the report in the data
@@ -96,7 +96,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Returns the reason for the bye
-     * 
+     *
      * @return the reason announced for this BYE packet
      */
     public String getByeReason()
@@ -106,7 +106,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Gets the cName of the source of the report
-     * 
+     *
      * @return the cName, or null if none sent
      */
     public String getCName()
@@ -116,7 +116,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Returns the feedback reports for this RTCP report.
-     * 
+     *
      * @return the feedback reports for this RTCP report
      */
     public Vector getFeedbackReports()
@@ -126,7 +126,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Returns the participant linked with this RTCP report
-     * 
+     *
      * @return the participant identified previously as being linked with this
      *         RTCP report
      */
@@ -137,7 +137,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Returns the sources descriptions (SDES) in this RTCP report.
-     * 
+     *
      * @return the sources descriptions (SDES) in this RTCP report
      */
     public Vector getSourceDescription()
@@ -147,7 +147,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Returns the SSRC announced in this report.
-     * 
+     *
      * @return SSRC in this report
      */
     public long getSSRC()
@@ -157,7 +157,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Returns true if a bye packet was added to the report
-     * 
+     *
      * @return true if a BYE packet was added to the report
      */
     public boolean isByePacket()
@@ -167,7 +167,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Reads and handles the BYE part of an RTCP report.
-     * 
+     *
      * @param data
      *            the raw data in which the packet is contained
      * @param offset
@@ -201,7 +201,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Reads feedback reports from the data
-     * 
+     *
      * @param data
      *            The data to read the feedback reports from
      * @param offset
@@ -224,7 +224,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Reads the source description from the data
-     * 
+     *
      * @param data
      *            The data to read the source description from
      * @param offset
@@ -274,7 +274,7 @@ public abstract class RTCPReport implements Report
 
     /**
      * Sets the participant linked with this RTCP report.
-     * 
+     *
      * @param participant
      *            the participant identified as linked with this RTCP report
      */

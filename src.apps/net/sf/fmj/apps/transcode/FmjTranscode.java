@@ -10,7 +10,7 @@ import net.sf.fmj.utility.*;
 
 /**
  * A command-line transcoder application. Example args:
- * 
+ *
  * Transcode an audio file to another format: file://samplemedia/gulp2.wav
  * LINEAR:22050:8:1:?:S audio/basic file://out.au Record live video into a video
  * file: civil:/0 JPEG multipart/x-mixed-replace file://out.mmr Transmit an
@@ -30,16 +30,16 @@ import net.sf.fmj.utility.*;
  * rtp://192.168.1.1:8000 JPEG multipart/x-mixed-replace file://out.mmr Render
  * live audio in a specific format: javasound://0 LINEAR:8000:16:1:B:S raw
  * render: javasound://0 ULAW:8000:8:1 raw render: Record audio to a file: TODO
- * 
+ *
  * Render audio and video (merged): merge:[civil:/0][javasound://0] ? raw
  * render: Record both audio and video (merged) to an XML movie file:
  * merge:[civil:/0][javasound://0] JPEG:160x120 LINEAR:8000:8:1 video/xml
  * file://out.xmv
- * 
- * 
+ *
+ *
  * TODO: civil:/0 JPEG video/xml file://out.xmv
- * 
- * 
+ *
+ *
  * TODO: incompletely specified formats TODO: javasound://0 SPEEX/RTP:8000:8:1
  * raw/rtp rtp://192.168.1.2:8000/audio/16 - terrible filter graph TODO:
  * javasound://0 ILBC/RTP:8000:16:1 raw/rtp rtp://192.168.1.2:8000/audio/16 -
@@ -53,9 +53,9 @@ import net.sf.fmj.utility.*;
  * file://samplemedia/Apollo_15_liftoff_from_inside_LM.ogg LINEAR audio/basic
  * file://out.au TODO: content type is often redundant with output, since
  * content type can usually be determined by output ext.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FmjTranscode
 {

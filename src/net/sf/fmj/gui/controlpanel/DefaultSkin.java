@@ -6,9 +6,9 @@ import net.sf.fmj.gui.controlpanel.images.*;
 
 /**
  * Default skin.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class DefaultSkin implements Skin
 {

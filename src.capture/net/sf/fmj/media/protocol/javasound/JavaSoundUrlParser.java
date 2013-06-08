@@ -6,9 +6,9 @@ import javax.media.*;
 import javax.media.format.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class JavaSoundUrlParser
 {

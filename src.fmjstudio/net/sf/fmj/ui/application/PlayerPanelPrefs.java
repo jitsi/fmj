@@ -14,9 +14,9 @@ import org.jdom.input.*;
 import org.jdom.output.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class PlayerPanelPrefs
 {
@@ -209,7 +209,7 @@ public class PlayerPanelPrefs
 
     /**
      * Builds a Document from the registry data structures.
-     * 
+     *
      * @return the Document.
      * @throws IOException
      */
@@ -350,7 +350,7 @@ public class PlayerPanelPrefs
 
     /**
      * Write the registry data to the Writer.
-     * 
+     *
      * @param writer
      *            destination for the registry data.
      * @throws IOException

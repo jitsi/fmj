@@ -9,9 +9,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * Implements InputStream by wrapping a Track.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class TrackInputStream extends InputStream
 {

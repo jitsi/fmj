@@ -5,9 +5,9 @@ import java.util.*;
 
 /**
  * Implements RegistryIO using Properties format.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 class PropertiesRegistryIO implements RegistryIO
 {

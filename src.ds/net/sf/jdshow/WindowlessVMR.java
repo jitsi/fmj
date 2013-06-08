@@ -2,7 +2,7 @@ package net.sf.jdshow;
 
 /**
  * Helper for Windowless VMR
- * 
+ *
  * @author Ken Larson
  * @deprecated Not working yet.
  */

@@ -12,7 +12,7 @@ import net.sf.fmj.ui.objeditor.*;
 import net.sf.fmj.ui.utils.*;
 
 /**
- * 
+ *
  * @author Ken Larson
  */
 public class URLPanel extends javax.swing.JPanel implements ObjEditor

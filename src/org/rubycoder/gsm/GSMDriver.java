@@ -20,8 +20,8 @@ package org.rubycoder.gsm;
 //    Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 //  This software is a port of the GSM Library provided by
-//  Jutta Degener (jutta@cs.tu-berlin.de) and 
-//  Carsten Bormann (cabo@cs.tu-berlin.de), 
+//  Jutta Degener (jutta@cs.tu-berlin.de) and
+//  Carsten Bormann (cabo@cs.tu-berlin.de),
 //  Technische Universitaet Berlin
 
 import java.io.*;

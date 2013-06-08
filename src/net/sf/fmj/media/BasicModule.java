@@ -46,7 +46,7 @@ abstract public class BasicModule implements Module, StateTransistor
 
         /**
          * register Connector.
-         * 
+         *
          * @exception RuntimeException
          *                If the specified name is already registered
          */
@@ -161,7 +161,7 @@ abstract public class BasicModule implements Module, StateTransistor
 
     /**
      * This function performs the steps to prefetch a module or Player.
-     * 
+     *
      * @return true if successful.
      */
     public boolean doPrefetch()
@@ -173,7 +173,7 @@ abstract public class BasicModule implements Module, StateTransistor
 
     /**
      * This function performs the steps of realizing a module or a Player.
-     * 
+     *
      * @return true if successful.
      */
     public boolean doRealize()
@@ -343,7 +343,7 @@ abstract public class BasicModule implements Module, StateTransistor
 
     /**
      * function which does the real processing.
-     * 
+     *
      * <pre>
      * if canRun {
      *    for (all inputConnectors)
@@ -385,14 +385,14 @@ abstract public class BasicModule implements Module, StateTransistor
 
     /**
      * reset this module only.
-     * 
+     *
      * <pre>
      * if (state== Started)
      *    throw Exception()
      * for (all connectors)
      *    connector.reset()
      * </pre>
-     * 
+     *
      * The resetted flag is falsified only when the module is later restarted.
      */
     public void reset()
@@ -421,7 +421,7 @@ abstract public class BasicModule implements Module, StateTransistor
     /**
      * Specify a <tt>ModuleListener</tt> to which this <tt>Module</tt> will send
      * events.
-     * 
+     *
      * @param listener
      *            The listener to which the <tt>Module</tt> will post events.
      */

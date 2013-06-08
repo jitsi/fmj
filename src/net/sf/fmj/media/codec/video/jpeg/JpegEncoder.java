@@ -16,10 +16,10 @@ import net.sf.fmj.media.util.*;
  * JPEG encoder Codec. Interesting that JMF doesn't include such an encoder in
  * cross-platform JMF. JpegEncoder is not used in JPEG/RTP anymore, all the
  * encoding for JPEG/RTP is done in the packetizer.
- * 
+ *
  * @author Ken Larson
  * @author Werner Dittman
- * 
+ *
  */
 public class JpegEncoder extends AbstractCodec implements Codec
 {

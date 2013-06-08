@@ -8,9 +8,9 @@ import javax.swing.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public final class Images
 {

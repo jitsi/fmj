@@ -8,7 +8,7 @@ import net.sf.fmj.ejmf.toolkit.gui.controls.*;
 
 /**
  * The gain meter button for StandardControlPanel.
- * 
+ *
  * This class draws the default gain meter button for StandardControls: A small
  * speaker-shaped icon with "waves" emanating from the front.
  * <p>
@@ -17,7 +17,7 @@ import net.sf.fmj.ejmf.toolkit.gui.controls.*;
  * are drawn.
  * <p>
  * GainMeterButton implements GainMeter in order to support these operations.
- * 
+ *
  * @see net.sf.fmj.ejmf.toolkit.gui.controls.GainMeter
  */
 
@@ -170,7 +170,7 @@ public class GainMeterButton extends BasicControlButton implements GainMeter
     /**
      * Set gain level of gain meter. The input argument is a gain level that
      * gets mapped to a number of "waves" emanating from front of speaker.
-     * 
+     *
      * @param level
      *            is a gain level value that gets mapped to a display value
      */
@@ -182,7 +182,7 @@ public class GainMeterButton extends BasicControlButton implements GainMeter
 
     /**
      * Set mute state of button
-     * 
+     *
      * @param muted
      *            true to draw button to reflect muted state, false otherwise.
      */

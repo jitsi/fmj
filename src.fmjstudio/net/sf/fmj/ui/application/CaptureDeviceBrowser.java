@@ -12,9 +12,9 @@ import net.sf.fmj.media.cdp.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class CaptureDeviceBrowser extends JPanel
 {

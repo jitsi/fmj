@@ -7,9 +7,9 @@ import net.sf.fmj.media.protocol.*;
 /**
  * HTTP protocol handler DataSource. TODO: move http-specific code from
  * URLDataSource to here.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class DataSource extends URLDataSource
 {

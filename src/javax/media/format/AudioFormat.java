@@ -93,7 +93,7 @@ public class AudioFormat extends Format
 
     /**
      * Constructs an <tt>AudioFormat</tt> with the specified encoding type.
-     * 
+     *
      * @param encoding
      *            The audio encoding type.
      */
@@ -105,7 +105,7 @@ public class AudioFormat extends Format
 
     /**
      * Constructs an <tt>AudioFormat</tt> with the specified attributes.
-     * 
+     *
      * @param encoding
      *            A <tt>String</tt> that describes the encoding type for this
      *            <tt>AudioFormat</tt>.
@@ -128,7 +128,7 @@ public class AudioFormat extends Format
 
     /**
      * Constructs an <tt>AudioFormat</tt> with the specified attributes.
-     * 
+     *
      * @param encoding
      *            A <tt>String</tt> that describes the encoding type for this
      *            <tt>AudioFormat</tt>.
@@ -157,7 +157,7 @@ public class AudioFormat extends Format
 
     /**
      * Constructs an <tt>AudioFormat</tt> with the specified attributes.
-     * 
+     *
      * @param encoding
      *            A <tt>String</tt> that describes the encoding type for this
      *            <tt>AudioFormat</tt>.
@@ -195,7 +195,7 @@ public class AudioFormat extends Format
     /**
      * Creates a clone of this <tt>AudioFormat</tt> by copying each field to the
      * clone.
-     * 
+     *
      * @return A clone of this <tt>AudioFormat</tt>.
      */
     @Override
@@ -208,7 +208,7 @@ public class AudioFormat extends Format
 
     /**
      * Returns the duration of the media based on the given length of the data.
-     * 
+     *
      * @param length
      *            length of the data in this format.
      * @return the duration in nanoseconds computed from the length of the data
@@ -280,7 +280,7 @@ public class AudioFormat extends Format
     /**
      * Copies the attributes from the specified <tt>Format</tt> into this
      * <tt>AudioFormat</tt>.
-     * 
+     *
      * @param f
      *            The <tt>Format</tt> to copy the attributes from.
      */
@@ -304,7 +304,7 @@ public class AudioFormat extends Format
      * Returns <tt>true</tt> only if the specified <tt>Format</tt> is an
      * <tt>AudioFormat</tt> and all of its attributes are identical to this
      * <tt>AudioFormat</tt>.
-     * 
+     *
      * @param format
      *            The <tt>Format</tt> to compare with this one.
      * @return <tt>true</tt> if the specified <tt>Format</tt> is the same,
@@ -329,7 +329,7 @@ public class AudioFormat extends Format
 
     /**
      * Gets the number of channels.
-     * 
+     *
      * @return The number of channels as an integer.
      */
     public int getChannels()
@@ -340,7 +340,7 @@ public class AudioFormat extends Format
     /**
      * Gets an integer that indicates whether the sample byte order is big
      * endian or little endian.
-     * 
+     *
      * @return The sample byte order of this <tt>AudioFormat</tt>,
      *         <tt>BIG_ENDIAN</tt> or <tt>LITTLE_ENDIAN</tt>.
      */
@@ -351,7 +351,7 @@ public class AudioFormat extends Format
 
     /**
      * Gets the frame rate of this <tt>AudioFormat</tt>.
-     * 
+     *
      * @return The frame rate.
      */
     public double getFrameRate()
@@ -362,7 +362,7 @@ public class AudioFormat extends Format
     /**
      * Gets the frame size of this <tt>AudioFormat</tt>. This method is used
      * primarily for compressed audio.
-     * 
+     *
      * @return The frame size of this <tt>AudioFormat</tt> in bits.
      */
     public int getFrameSizeInBits()
@@ -372,7 +372,7 @@ public class AudioFormat extends Format
 
     /**
      * Gets the audio sample rate.
-     * 
+     *
      * @return The sample rate.
      */
     public double getSampleRate()
@@ -382,7 +382,7 @@ public class AudioFormat extends Format
 
     /**
      * Gets the size of a sample.
-     * 
+     *
      * @return The sample size in bits.
      */
     public int getSampleSizeInBits()
@@ -393,7 +393,7 @@ public class AudioFormat extends Format
     /**
      * Gets a boolean that indicates whether the samples are stored in signed
      * format or an unsigned format.
-     * 
+     *
      * @return <tt>SIGNED</tt> if this <tt>VideoFormat</tt> is signed,
      *         <tt>UNSIGNED</tt> if it is not.
      */
@@ -406,7 +406,7 @@ public class AudioFormat extends Format
      * Finds the attributes shared by two matching <tt>Format</tt> objects. If
      * the specified <tt>Format</tt> does not match this one, the result is
      * undefined.
-     * 
+     *
      * @param format The matching <tt>Format</tt> to intersect with this
      * <tt>AudioFormat</tt>.
      * @return A <tt>Format</tt> object with its attributes set to those
@@ -447,7 +447,7 @@ public class AudioFormat extends Format
      * match. For example, if "A" are "B" are being compared, a match is
      * possible if "A" is derived from "B" or "B" is derived from "A". (The
      * compared attributes must still match, or <tt>matches</tt> fails.)
-     * 
+     *
      * @param format
      *            The <tt>Format</tt> to compare with this one.
      * @return <tt>true</tt> if the specified <tt>Format</tt> matches this one,
@@ -480,7 +480,7 @@ public class AudioFormat extends Format
     /**
      * Gets a <tt>String</tt> representation of the attributes of this
      * <tt>AudioFormat</tt>. For example: "PCM, 44.1 KHz, Stereo, Signed".
-     * 
+     *
      * @return A <tt>String</tt> that describes the <tt>AudioFormat</tt>
      *         attributes.
      */

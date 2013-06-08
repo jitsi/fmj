@@ -7,9 +7,9 @@ import net.sf.fmj.media.format.*;
 
 /**
  * PNG decoder Codec.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class PNGDecoder extends ImageIODecoder
 {

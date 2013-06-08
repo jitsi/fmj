@@ -9,9 +9,9 @@ import com.sun.media.ui.*;
 
 /**
  * TODO: Stub
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class BitRateAdapter implements BitRateControl, ActionListener
 {

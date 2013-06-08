@@ -11,12 +11,12 @@ import javax.swing.border.*;
  * Graphical interface only: Provides a generic Control over a Controller's
  * rate. The graphical interface is a simple rate TextField. When the user hits
  * enter, the rate in the TextField will be set in the Player.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @author Steve Talley & Rob Gordon
- * 
+ *
  */
 public class RateControlComponent extends JPanel implements ActionListener,
         ControllerListener
@@ -57,7 +57,7 @@ public class RateControlComponent extends JPanel implements ActionListener,
 
     /**
      * Listens for changes in the Rate TextField.
-     * 
+     *
      * @param e
      *            An ActionEvent fired by activity in text field.
      */
@@ -85,7 +85,7 @@ public class RateControlComponent extends JPanel implements ActionListener,
     /**
      * Listens for changes in the Controller's rate, so that it can be reflected
      * in the Rate TextField.
-     * 
+     *
      * @param e
      *            The generated ControllerEvent. This event is ignored if it is
      *            not a RateChangeEvent.

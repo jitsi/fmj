@@ -8,7 +8,7 @@ import net.sf.fmj.media.*;
 /**
  * GSM to PCM java decoder. Decodes GSM frame (33 bytes long) into 160 16-bit
  * PCM samples (320 bytes).
- * 
+ *
  * @author Martin Harvan
  * @author Damian Minkov
  */

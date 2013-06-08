@@ -16,12 +16,12 @@ import net.sf.fmj.utility.*;
 /**
  * Can be used for adding entries to: - plugins, demuxes, codecs, effects,
  * renderers, muxes - content package prefixes - protocol package prefixes
- * 
+ *
  * TODO send details of selected item to listeners, e.g. PlugInInfo for plugins.
- * 
+ *
  * @author Warren Bloomer
  * @author Ken Larson
- * 
+ *
  */
 public class EntryPanel extends JPanel
 {
@@ -60,7 +60,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes
-     * 
+     *
      */
     public EntryPanel(int type)
     {
@@ -216,7 +216,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes actionPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getActionPanel()
@@ -267,7 +267,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes addButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getAddButton()
@@ -295,7 +295,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes commitButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getCommitButton()
@@ -332,7 +332,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes entryList
-     * 
+     *
      * @return javax.swing.JList
      */
     private JList getEntryList()
@@ -364,7 +364,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes entryListModel
-     * 
+     *
      * @return javax.swing.DefaultComboBoxModel
      */
     private DefaultComboBoxModel getEntryListModel()
@@ -378,7 +378,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes entryPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getEntryPanel()
@@ -396,7 +396,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes entryTextField
-     * 
+     *
      * @return javax.swing.JTextField
      */
     private JTextField getEntryTextField()
@@ -411,7 +411,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes entryTextField2
-     * 
+     *
      * @return javax.swing.JTextField
      */
     private JTextField getEntryTextField2()
@@ -429,7 +429,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes entryTopPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getEntryTopPanel()
@@ -449,7 +449,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes listScrollPane
-     * 
+     *
      * @return javax.swing.JScrollPane
      */
     private JScrollPane getListScrollPane()
@@ -463,7 +463,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes moveDownButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getMoveDownButton()
@@ -505,7 +505,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes moveUpButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getMoveUpButton()
@@ -542,7 +542,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes removeButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getRemoveButton()
@@ -573,7 +573,7 @@ public class EntryPanel extends JPanel
 
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize()
     {

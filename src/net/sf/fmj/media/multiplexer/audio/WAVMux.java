@@ -13,9 +13,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * WAV audio multiplexer.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class WAVMux extends JavaSoundMux
 {

@@ -4,9 +4,9 @@ import net.iharder.*;
 
 /**
  * String utilties. TODO: move to src.utils/com.lti.utils.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public final class StringUtils
 {
@@ -95,7 +95,7 @@ public final class StringUtils
     }
 
     /**
-     * 
+     *
      * @throws NumberFormatException
      */
     public static byte hexStringToByte(String s)
@@ -104,7 +104,7 @@ public final class StringUtils
     }
 
     /**
-     * 
+     *
      * @throws NumberFormatException
      */
     public static byte[] hexStringToByteArray(String s)

@@ -3,9 +3,9 @@ package net.sf.fmj.ui.objeditor;
 import javax.swing.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class ComponentValidator
 {

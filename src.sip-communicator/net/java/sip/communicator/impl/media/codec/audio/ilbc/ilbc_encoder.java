@@ -2277,7 +2277,7 @@ class ilbc_encoder
         {
             /*
              * sub-frame 1: Interpolation between old and first
-             * 
+             *
              * set of lsf coefficients
              */
 

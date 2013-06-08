@@ -4,7 +4,7 @@ package net.sf.fmj.utility;
  * Class used to convert array types (int[] -> bytep[], bytep[] -> int[] etc.).
  * Methods in this class does not check if there is any data loss occuring, they
  * simply cast all the elements into output type.
- * 
+ *
  * @author Martin Harvan
  */
 public class ArrayUtility

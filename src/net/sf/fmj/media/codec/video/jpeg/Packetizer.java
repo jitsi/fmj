@@ -22,7 +22,7 @@ import org.w3c.dom.*;
 /**
  * JPEG/RTP packetizer codec. Replacement for
  * com.sun.media.codec.video.jpeg.Packetizer.
- * 
+ *
  * @author Ken Larson
  * @author Martin Harvan
  */
@@ -344,13 +344,13 @@ public class Packetizer extends AbstractPacketizer
          * 1, 0x3FFF); //that's what this header is initialized to in the
          * example in RFC2435 System.arraycopy(data, 0, packetBuffer, length,
          * data.length); length += data.length; }
-         * 
+         *
          * if (quality >= 128) { byte[] data =
          * JpegRTPHeader.createQHeader(lumaQtable.length+chromaQtable.length,
          * lumaQtable, chromaQtable); //TODO: do we send normal order tables or
          * zig-zag ones? System.arraycopy(data, 0, packetBuffer, length,
          * data.length); length += data.length;
-         * 
+         *
          * }
          */
 
@@ -519,7 +519,7 @@ public class Packetizer extends AbstractPacketizer
                 /*
                  * IIOMetadata meta = encoder.getDefaultImageMetadata(new
                  * ImageTypeSpecifier(image), param);
-                 * 
+                 *
                  * if(dri!=0){
                  * meta.mergeTree("javax_imageio_jpeg_image_1.0",createDri
                  * (meta.getAsTree("javax_imageio_jpeg_image_1.0"),dri)); } if

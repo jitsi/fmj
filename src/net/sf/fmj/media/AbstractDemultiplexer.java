@@ -7,9 +7,9 @@ import javax.media.protocol.*;
 
 /**
  * Abstract base class to implement Demultiplexer.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractDemultiplexer extends AbstractPlugIn implements
         Demultiplexer

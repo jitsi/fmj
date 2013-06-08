@@ -18,9 +18,9 @@ import net.sf.fmj.utility.*;
 import com.lti.utils.*;
 
 /**
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class PlayerPanel extends JPanel
 {
@@ -42,7 +42,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * This method initializes
-     * 
+     *
      */
     public PlayerPanel()
     {
@@ -75,7 +75,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * This method initializes addressComboBox
-     * 
+     *
      * @return javax.swing.JComboBox
      */
     private JComboBox getAddressComboBox()
@@ -112,7 +112,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * This method initializes addressPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getAddressPanel()
@@ -142,7 +142,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * This method initializes containerPlayer
-     * 
+     *
      * @return net.sf.fmj.ui.application.ContainerPlayer
      */
     private ContainerPlayer getContainerPlayer()
@@ -174,7 +174,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * This method initializes loadButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getLoadButton()
@@ -198,7 +198,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * This method initializes openButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getOpenButton()
@@ -260,7 +260,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * This method initializes playerToolBar
-     * 
+     *
      * @return javax.swing.JToolBar
      */
     private JToolBar getPlayerToolBar()
@@ -294,7 +294,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * This method initializes transportControlPanel
-     * 
+     *
      * @return net.sf.fmj.ui.control.TransportControlPanel
      */
     private SwingLookControlPanel getTransportControlPanel()
@@ -309,7 +309,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * This method initializes videoPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     public JPanel getVideoPanel()
@@ -332,7 +332,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize()
     {

@@ -7,7 +7,7 @@ package net.iharder;
  * <p>
  * Homepage: <a href="http://iharder.net/base64">http://iharder.net/base64</a>.
  * </p>
- * 
+ *
  * <p>
  * The <tt>options</tt> parameter, which appears in a few places, is used to
  * pass several pieces of information to the encoder. In the "higher level"
@@ -16,20 +16,20 @@ package net.iharder;
  * them, not inserting linefeeds (though that breaks strict Base64
  * compatibility), and encoding using the URL-safe and Ordered dialects.
  * </p>
- * 
+ *
  * <p>
  * The constants defined in Base64 can be OR-ed together to combine options, so
  * you might make a call like this:
  * </p>
- * 
+ *
  * <tt>String encoded = Base64.encodeBytes( mybytes, Base64.GZIP | Base64.DONT_BREAK_LINES );</tt>
- * 
+ *
  * <p>
  * to compress the data before encoding it and then making the output have no
  * newline characters.
  * </p>
- * 
- * 
+ *
+ *
  * <p>
  * Change Log:
  * </p>
@@ -55,7 +55,7 @@ package net.iharder;
  * Special thanks to Jim Kellerman at <a
  * href="http://www.powerset.com/">http://www.powerset.com/</a> for contributing
  * the new Base64 dialects.</li>
- * 
+ *
  * <li>v2.1 - Cleaned up javadoc comments and unused variables and methods.
  * Added some convenience methods for reading and writing to and from files.</li>
  * <li>v2.0.2 - Now specifies UTF-8 encoding in places where the code fails on
@@ -85,7 +85,7 @@ package net.iharder;
  * wrong time.</li>
  * <li>v1.3.3 - Fixed I/O streams which were totally messed up.</li>
  * </ul>
- * 
+ *
  * <p>
  * I am placing this code in the Public Domain. Do with it as you will. This
  * software comes with no guarantees or warranties but with plenty of
@@ -93,7 +93,7 @@ package net.iharder;
  * href="http://iharder.net/base64">http://iharder.net/base64</a> periodically
  * to check for updates or to contribute improvements.
  * </p>
- * 
+ *
  * @author Robert Harder
  * @author rob@iharder.net
  * @version 2.2.2
@@ -106,7 +106,7 @@ public class Base64
      * A {@link Base64.InputStream} will read data from another
      * <tt>java.io.InputStream</tt>, given in the constructor, and encode/decode
      * to/from Base64 notation on the fly.
-     * 
+     *
      * @see Base64
      * @since 1.3
      */
@@ -125,7 +125,7 @@ public class Base64
 
         /**
          * Constructs a {@link Base64.InputStream} in DECODE mode.
-         * 
+         *
          * @param in
          *            the <tt>java.io.InputStream</tt> from which to read data.
          * @since 1.3
@@ -140,7 +140,7 @@ public class Base64
          * mode.
          * <p>
          * Valid options:
-         * 
+         *
          * <pre>
          *   ENCODE or DECODE: Encode or Decode as data is read.
          *   DONT_BREAK_LINES: don't break lines at 76 characters
@@ -149,8 +149,8 @@ public class Base64
          * </pre>
          * <p>
          * Example: <tt>new Base64.InputStream( in, Base64.DECODE )</tt>
-         * 
-         * 
+         *
+         *
          * @param in
          *            the <tt>java.io.InputStream</tt> from which to read data.
          * @param options
@@ -178,7 +178,7 @@ public class Base64
         /**
          * Reads enough of the input stream to convert to/from Base64 and
          * returns the next byte.
-         * 
+         *
          * @return next byte
          * @since 1.3
          */
@@ -308,7 +308,7 @@ public class Base64
          * Calls {@link #read()} repeatedly until the end of stream is reached
          * or <var>len</var> bytes are read. Returns number of bytes read into
          * array or -1 if end of stream is encountered.
-         * 
+         *
          * @param dest
          *            array to hold values
          * @param off
@@ -347,7 +347,7 @@ public class Base64
      * A {@link Base64.OutputStream} will write data to another
      * <tt>java.io.OutputStream</tt>, given in the constructor, and
      * encode/decode to/from Base64 notation on the fly.
-     * 
+     *
      * @see Base64
      * @since 1.3
      */
@@ -367,7 +367,7 @@ public class Base64
 
         /**
          * Constructs a {@link Base64.OutputStream} in ENCODE mode.
-         * 
+         *
          * @param out
          *            the <tt>java.io.OutputStream</tt> to which data will be
          *            written.
@@ -383,7 +383,7 @@ public class Base64
          * mode.
          * <p>
          * Valid options:
-         * 
+         *
          * <pre>
          *   ENCODE or DECODE: Encode or Decode as data is read.
          *   DONT_BREAK_LINES: don't break lines at 76 characters
@@ -392,7 +392,7 @@ public class Base64
          * </pre>
          * <p>
          * Example: <tt>new Base64.OutputStream( out, Base64.ENCODE )</tt>
-         * 
+         *
          * @param out
          *            the <tt>java.io.OutputStream</tt> to which data will be
          *            written.
@@ -421,7 +421,7 @@ public class Base64
 
         /**
          * Flushes and closes (I think, in the superclass) the stream.
-         * 
+         *
          * @since 1.3
          */
         @Override
@@ -463,7 +463,7 @@ public class Base64
         /**
          * Resumes encoding of the stream. May be helpful if you need to embed a
          * piece of base640-encoded data in a stream.
-         * 
+         *
          * @since 1.5.1
          */
         public void resumeEncoding()
@@ -474,7 +474,7 @@ public class Base64
         /**
          * Suspends encoding of the stream. May be helpful if you need to embed
          * a piece of base640-encoded data in a stream.
-         * 
+         *
          * @since 1.5.1
          */
         public void suspendEncoding() throws java.io.IOException
@@ -486,7 +486,7 @@ public class Base64
         /**
          * Calls {@link #write(int)} repeatedly until <var>len</var> bytes are
          * written.
-         * 
+         *
          * @param theBytes
          *            array from which to read bytes
          * @param off
@@ -518,7 +518,7 @@ public class Base64
          * notation. When encoding, bytes are buffered three at a time before
          * the output stream actually gets a write() call. When decoding, bytes
          * are buffered four at a time.
-         * 
+         *
          * @param theByte
          *            the byte to write
          * @since 1.3
@@ -848,7 +848,7 @@ public class Base64
      * Very low-level access to decoding ASCII characters in the form of a byte
      * array. Does not support automatically gunzipping or any other "fancy"
      * features.
-     * 
+     *
      * @param source
      *            The Base64 encoded data
      * @param off
@@ -912,7 +912,7 @@ public class Base64
     /**
      * Decodes data from Base64 notation, automatically detecting
      * gzip-compressed data and decompressing it.
-     * 
+     *
      * @param s
      *            the string to decode
      * @return the decoded data
@@ -926,7 +926,7 @@ public class Base64
     /**
      * Decodes data from Base64 notation, automatically detecting
      * gzip-compressed data and decompressing it.
-     * 
+     *
      * @param s
      *            the string to decode
      * @param options
@@ -1026,8 +1026,8 @@ public class Base64
      * This is the lowest level of the decoding methods with all possible
      * parameters.
      * </p>
-     * 
-     * 
+     *
+     *
      * @param source
      *            the array to convert
      * @param srcOffset
@@ -1117,7 +1117,7 @@ public class Base64
 
     /**
      * Reads <tt>infile</tt> and decodes it to <tt>outfile</tt>.
-     * 
+     *
      * @param infile
      *            Input file
      * @param outfile
@@ -1167,11 +1167,11 @@ public class Base64
 
     /**
      * Convenience method for reading a base64-encoded file and decoding it.
-     * 
+     *
      * @param filename
      *            Filename for reading encoded data
      * @return decoded byte array or null if unsuccessful
-     * 
+     *
      * @since 2.1
      */
     public static byte[] decodeFromFile(String filename)
@@ -1228,13 +1228,13 @@ public class Base64
 
     /**
      * Convenience method for decoding data to a file.
-     * 
+     *
      * @param dataToDecode
      *            Base64-encoded data as a string
      * @param filename
      *            Filename for saving decoded data
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
-     * 
+     *
      * @since 2.1
      */
     public static boolean decodeToFile(String dataToDecode, String filename)
@@ -1268,7 +1268,7 @@ public class Base64
     /**
      * Attempts to decode Base64 data and deserialize a Java Object within.
      * Returns <tt>null</tt> if there was an error.
-     * 
+     *
      * @param encodedObject
      *            The Base64 data to decode
      * @return The decoded and deserialized object
@@ -1326,7 +1326,7 @@ public class Base64
      * array <var>threeBytes</var> needs only be as big as
      * <var>numSigBytes</var>. Code can reuse a byte array by passing a
      * four-byte array as <var>b4</var>.
-     * 
+     *
      * @param b4
      *            A reusable byte array to reduce array instantiation
      * @param threeBytes
@@ -1359,7 +1359,7 @@ public class Base64
      * This is the lowest level of the encoding methods with all possible
      * parameters.
      * </p>
-     * 
+     *
      * @param source
      *            the array to convert
      * @param srcOffset
@@ -1424,7 +1424,7 @@ public class Base64
 
     /**
      * Encodes a byte array into Base64 notation. Does not GZip-compress data.
-     * 
+     *
      * @param source
      *            The data to convert
      * @since 1.4
@@ -1440,7 +1440,7 @@ public class Base64
      * Encodes a byte array into Base64 notation.
      * <p>
      * Valid options:
-     * 
+     *
      * <pre>
      *   GZIP: gzip-compresses object before encoding it.
      *   DONT_BREAK_LINES: don't break lines at 76 characters
@@ -1451,8 +1451,8 @@ public class Base64
      * <p>
      * Example:
      * <tt>encodeBytes( myData, Base64.GZIP | Base64.DONT_BREAK_LINES )</tt>
-     * 
-     * 
+     *
+     *
      * @param source
      *            The data to convert
      * @param options
@@ -1468,7 +1468,7 @@ public class Base64
 
     /**
      * Encodes a byte array into Base64 notation. Does not GZip-compress data.
-     * 
+     *
      * @param source
      *            The data to convert
      * @param off
@@ -1486,7 +1486,7 @@ public class Base64
      * Encodes a byte array into Base64 notation.
      * <p>
      * Valid options:
-     * 
+     *
      * <pre>
      *   GZIP: gzip-compresses object before encoding it.
      *   DONT_BREAK_LINES: don't break lines at 76 characters
@@ -1497,8 +1497,8 @@ public class Base64
      * <p>
      * Example:
      * <tt>encodeBytes( myData, Base64.GZIP | Base64.DONT_BREAK_LINES )</tt>
-     * 
-     * 
+     *
+     *
      * @param source The data to convert
      * @param off Offset in array where conversion should begin
      * @param len Length of data to convert
@@ -1620,7 +1620,7 @@ public class Base64
 
     /**
      * Reads <tt>infile</tt> and encodes it to <tt>outfile</tt>.
-     * 
+     *
      * @param infile
      *            Input file
      * @param outfile
@@ -1670,11 +1670,11 @@ public class Base64
 
     /**
      * Convenience method for reading a binary file and base64-encoding it.
-     * 
+     *
      * @param filename
      *            Filename for reading binary data
      * @return base64-encoded string or null if unsuccessful
-     * 
+     *
      * @since 2.1
      */
     public static String encodeFromFile(String filename)
@@ -1731,7 +1731,7 @@ public class Base64
      * serialized object. If the object cannot be serialized or there is another
      * error, the method will return <tt>null</tt>. The object is not
      * GZip-compressed before being encoded.
-     * 
+     *
      * @param serializableObject
      *            The object to encode
      * @return The Base64-encoded object
@@ -1748,7 +1748,7 @@ public class Base64
      * error, the method will return <tt>null</tt>.
      * <p>
      * Valid options:
-     * 
+     *
      * <pre>
      *   GZIP: gzip-compresses object before encoding it.
      *   DONT_BREAK_LINES: don't break lines at 76 characters
@@ -1759,7 +1759,7 @@ public class Base64
      * <p>
      * Example:
      * <tt>encodeObject( myObj, Base64.GZIP | Base64.DONT_BREAK_LINES )</tt>
-     * 
+     *
      * @param serializableObject
      *            The object to encode
      * @param options
@@ -1846,13 +1846,13 @@ public class Base64
 
     /**
      * Convenience method for encoding data to a file.
-     * 
+     *
      * @param dataToEncode
      *            byte array of data to encode in base64 form
      * @param filename
      *            Filename for saving encoded data
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
-     * 
+     *
      * @since 2.1
      */
     public static boolean encodeToFile(byte[] dataToEncode, String filename)
@@ -1952,7 +1952,7 @@ public class Base64
 
     /**
      * Prints command line usage.
-     * 
+     *
      * @param msg
      *            A message to include with usage info.
      */

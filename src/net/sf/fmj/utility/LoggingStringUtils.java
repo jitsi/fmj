@@ -8,9 +8,9 @@ import com.lti.utils.*;
 
 /**
  * Useful for converting JMF/FMJ objects to strings for logging.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public final class LoggingStringUtils
 {

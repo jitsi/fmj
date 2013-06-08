@@ -9,7 +9,7 @@ import net.sf.fmj.ui.utils.*;
 /**
  * Adapted Robert Eckstein's sample at
  * http://java.sun.com/developer/technicalArticles/GUI/swing/wizard/
- * 
+ *
  * A base descriptor class used to reference a Component panel for the Wizard,
  * as well as provide general rules as to how the panel should behave.
  */
@@ -46,7 +46,7 @@ public class WizardPanelDescriptor
     /**
      * Constructor which accepts both the Object-based identifier and a
      * reference to the Component class which makes up the panel.
-     * 
+     *
      * @param id
      *            Object-based identifier
      * @param panel
@@ -91,7 +91,7 @@ public class WizardPanelDescriptor
      * that this method is only called when the button is actually pressed, so
      * that the panel can change the previous panel's identifier dynamically at
      * runtime if necessary. Return null if the button should be disabled.
-     * 
+     *
      * @return Object-based identifier
      */
     public Object getBackPanelDescriptor()
@@ -107,7 +107,7 @@ public class WizardPanelDescriptor
      * runtime if necessary. Return null if the button should be disabled.
      * Return FinishIdentfier if the button text should change to 'Finish' and
      * the dialog should end.
-     * 
+     *
      * @return Object-based identifier.
      */
     public Object getNextPanelDescriptor()
@@ -117,7 +117,7 @@ public class WizardPanelDescriptor
 
     /**
      * Returns to java.awt.Component that serves as the actual panel.
-     * 
+     *
      * @return A reference to the java.awt.Component that serves as the panel
      */
     public final Component getPanelComponent()
@@ -130,7 +130,7 @@ public class WizardPanelDescriptor
 
     /**
      * Returns the unique Object-based identifier for this panel descriptor.
-     * 
+     *
      * @return The Object-based identifier
      */
     public final Object getPanelDescriptorIdentifier()
@@ -143,7 +143,7 @@ public class WizardPanelDescriptor
 
     /**
      * Returns a reference to the Wizard component.
-     * 
+     *
      * @return The Wizard class hosting this descriptor.
      */
     public final Wizard getWizard()
@@ -156,7 +156,7 @@ public class WizardPanelDescriptor
 
     /**
      * Returns a reference to the current WizardModel for this Wizard component.
-     * 
+     *
      * @return The current WizardModel for this Wizard component.
      */
     public WizardModel getWizardModel()
@@ -169,7 +169,7 @@ public class WizardPanelDescriptor
 
     /**
      * Sets the panel's component as a class that extends java.awt.Component
-     * 
+     *
      * @param panel
      *            java.awt.Component which serves as the wizard panel
      */
@@ -184,7 +184,7 @@ public class WizardPanelDescriptor
     /**
      * Sets the Object-based identifier for this panel. The identifier must be
      * unique from all the other identifiers in the panel.
-     * 
+     *
      * @param id
      *            Object-based identifier for this panel.
      */

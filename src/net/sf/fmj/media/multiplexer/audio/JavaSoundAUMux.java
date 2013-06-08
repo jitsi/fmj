@@ -7,9 +7,9 @@ import javax.sound.sampled.*;
 
 /**
  * AU audio multiplexer.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class JavaSoundAUMux extends JavaSoundMux
 {

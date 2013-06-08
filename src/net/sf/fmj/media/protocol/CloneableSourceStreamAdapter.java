@@ -406,7 +406,7 @@ public class CloneableSourceStreamAdapter
 
     /**
      * This method should be could only by the <tt>CloneableDataSource</tt>.
-     * 
+     *
      * @return a slave <tt>SourceStream</tt> which will either a
      *         <tt>PushSourceStream</tt> or a <tt>PushBufferStream.
      */

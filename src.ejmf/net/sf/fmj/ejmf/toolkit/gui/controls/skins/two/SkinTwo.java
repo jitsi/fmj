@@ -8,9 +8,9 @@ import net.sf.fmj.ejmf.toolkit.gui.controls.*;
 import net.sf.fmj.ejmf.toolkit.gui.controls.skins.ejmf.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class SkinTwo implements Skin
 {

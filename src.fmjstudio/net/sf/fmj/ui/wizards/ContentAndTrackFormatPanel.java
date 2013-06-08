@@ -11,7 +11,7 @@ import java.util.*;
 import javax.media.format.*;
 
 /**
- * 
+ *
  * @author Ken Larson
  */
 public class ContentAndTrackFormatPanel extends javax.swing.JPanel

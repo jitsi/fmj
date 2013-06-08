@@ -13,9 +13,9 @@ import net.sf.fmj.gui.customslider.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class SwingLookControlPanel extends JPanel implements TimeSource,
         SourcedTimerListener
@@ -226,7 +226,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes audioPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getAudioPanel()
@@ -251,7 +251,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes backButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getBackButton()
@@ -279,7 +279,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes buttonPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getButtonPanel()
@@ -315,7 +315,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes forwardButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getForwardButton()
@@ -343,7 +343,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes muteButton
-     * 
+     *
      * @return javax.swing.JToggleButton
      */
     private JToggleButton getMuteButton()
@@ -375,7 +375,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes nextButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getNextButton()
@@ -396,7 +396,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes playButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getPlayButton()
@@ -429,7 +429,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes positionPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getPositionPanel()
@@ -466,7 +466,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes positionSlider
-     * 
+     *
      * @return javax.swing.JSlider
      */
     private JSlider getPositionSlider()
@@ -514,7 +514,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes previousButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getPreviousButton()
@@ -535,7 +535,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes stopButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getStopButton()
@@ -575,7 +575,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes volumeSlider
-     * 
+     *
      * @return javax.swing.JSlider
      */
     private JSlider getVolumeSlider()
@@ -608,7 +608,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
 
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize()
     {
@@ -820,7 +820,7 @@ public class SwingLookControlPanel extends JPanel implements TimeSource,
      * This method implements the SourcedTimerListener interface. Each timer
      * tick causes slider thumbnail to move if a ProgressBar was built for this
      * control panel.
-     * 
+     *
      * @see net.sf.fmj.ejmf.toolkit.util.SourcedTimer
      */
     public void timerUpdate(SourcedTimerEvent e)

@@ -2,9 +2,9 @@ package net.sf.fmj.media.datasink.rtp;
 
 /**
  * Single element of a ParsedRTPUrl.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class ParsedRTPUrlElement
 {

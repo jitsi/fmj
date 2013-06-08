@@ -10,10 +10,10 @@ import net.sf.fmj.utility.*;
 
 /**
  * FMJ Registry editor program.
- * 
+ *
  * @author Warren Bloomer
  * @author Ken Larson
- * 
+ *
  */
 public class FmjRegistry
 {

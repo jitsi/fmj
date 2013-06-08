@@ -13,7 +13,7 @@ import net.sf.fmj.ui.application.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * @author Ken Larson
  */
 public class ChooseSourcePanel extends javax.swing.JPanel

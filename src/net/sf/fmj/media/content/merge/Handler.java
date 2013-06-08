@@ -18,9 +18,9 @@ import net.sf.fmj.utility.*;
  * conflicts with characters within the embedded URLs. Examples:
  * merge:[civil:/0][javasound://0] merge:{civil:/0}{javasound://0}
  * merge:<civil:/0><javasound://0>
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class Handler implements MediaProxy
 {

@@ -8,12 +8,12 @@ import javax.media.*;
  * JMF control only: Provides a generic Control over a Controller's rate. The
  * graphical interface is a simple rate TextField. When the user hits enter, the
  * rate in the TextField will be set in the Player.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @author Steve Talley & Rob Gordon
- * 
+ *
  */
 public class RateControl implements Control
 {
@@ -33,7 +33,7 @@ public class RateControl implements Control
 
     /**
      * For implementation of the Control interface.
-     * 
+     *
      * @return the Control Component for this object.
      */
     public Component getControlComponent()

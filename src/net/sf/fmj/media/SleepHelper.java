@@ -11,9 +11,9 @@ import net.sf.fmj.utility.*;
  * in the MuxNode). This implies that Multiplexers are responsible for timing
  * but not Renderers. This is perhaps a reasonable assumption, but needs to be
  * checked against JMF.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class SleepHelper
 {

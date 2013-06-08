@@ -4,7 +4,7 @@ import org.rubycoder.gsm.*;
 
 /**
  * GSMDecoderUtil class
- * 
+ *
  * @author Martin Harvan
  * @author Damian Minkov
  */

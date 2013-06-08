@@ -9,7 +9,7 @@ package net.sf.fmj.ui.wizards;
 import java.util.*;
 
 /**
- * 
+ *
  * @author Ken Larson
  */
 public class RTPDestPanel extends javax.swing.JPanel

@@ -14,9 +14,9 @@ import com.lti.utils.*;
 
 /**
  * Protocol handler for res: protocol, loads stream from Java resource.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class DataSource extends PullDataSource implements SourceCloneable
 {

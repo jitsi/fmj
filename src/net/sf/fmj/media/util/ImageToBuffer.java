@@ -9,9 +9,9 @@ import javax.media.format.*;
 /**
  * Implementation of javax.media.util.ImageToBuffer. TODO: need to take into
  * account line stride, if it is different from what one would expect.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class ImageToBuffer
 {

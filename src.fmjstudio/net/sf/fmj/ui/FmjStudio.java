@@ -15,10 +15,10 @@ import com.lti.utils.*;
 
 /**
  * Main class for the FMJ media player application.
- * 
+ *
  * @author Warren Bloomer
  * @author Ken Larson
- * 
+ *
  */
 public class FmjStudio
 {
@@ -26,7 +26,7 @@ public class FmjStudio
 
     /**
      * Main method.
-     * 
+     *
      * @param args
      *            the arguments pased to this application
      */
@@ -251,7 +251,7 @@ public class FmjStudio
 
     /**
      * Display the registry editor frame
-     * 
+     *
      */
     private void onOpenRegistryEditor()
     {
@@ -273,7 +273,7 @@ public class FmjStudio
     }
 
     /**
-     * 
+     *
      * @param args
      */
     private void run(String[] args)

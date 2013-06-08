@@ -8,9 +8,9 @@ import net.sf.fmj.media.*;
  * GainControl for JavaSoundRenderer. See Sun's javadoc for GainControl. TODO:
  * need to make sure we meet the requirements in the javadoc under the section
  * "Decibel and Level Interactions".
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 class JavaSoundGainControl extends AbstractGainControl
 {

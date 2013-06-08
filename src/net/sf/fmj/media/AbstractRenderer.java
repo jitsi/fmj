@@ -4,9 +4,9 @@ import javax.media.*;
 
 /**
  * Abstract implementation of Renderer, useful for subclassing.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractRenderer extends AbstractPlugIn implements
         Renderer

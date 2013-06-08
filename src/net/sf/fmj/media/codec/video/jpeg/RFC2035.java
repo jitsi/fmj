@@ -7,7 +7,7 @@ import net.sf.fmj.utility.*;
  * http://www.rfc-archive.org/getrfc.php?rfc=2035 Ported to Java from C by Ken
  * Larson. TODO: Obsoleted by RFC2435. See
  * http://rfc.sunsite.dk/rfc/rfc2435.html
- * 
+ *
  * @author Ken Larson
  * @author Martin Harvan
  */
@@ -130,7 +130,7 @@ public class RFC2035
     /**
      * Creates ZigZag-ordered array from given regular-order array, can only be
      * used for arrays of 64 elements, since it uses xmax=8, ymax=8
-     * 
+     *
      * @param array
      *            array in normal order
      * @return array in zigzag order
@@ -142,7 +142,7 @@ public class RFC2035
 
     /**
      * Creates ZigZag-ordered array from regular-order array
-     * 
+     *
      * @param array
      *            array in normal order
      * @param xmax
@@ -208,7 +208,7 @@ public class RFC2035
     /**
      * Constructs the DRI header for constructed Jpeg file (DRI header should be
      * in form FF DD 00 04 DRI) DRI is 16-bits
-     * 
+     *
      * @param p
      *            data array to append the headear to
      * @param i
@@ -232,7 +232,7 @@ public class RFC2035
     /**
      * The old MakeHeaders method. Can be called if we do not have custom lqt
      * and cqt tables and we do not have dri (dri == 0).
-     * 
+     *
      * @param includeSOI
      *            specifies wheter SOI should be prepended
      * @param p
@@ -264,7 +264,7 @@ public class RFC2035
      * to produce a JPEG compressed image in interchange format (except for
      * possible trailing garbage and absence of an EOI marker to terminate the
      * scan).
-     * 
+     *
      * @param p
      *            destination for the created data
      * @param i
@@ -387,7 +387,7 @@ public class RFC2035
     /**
      * Creates Huffman header for given tables. Huffman header starts with 0xFF
      * 0xC4 and 2 bytes for length of the header.
-     * 
+     *
      * @param p
      *            destination for the header data
      * @param i
@@ -430,7 +430,7 @@ public class RFC2035
      * Creates quantization header for given qtable. Quantization table starts
      * with bytes 0xFF and 0xDB followed by 2 bytes that specify length of the
      * tables.
-     * 
+     *
      * @param p
      *            destination for the created header
      * @param i
@@ -466,7 +466,7 @@ public class RFC2035
 
     /**
      * Call MakeTables with the Q factor and two int[64] return arrays
-     * 
+     *
      * @param q
      *            Q factor
      * @param lum_q

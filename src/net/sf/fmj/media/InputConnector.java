@@ -5,9 +5,9 @@ import javax.media.*;
 /**
  * InputConnector defines the buffer movement and format typing interface for
  * input connectors.
- * 
+ *
  * @see OutputConnector
- * 
+ *
  */
 public interface InputConnector extends Connector
 {
@@ -27,13 +27,13 @@ public interface InputConnector extends Connector
      * perform notify() on the connection.<br>
      * if buffer is not available perform wait() on the connection.</li>
      * </ul>
-     * 
+     *
      */
     public Buffer getValidBuffer();
 
     /**
      * checks if there are valid Buffer objects in the Connector's queue.
-     * 
+     *
      * @return if there are vaild Buffer objects in the Connector's queue.
      */
     public boolean isValidBufferAvailable();
@@ -48,7 +48,7 @@ public interface InputConnector extends Connector
      * <li><b>ProtocolSafe</b> - perform notify() on the connection lock object.
      * <br>
      * </ul>
-     * 
+     *
      */
     public void readReport();
 

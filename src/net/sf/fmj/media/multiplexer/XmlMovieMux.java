@@ -13,9 +13,9 @@ import com.lti.utils.*;
 
 /**
  * Mux for FMJ's XML movie format.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class XmlMovieMux extends AbstractInputStreamMux
 {

@@ -11,7 +11,7 @@ public class MuLawDecoderUtil
     /**
      * An array where the index is the mu-law input, and the value is the 16-bit
      * PCM result.
-     * 
+     *
      */
     private static short[] muLawToPcmMap;
 
@@ -24,7 +24,7 @@ public class MuLawDecoderUtil
 
     /**
      * Decode one mu-law byte. For internal use only.
-     * 
+     *
      * @param mulaw
      *            The encoded mu-law byte
      * @return A short containing the 16-bit result
@@ -95,7 +95,7 @@ public class MuLawDecoderUtil
 
     /**
      * Decode one mu-law byte
-     * 
+     *
      * @param mulaw
      *            The encoded mu-law byte
      * @return A short containing the 16-bit result
@@ -122,7 +122,7 @@ public class MuLawDecoderUtil
 
     /**
      * Decode an array of mu-law encoded bytes
-     * 
+     *
      * @param data
      *            An array of mu-law encoded bytes
      * @param decoded

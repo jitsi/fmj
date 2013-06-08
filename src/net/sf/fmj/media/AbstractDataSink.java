@@ -7,9 +7,9 @@ import javax.media.datasink.*;
 
 /**
  * Abstract base class to implement DataSink.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractDataSink implements DataSink
 {

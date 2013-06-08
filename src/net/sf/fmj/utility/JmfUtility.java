@@ -5,9 +5,9 @@ import java.lang.reflect.*;
 /**
  * Helper class to do certain JMF-specific things. Reflection is used to avoid a
  * dependency on JMF.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class JmfUtility
 {

@@ -25,7 +25,7 @@ public class StandardStopControl extends ActionListenerControl
 
     /**
      * Create StopButton
-     * 
+     *
      * @see net.sf.fmj.ejmf.toolkit.gui.controls.skins.ejmf.StopButton
      */
     @Override

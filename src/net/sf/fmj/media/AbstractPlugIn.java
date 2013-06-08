@@ -4,9 +4,9 @@ import javax.media.*;
 
 /**
  * Abstract implementation of PlugIn, useful for subclassing.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class AbstractPlugIn extends AbstractControls implements PlugIn
 {

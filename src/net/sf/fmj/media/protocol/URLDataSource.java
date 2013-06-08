@@ -15,9 +15,9 @@ import com.lti.utils.*;
 /**
  * URL DataSource. Used by default when there is no more specific protocol
  * handler available.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class URLDataSource extends PullDataSource implements SourceCloneable
 {

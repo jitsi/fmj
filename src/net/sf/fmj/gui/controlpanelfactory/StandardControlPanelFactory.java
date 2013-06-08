@@ -9,9 +9,9 @@ import net.sf.fmj.ejmf.toolkit.gui.controlpanel.*;
 /**
  * {@link ControlPanelFactory} for {@link StandardControlPanel}, which is based
  * on EJMF.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class StandardControlPanelFactory implements ControlPanelFactory
 {

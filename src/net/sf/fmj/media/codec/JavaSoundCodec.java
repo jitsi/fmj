@@ -15,20 +15,20 @@ import net.sf.fmj.utility.*;
 
 /**
  * Converts formats that JavaSound can convert.
- * 
+ *
  * This has to do some tricks because of the delay in getting data from the
  * converted audio output stream. The streams are designed as streams, not
  * buffer-based, so all our threading and buffer queue tricks mean that we don't
  * get an output buffer right away for an input one. The missing output buffers
  * build up. And then we get EOM, and if the graph processing isn't done right,
  * most of the output buffers never make it to the renderer.
- * 
+ *
  * TODO: if this is put ahead of com.ibm.media.codec.audio.PCMToPCM in the
  * registry, there are problems playing the safexmas movie. TODO: this should
  * perhaps be in the net.sf.fmj.media.codec.audio package.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class JavaSoundCodec extends AbstractCodec
 {
@@ -233,7 +233,7 @@ public class JavaSoundCodec extends AbstractCodec
 
     /**
      * See http://ccrma.stanford.edu/courses/422/projects/WaveFormat/.
-     * 
+     *
      * @param f
      * @return the header for the wav
      */
@@ -408,7 +408,7 @@ public class JavaSoundCodec extends AbstractCodec
      * not matter whether this header matches the original header, it just has
      * to get AudioSystem.getAudioInputStream To figure out what kind of format
      * it is.
-     * 
+     *
      */
     private static byte[] fakeHeader(javax.sound.sampled.AudioFormat f)
     {

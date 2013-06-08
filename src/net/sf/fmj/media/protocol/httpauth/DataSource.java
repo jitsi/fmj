@@ -20,9 +20,9 @@ import com.lti.utils.*;
  * become httpauth:user:pass@//myipcameraimage.com/cam This is simply a
  * convenience data source. It allows things like FMJ studio to play IP camera
  * streams that are password protected, without having to prompt the user.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class DataSource extends PullDataSource implements SourceCloneable
 {

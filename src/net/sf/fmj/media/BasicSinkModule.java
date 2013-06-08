@@ -90,7 +90,7 @@ public abstract class BasicSinkModule extends BasicModule
 
     /**
      * Enable prerolling.
-     * 
+     *
      * @param actual the media time when the prerolling starts. Let's say the
      * requested media time is set to 100 and the current location is set to 90
      * (the previous key frame where the parser can seek to). The parameter

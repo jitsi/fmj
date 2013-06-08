@@ -7,9 +7,9 @@ import javax.swing.*;
 import net.sf.fmj.ejmf.toolkit.gui.controls.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class EjmfSkin implements Skin
 {

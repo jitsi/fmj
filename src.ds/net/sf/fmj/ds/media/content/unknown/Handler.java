@@ -14,9 +14,9 @@ import net.sf.fmj.utility.*;
 import net.sf.jdshow.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class Handler extends AbstractPlayer
 {

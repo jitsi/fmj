@@ -3,9 +3,9 @@ package net.sf.fmj.ui.application;
 /**
  * Used to allow PlayerPanel to update its status bar in response to state
  * changes of ContainerPlayer.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public interface ContainerPlayerStatusListener
 {

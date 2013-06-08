@@ -20,7 +20,7 @@ import net.sf.fmj.ejmf.toolkit.gui.controls.*;
  * <p>
  * Subclasses must supply definitions of the following methods:
  * <ul>
- * 
+ *
  * <li>void makeControls();
  * <li>void setControlComponentState(int state);
  * </ul>
@@ -77,7 +77,7 @@ abstract class AbstractControls implements ControllerListener
 
     /**
      * Add a Control to this AbstractControls object.
-     * 
+     *
      * @param name
      *            Name of control
      * @param alc
@@ -97,7 +97,7 @@ abstract class AbstractControls implements ControllerListener
      * Subclasses that override this method should invoke
      * super.controllerUpdate() if default behavior is desired. to do anything
      * meaningful.
-     * 
+     *
      * @param event
      *            a ControllerEvent
      */
@@ -118,7 +118,7 @@ abstract class AbstractControls implements ControllerListener
 
     /**
      * Returns a Control with a given name.
-     * 
+     *
      * @param name
      *            String identifying an AbstractControlListener
      * @return an AbstractControlListener identified by the name argument.
@@ -130,7 +130,7 @@ abstract class AbstractControls implements ControllerListener
 
     /**
      * Returns an array of Controls.
-     * 
+     *
      * @return an array of AbstractListenerControls associated with this Control
      *         Panel.
      */
@@ -150,7 +150,7 @@ abstract class AbstractControls implements ControllerListener
 
     /**
      * Return the Player associated with this AbstractControls object.
-     * 
+     *
      * @return The Player associated with these controls.
      */
     public Player getPlayer()
@@ -166,7 +166,7 @@ abstract class AbstractControls implements ControllerListener
     /**
      * Set the display state of control components based on the state of the
      * Player.
-     * 
+     *
      * @param state
      *            The current state of the Player.
      */
@@ -175,7 +175,7 @@ abstract class AbstractControls implements ControllerListener
     /**
      * For each control, calls its setPlayer method to establish the controls
      * association with a Player.
-     * 
+     *
      * @param player
      *            Player associated with this set of control.
      */

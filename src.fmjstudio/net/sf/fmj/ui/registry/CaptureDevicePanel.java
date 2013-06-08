@@ -10,10 +10,10 @@ import net.sf.fmj.media.cdp.*;
 /**
  * Settings for capture devices. TODO provide option to automatically detect
  * capture devices - provide itime interval for polling.
- * 
+ *
  * @author Warren Bloomer
  * @author Ken Larson
- * 
+ *
  */
 public class CaptureDevicePanel extends JPanel
 {
@@ -30,7 +30,7 @@ public class CaptureDevicePanel extends JPanel
 
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize()
     {

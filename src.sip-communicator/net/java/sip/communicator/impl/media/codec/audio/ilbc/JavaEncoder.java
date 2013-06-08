@@ -14,7 +14,7 @@ import net.java.sip.communicator.impl.media.codec.audio.*;
 
 /**
  * The ilbc Encoder
- * 
+ *
  * @author Damian Minkov
  */
 public class JavaEncoder extends com.ibm.media.codec.audio.AudioCodec

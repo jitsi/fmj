@@ -4,7 +4,7 @@ import com.lti.utils.collections.*;
 
 /**
  * A synchronized queue where get/put waits if needed.
- * 
+ *
  * @author Ken Larson
  */
 public class ProducerConsumerQueue<T>
@@ -151,7 +151,7 @@ public class ProducerConsumerQueue<T>
 
     /**
      * @return true if success, false if timeout.
-     * 
+     *
      */
     public synchronized boolean waitUntilNotEmpty(long timeout)
             throws InterruptedException

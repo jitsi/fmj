@@ -12,9 +12,9 @@ import net.sf.fmj.media.util.*;
 
 /**
  * Base class for video codecs which use ImageIO to decode the images.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public abstract class ImageIODecoder extends AbstractCodec implements Codec
 {

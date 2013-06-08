@@ -11,9 +11,9 @@ import net.sf.fmj.ejmf.toolkit.util.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class ProcessorWizardResult
 {

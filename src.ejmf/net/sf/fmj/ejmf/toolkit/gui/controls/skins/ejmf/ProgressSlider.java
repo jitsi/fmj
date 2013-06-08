@@ -81,7 +81,7 @@ public class ProgressSlider extends Canvas implements ProgressBar
 
     /**
      * Add a ChangeListener
-     * 
+     *
      * @param l
      *            a ChangeListener
      */
@@ -94,7 +94,7 @@ public class ProgressSlider extends Canvas implements ProgressBar
 
     /**
      * Recompute thumb size in response to a change in value of the slider.
-     * 
+     *
      * @return A Rectangle.
      */
     public Rectangle computeThumbRectangle()
@@ -110,7 +110,7 @@ public class ProgressSlider extends Canvas implements ProgressBar
 
     /**
      * Get the largest value progress slider can take on.
-     * 
+     *
      * @return The maximum value slider can take on.
      */
     public int getMaximum()
@@ -120,7 +120,7 @@ public class ProgressSlider extends Canvas implements ProgressBar
 
     /**
      * Get the smallest value progress slider can take on.
-     * 
+     *
      * @return The minimum value slider can take on.
      */
     public int getMinimum()
@@ -137,7 +137,7 @@ public class ProgressSlider extends Canvas implements ProgressBar
 
     /**
      * Return Rectangle which describes location and size of thumb.
-     * 
+     *
      * @return A Rectangle that contains thumb.
      */
     public Rectangle getThumbRect()
@@ -149,7 +149,7 @@ public class ProgressSlider extends Canvas implements ProgressBar
 
     /**
      * Get current value of sprogress bar.
-     * 
+     *
      * @return An integer indicatiing position of thumb within range of legal
      *         slider values.
      */
@@ -199,7 +199,7 @@ public class ProgressSlider extends Canvas implements ProgressBar
 
     /**
      * Paint the slider thumb.
-     * 
+     *
      * @param g
      *            graphics in which thumb is painted.
      */
@@ -231,7 +231,7 @@ public class ProgressSlider extends Canvas implements ProgressBar
 
     /**
      * Remove a ChangeListener
-     * 
+     *
      * @param l
      *            a ChangeListener
      */
@@ -245,7 +245,7 @@ public class ProgressSlider extends Canvas implements ProgressBar
     /**
      * Set the largest value progress slider can take on. When slider reaches
      * this value operation which progress bar is measuring is complete.
-     * 
+     *
      * @param value
      *            The maximum value slider can take on.
      */
@@ -258,7 +258,7 @@ public class ProgressSlider extends Canvas implements ProgressBar
      * Set the smallest value progress slider can take on. When slider value
      * reaches this value, the operation measured by progress bar has not been
      * started.
-     * 
+     *
      * @param value
      *            The minimum value slider can take on.
      */
@@ -271,7 +271,7 @@ public class ProgressSlider extends Canvas implements ProgressBar
 
     /**
      * Get current value of sprogress bar.
-     * 
+     *
      * @param value
      *            An integer value within range of legal slider values.
      */

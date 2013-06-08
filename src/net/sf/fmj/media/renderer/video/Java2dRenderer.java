@@ -9,13 +9,13 @@ import javax.media.renderer.*;
 
 /**
  * A VideoRenderer that handles packed integer RGB formats.
- * 
+ *
  * It uses Java2D to render incoming RGB images.
- * 
+ *
  * TODO: support byte-array based images. See ImageToBuffer.
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class Java2dRenderer implements VideoRenderer
 {

@@ -5,7 +5,7 @@ import net.sf.fmj.utility.*;
 /**
  * JPEG header stripper. Useful for getting rid of the headers that are present
  * in the Jpeg data and are unnecessary (and unwanted) for JPEG/RTP.
- * 
+ *
  * @author Martin Harvan
  */
 public class JpegStripper
@@ -55,7 +55,7 @@ public class JpegStripper
     /**
      * Removes most of the leading and trailing headers from Jpeg data (byte
      * array). JpegStripper does not check if data represent valid Jpeg file.
-     * 
+     *
      * @param ba
      *            Byte array representing Jpeg file
      * @return Jpeg data with stripped leading and trailing headers

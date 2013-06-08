@@ -8,22 +8,22 @@ import javax.media.*;
  * cyclic queue of references to Buffer Objects.<br>
  * The queue is constructed at the Connectors connectTo() method, so the
  * suggested size should be set before that.<br>
- * 
+ *
  * <i><br>
  * Note that these connectors are almost symetrical so they can support both
  * push and pull connection. <br>
  * In addition the two threads sync. mechanism is also supported by this
  * suggested API. </i>
- * 
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
+ *
  * @see Module
  * @see InputConnector
  * @see OutputConnector
  * @see javax.media.Format
- * 
+ *
  */
 public interface Connector
 {
@@ -51,7 +51,7 @@ public interface Connector
     /**
      * The selected format. If <b>setFormat()</b> has not been called,
      * <b>getFormat()</b> will return null.
-     * 
+     *
      * @return the currently selected format.
      */
     public Format getFormat();
@@ -88,7 +88,7 @@ public interface Connector
      * only by the OutputConnector.connectTo() method.<br>
      * <i>This method should not really be part of the API, but it is put here
      * in order to remove implementation dependencies.</i>
-     * 
+     *
      * @param circularBuffer
      *            the circular buffer used by this Connection
      */
@@ -104,7 +104,7 @@ public interface Connector
 
     /**
      * sets the Module which registered this Connector.
-     * 
+     *
      */
     public void setModule(Module module);
 
@@ -118,7 +118,7 @@ public interface Connector
      * determines the data transfer protocol used by this connector.<br>
      * <i>Perhaps the only way to change the protocol is in the constructor ?
      * </i>
-     * 
+     *
      * @param protocol
      *            either <i>ProtocolPush, ProtocolSafe</i>
      */

@@ -2,8 +2,8 @@ package javax.media.rtp;
 
 /**
  * @deprecated
- * 
- * 
+ *
+ *
  */
 @Deprecated
 public class RTPSocket extends RTPPushDataSource implements DataChannel

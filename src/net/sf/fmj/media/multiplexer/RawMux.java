@@ -5,13 +5,13 @@ import javax.media.format.*;
 import javax.media.protocol.*;
 
 /**
- * 
+ *
  * A raw multiplexer which provides the input to the output, unmodified.
  * Resulting steams are PushSourceStream. Not tested yet. Not sure if useful for
  * anything.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class RawMux extends AbstractStreamCopyMux
 {

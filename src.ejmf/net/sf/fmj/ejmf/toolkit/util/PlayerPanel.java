@@ -15,7 +15,7 @@ import javax.swing.*;
  * Example:
  * <P>
  * <blockquote>
- * 
+ *
  * <pre>
  * Frame f = new Frame();
  * Player player = Utility.getPlayer("/ejmf/media/xmas.avi");
@@ -32,16 +32,16 @@ import javax.swing.*;
  * //  Start media play
  * p.begin();
  * </pre>
- * 
+ *
  * </blockquote> Note that it may be worthwhile to realize() the player in the
  * constructor of the PlayerPanel, so that when begin() is called the components
  * do not have to resize.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * Modified by Ken Larson.
- * 
+ *
  * @author Steve Talley & Rob Gordon
  */
 
@@ -62,10 +62,10 @@ public class PlayerPanel extends JPanel
 
     /**
      * Constructs a PlayerPanel for the given MediaLocator.
-     * 
+     *
      * @exception IOException
      *                If an I/O error occurs while accessing the media.
-     * 
+     *
      * @exception NoPlayerException
      *                If a Player cannot be created from the given MediaLocator.
      */
@@ -114,7 +114,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * Adds the Player's control component to this PlayerPanel.
-     * 
+     *
      * @return <addtext>
      */
     public Component addControlComponent()
@@ -125,10 +125,10 @@ public class PlayerPanel extends JPanel
     /**
      * Adds a given component to the part of this PlayerPanel reserved for its
      * Player's control component.
-     * 
+     *
      * @param cc
      *            <addtext>
-     * 
+     *
      * @return <addtext>
      */
     public Component addControlComponent(Component cc)
@@ -159,7 +159,7 @@ public class PlayerPanel extends JPanel
 
     /**
      * Adds the Player's visual component to this PlayerPanel.
-     * 
+     *
      * @return The Component added.
      */
     public Component addVisualComponent()
@@ -170,10 +170,10 @@ public class PlayerPanel extends JPanel
     /**
      * Adds a given component to the part of this PlayerPanel reserved for its
      * Player's visual component.
-     * 
+     *
      * @param cc
      *            The Component to add.
-     * 
+     *
      * @return The Component added.
      */
     public Component addVisualComponent(Component cc)

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.sf.fmj.media;
 
@@ -14,9 +14,9 @@ import com.lti.utils.synchronization.*;
 
 /**
  * Turns a queue of Buffer objects into an InputStream.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class BufferQueueInputStream extends InputStream
 {

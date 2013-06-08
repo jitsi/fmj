@@ -6,11 +6,11 @@ import javax.media.format.*;
 import net.sf.fmj.media.*;
 
 /**
- * 
+ *
  * DePacketizer for GSM/RTP. Doesn't have to do much, just copies input to
  * output. Uses buffer-swapping observed in debugging and seen in other
  * open-source DePacketizer implementations.
- * 
+ *
  * @author Martin Harvan
  * @author Damian Minkov
  */

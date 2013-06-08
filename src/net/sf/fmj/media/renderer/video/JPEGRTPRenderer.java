@@ -18,11 +18,11 @@ import net.sf.fmj.media.codec.video.jpeg.*;
 import net.sf.fmj.utility.*;
 
 /**
- * 
+ *
  * Fast JPEG/RTP processing, depacketize and renders the JPEG/RTP stream
- * 
+ *
  * @author mgodehardt
- * 
+ *
  */
 public class JPEGRTPRenderer extends AbstractVideoRenderer implements
         VideoRenderer

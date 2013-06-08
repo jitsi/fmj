@@ -14,9 +14,9 @@ import com.lti.civil.*;
 /**
  * Dynamically adds CaptureDeviceInfo to the CaptureDeviceManager. Does not
  * commit.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class CaptureDevicePlugger
 {

@@ -8,7 +8,7 @@ import net.sf.fmj.media.*;
 /**
  * GSM encoder Codec. Encodes 160 16-bit PCM samples into array of 33 bytes (GSM
  * frame).
- * 
+ *
  * @author Martin Harvan
  * @author Damian Minkov
  */

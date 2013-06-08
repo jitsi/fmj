@@ -14,7 +14,7 @@ import net.java.sip.communicator.impl.media.codec.audio.*;
 
 /**
  * iLbc to PCM java decoder
- * 
+ *
  * @author Damian Minkov
  */
 public class JavaDecoder extends com.ibm.media.codec.audio.AudioCodec

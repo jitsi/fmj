@@ -6,9 +6,9 @@ import javax.media.format.*;
 
 /**
  * Used to sort audio formats by quality
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class AudioFormatComparator implements Comparator<AudioFormat>
 {

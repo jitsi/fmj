@@ -52,7 +52,7 @@ class CustomByteArrayOutputStream extends OutputStream
  * This type of MOV file just stores frames as a series of JPEG images. This
  * codec uses ImageIO classes to convert from the jpeg VideoFormat to
  * RGBFormats.
- * 
+ *
  * @author Jeremy Wood
  */
 public class JPEGEncoder implements Codec
@@ -66,7 +66,7 @@ public class JPEGEncoder implements Codec
     static Hashtable imageTable = new Hashtable();
 
     /**
-     * 
+     *
      * @param image
      * @param data
      * @return the number if bytes written in the array

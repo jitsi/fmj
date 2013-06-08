@@ -20,7 +20,7 @@ public interface GraphInspector
      * has successfully attempted to set the given input and output formats on
      * it. If this method returns false, the engine will reject the given codec
      * for use in the final flow graph.
-     * 
+     *
      * @param codec
      *            the selected codec.
      * @param input
@@ -37,7 +37,7 @@ public interface GraphInspector
      * multiplexer and has successfully attempted to set the given input formats
      * on it. If this method returns false, the engine will reject the given
      * multiplexer for use in the final flow graph.
-     * 
+     *
      * @param mux the selected multiplexer.
      * @param inputs the selected input formats to the multiplexer.
      * @return <tt>false</tt> will cause the engine to reject the given
@@ -50,7 +50,7 @@ public interface GraphInspector
      * and has successfully attempted to set the given input format on it. If
      * this method returns false, the engine will reject the given renderer for
      * use in the final flow graph.
-     * 
+     *
      * @param renderer
      *            the selected renderer.
      * @param input
@@ -63,7 +63,7 @@ public interface GraphInspector
     /**
      * This method is notified if the engine has attempted and failed to set the
      * given input format on the given plugin.
-     * 
+     *
      * @param plugin
      *            the selected plugin.
      * @param input
@@ -74,7 +74,7 @@ public interface GraphInspector
     /**
      * This method is notified if the engine has attempted and failed to set the
      * given output format on the given plugin.
-     * 
+     *
      * @param plugin
      *            the selected plugin.
      * @param output

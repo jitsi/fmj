@@ -22,9 +22,9 @@ import com.lti.utils.synchronization.*;
 
 /**
  * DataSource for CIVIL video.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class DataSource extends PushBufferDataSource implements CaptureDevice,
         FrameGrabbingControl

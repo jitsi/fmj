@@ -7,9 +7,9 @@ import javax.media.format.*;
 import com.sun.media.format.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class BitMapInfo
 {

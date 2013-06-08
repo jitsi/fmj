@@ -4,10 +4,10 @@ import javax.media.*;
 
 /**
  * Provides a thread to asynchronously SyncStart the given AbstractController.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @author Steve Talley & Rob Gordon
  */
 public class SyncStartThread extends Thread

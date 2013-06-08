@@ -8,7 +8,7 @@ package net.java.sip.communicator.impl.media.codec;
 
 /**
  * Constants needed in codecs impl.
- * 
+ *
  * @author Damian Minkov
  */
 public class Constants

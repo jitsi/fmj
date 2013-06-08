@@ -18,9 +18,9 @@ import com.lti.utils.synchronization.*;
 
 /**
  * Parser for FMJ's XML movie format.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class XmlMovieParser extends AbstractDemultiplexer
 {
@@ -102,7 +102,7 @@ public class XmlMovieParser extends AbstractDemultiplexer
         }
 
         /**
-         * 
+         *
          * @return nanos skipped, 0 if unable to skip.
          * @throws IOException
          */
@@ -266,9 +266,9 @@ public class XmlMovieParser extends AbstractDemultiplexer
 
 /**
  * SAX callback for FMJ's XML movie format.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 class XmlMovieSAXHandler extends DefaultHandler
 {
@@ -574,9 +574,9 @@ class XmlMovieSAXHandler extends DefaultHandler
 /**
  * Thread to parse FMJ's XML movie format, results handled by
  * XmlMovieSAXHandler. XmlMovieSAXHandler can be used to read parsed results.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 class XmlMovieSAXParserThread extends CloseableThread
 {

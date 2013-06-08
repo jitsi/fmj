@@ -7,9 +7,9 @@ import javax.media.protocol.*;
 /**
  * Code generation utilities for JMF classes, useful for constructing unit
  * tests.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class MediaCGUtils
 {

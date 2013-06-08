@@ -404,23 +404,23 @@ if ( Nback > 0 ) {
            int    i, pos, lp_length;
            float [] lp = new float[ilbc_constants.LPC_FILTERORDER + 1];
            int lsfdeq2;
-    
+
            lsfdeq2 = length;
     //        lsfdeq2 = lsfdeq + length;
            lp_length = length + 1;
-    
+
            if (this.ULP_inst.mode==30) {
                /* sub-frame 1: Interpolation between old and first */
-    
+
                LSFinterpolate2a_dec(lp, this.lsfdeqold, lsfdeq, 0,
     				ilbc_constants.lsf_weightTbl_30ms[0], length);
     	   System.arraycopy(lp, 0, syntdenum, 0, lp_length);
     //            memcpy(syntdenum,lp,lp_length*sizeof(float));
                ilbc_common.bwexpand(weightdenum, 0, lp, ilbc_constants.LPC_CHIRP_WEIGHTDENUM, lp_length);
-    
+
                /* sub-frames 2 to 6: interpolation between first
                   and last LSF */
-    
+
                pos = lp_length;
                for (i = 1; i < 6; i++) {
                    LSFinterpolate2a_dec(lp, lsfdeq, lsfdeq, lsfdeq2,
@@ -444,9 +444,9 @@ if ( Nback > 0 ) {
                    pos += lp_length;
                }
            }
-    
+
            /* update memory */
-    
+
            if (this.ULP_inst.mode==30) {
     	   System.arraycopy(lsfdeq, lsfdeq2, this.lsfdeqold, 0, length);
     //            memcpy(iLBCdec_inst->lsfdeqold, lsfdeq2, length*sizeof(float));
@@ -1805,9 +1805,9 @@ if ( Nback > 0 ) {
            int lpc_n           /* (i) number of LPCs */
        ){
            int i, j, pos, cb_pos;
-    
+
            /* decode first LSF */
-    
+
            pos = 0;
            cb_pos = 0;
            for (i = 0; i < ilbc_constants.LSF_NSPLIT; i++) {
@@ -1818,11 +1818,11 @@ if ( Nback > 0 ) {
                pos += ilbc_constants.dim_lsfCbTbl[i];
                cb_pos += ilbc_constants.size_lsfCbTbl[i]*ilbc_constants.dim_lsfCbTbl[i];
            }
-    
+
            if (lpc_n>1) {
-    
+
                /* decode last LSF */
-    
+
                pos = 0;
                cb_pos = 0;
                for (i = 0; i < ilbc_constants.LSF_NSPLIT; i++) {
@@ -1951,18 +1951,18 @@ if ( Nback > 0 ) {
     	int i, j;
     	//	float *po, *pi, *pa, *pm;
     	int po, pi, pa, pm;
-    
+
     // 	System.out.println("out size : " + Out.length);
     // 	System.out.println("out idx : " + Out_idx);
     // 	System.out.println("a size : " + a.length);
     // 	System.out.println("a idx : " + a_idx);
     // 	System.out.println("len : " + len);
     // 	System.out.println("mem size : " + mem.length);
-    
+
     	po = Out_idx;
-    
+
     	/* Filter first part using memory from past */
-    
+
     	for (i=0; i<ilbc_constants.LPC_FILTERORDER; i++) {
     //            pi=&Out[i-1];
     //            pa=&a[1];
@@ -1970,7 +1970,7 @@ if ( Nback > 0 ) {
     	    pi = Out_idx + i - 1;
     	    pa = a_idx + 1;
     	    pm = ilbc_constants.LPC_FILTERORDER - 1;
-    
+
     	    for (j=1; j<=i; j++) {
     		//		*po-=(*pa++)*(*pi--);
     // 		System.out.println("1 Soustraction (" + i + "," + j + ") a " + Out[po] + " de " + a[pa] + " * " + Out[pi]);
@@ -1990,10 +1990,10 @@ if ( Nback > 0 ) {
                }
                po++;
     	}
-    
+
            /* Filter last part where the state is entirely in
               the output vector */
-    
+
            for (i = ilbc_constants.LPC_FILTERORDER; i < len; i++) {
     	   //           pi=&Out[i-1];
     	   pi = Out_idx + i - 1;
@@ -2009,9 +2009,9 @@ if ( Nback > 0 ) {
                }
                po++;
            }
-    
+
            /* Update state vector */
-    
+
            System.arraycopy(Out, Out_idx + len - ilbc_constants.LPC_FILTERORDER,
     			mem, 0, ilbc_constants.LPC_FILTERORDER);
     //        memcpy(mem, &Out[len-LPC_FILTERORDER],

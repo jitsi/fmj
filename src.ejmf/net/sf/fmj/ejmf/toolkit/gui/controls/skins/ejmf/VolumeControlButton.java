@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * VolumeControlButton allows creation of a small upward or downward pointing
  * arrow for use as a volume control.
- * 
+ *
  * @see net.sf.fmj.ejmf.toolkit.gui.controls.skins.ejmf.BasicArrowButton
  */
 
@@ -22,7 +22,7 @@ public class VolumeControlButton extends BasicArrowButton
 
     /**
      * Create a VolumeControlButton.
-     * 
+     *
      * @param orientation
      *            Determines which way arrow points, NORTH or SOUTH.
      */
@@ -33,7 +33,7 @@ public class VolumeControlButton extends BasicArrowButton
 
     /**
      * Make it the right size.
-     * 
+     *
      * @return Always return (10, 10)
      */
     @Override

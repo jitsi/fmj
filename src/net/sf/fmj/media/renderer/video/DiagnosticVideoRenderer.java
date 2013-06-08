@@ -13,9 +13,9 @@ import net.sf.fmj.utility.*;
 /**
  * This Renderer is used to log process() calls. Useful for diagnosing whether
  * the Renderer is actually being told to process buffers.
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class DiagnosticVideoRenderer implements Renderer
 {

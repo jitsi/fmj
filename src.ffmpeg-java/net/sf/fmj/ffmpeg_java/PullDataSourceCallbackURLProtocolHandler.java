@@ -14,7 +14,7 @@ import com.sun.jna.*;
 
 /**
  * Implements CallbackURLProtocolHandler by using a PullSourceStream.
- * 
+ *
  * Because seeking functions have to be implemented, either the source has to be
  * Cloneable, or the streams provided by the source have to be Seekable.
  * Otherwise, seeking will fail, and ffmpeg does not really check for seek
@@ -22,9 +22,9 @@ import com.sun.jna.*;
  * on ffmpeg's http.c, which shows that when a seek is needed, they simply open
  * a new stream. http.c is not of course used when this is used, it just shows
  * what kind of behavior is expected from a URLProtocol.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class PullDataSourceCallbackURLProtocolHandler implements
         CallbackURLProtocolHandler

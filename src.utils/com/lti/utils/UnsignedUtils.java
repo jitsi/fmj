@@ -1,11 +1,11 @@
 package com.lti.utils;
 
 /**
- * 
+ *
  * Because java does not support unsigned types, a collection of useful
  * functions for treating types as unsigned. TODO: move to
  * src.utils/com.lti.utils.
- * 
+ *
  * @author Ken Larson
  */
 public final class UnsignedUtils

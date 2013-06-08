@@ -15,7 +15,7 @@ import org.xiph.speex.*;
 
 /**
  * The Speex Encoder
- * 
+ *
  * @author Damian Minkov
  */
 public class JavaEncoder extends com.ibm.media.codec.audio.AudioCodec

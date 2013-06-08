@@ -7,12 +7,12 @@ import com.lti.utils.synchronization.*;
 /**
  * This class provides a thread to stop an AbstractController when its stop time
  * is reached.
- * 
+ *
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * 
+ *
  * @see AbstractController
- * 
+ *
  * @author Steve Talley & Rob Gordon
  */
 public class StopTimeMonitor extends CloseableThread implements
@@ -23,7 +23,7 @@ public class StopTimeMonitor extends CloseableThread implements
 
     /**
      * Constructs a StopTimeMonitor for the given AbstractController.
-     * 
+     *
      * @param controller
      *            The AbstractController to whose stop time to monitor.
      */
@@ -41,7 +41,7 @@ public class StopTimeMonitor extends CloseableThread implements
      * StopTimeMonitor thread to recalculate its wait time. Also listen for
      * StartEvents and StopEvents so that the monitor will know whether the
      * controller is playing.
-     * 
+     *
      * @param e
      *            The ControllerEvent
      */

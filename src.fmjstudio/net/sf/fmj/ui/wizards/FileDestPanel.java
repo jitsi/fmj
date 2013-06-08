@@ -13,7 +13,7 @@ import javax.swing.*;
 import net.sf.fmj.ui.utils.*;
 
 /**
- * 
+ *
  * @author Ken Larson
  */
 public class FileDestPanel extends javax.swing.JPanel

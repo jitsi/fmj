@@ -6,9 +6,9 @@ import net.sf.fmj.utility.*;
 
 /**
  * FmjMediaServer main entry point.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class FmjMediaServer
 {

@@ -2,9 +2,9 @@ package net.sf.fmj.media;
 
 /**
  * Video format encodings in FMJ but not JMF.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class BonusVideoFormatEncodings
 {

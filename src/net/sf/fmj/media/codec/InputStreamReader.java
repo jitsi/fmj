@@ -10,9 +10,9 @@ import com.lti.utils.synchronization.*;
  * Class to wrap an InputStream and do reads in a background thread, so that
  * read never blocks. Used for badly behaving input streams where available() is
  * not working right or useless.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class InputStreamReader extends InputStream
 {

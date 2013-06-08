@@ -7,9 +7,9 @@ import javax.media.control.*;
 
 /**
  * TODO: Stub
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class PacketSizeAdapter implements PacketSizeControl
 {

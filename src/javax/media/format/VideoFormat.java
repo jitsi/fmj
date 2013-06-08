@@ -63,7 +63,7 @@ public class VideoFormat extends Format
 
     /**
      * Constructs a <tt>VideoFormat</tt> with the specified encoding type.
-     * 
+     *
      * @param encoding
      *            A <tt>String</tt> that describes the encoding type for this
      *            <tt>VideoFormat</tt>.
@@ -75,7 +75,7 @@ public class VideoFormat extends Format
 
     /**
      * Constructs a <tt>VideoFormat</tt> with the specified attributes.
-     * 
+     *
      * @param encoding
      *            A <tt>String</tt> that describes the encoding type for this
      *            <tt>VideoFormat</tt>.
@@ -102,7 +102,7 @@ public class VideoFormat extends Format
     /**
      * Creates a clone of this <tt>VideoFormat</tt> by copying each field to the
      * clone.
-     * 
+     *
      * @return A clone of this <tt>VideoFormat</tt>.
      */
     @Override
@@ -117,7 +117,7 @@ public class VideoFormat extends Format
     /**
      * Copies the attributes from the specified <tt>Format</tt> into this
      * <tt>VideoFormat</tt>.
-     * 
+     *
      * @param f
      *            The <tt>Format</tt> to copy the attributes from.
      */
@@ -137,7 +137,7 @@ public class VideoFormat extends Format
      * Returns <tt>true</tt> only if the specified <tt>Format</tt> is a
      * <tt>VideoFormat</tt> object and all of its attributes are identical to
      * the attributes in this <tt>VideoFormat</tt>.
-     * 
+     *
      * @param format
      *            The <tt>Format</tt> to compare.
      * @return true if the specified <tt>Format</tt> is the same as this one.
@@ -167,7 +167,7 @@ public class VideoFormat extends Format
 
     /**
      * Gets the frame rate associated with this <tt>VideoFormat</tt>.
-     * 
+     *
      * @return The frame rate.
      */
     public float getFrameRate()
@@ -178,7 +178,7 @@ public class VideoFormat extends Format
     /**
      * Gets the length of the largest data chunk associated with this
      * <tt>VideoFormat</tt>.
-     * 
+     *
      * @return The maximum length of a data chunk in this <tt>VideoFormat</tt>.
      */
     public int getMaxDataLength()
@@ -188,7 +188,7 @@ public class VideoFormat extends Format
 
     /**
      * Gets the dimensions of a video frame in this <tt>VideoFormat</tt>.
-     * 
+     *
      * @return A <tt>Dimension</tt> that specifies the frame size.
      */
     public Dimension getSize()
@@ -200,7 +200,7 @@ public class VideoFormat extends Format
      * Finds the attributes shared by two matching <tt>Format</tt> objects. If
      * the specified <tt>Format</tt> does not match this one, the result is
      * undefined.
-     * 
+     *
      * @param format The matching <tt>Format</tt> to intersect with this
      * <tt>VideoFormat</tt>.
      * @return A <tt>Format</tt> object with its attributes set to those
@@ -235,7 +235,7 @@ public class VideoFormat extends Format
      * match. For example, if "A" are "B" are being compared, a match is
      * possible if "A" is derived from "B" or "B" is derived from "A". (The
      * compared attributes must still match, or <tt>matches</tt> fails.)
-     * 
+     *
      * @param format
      *            The <tt>Format</tt> to compare with this one.
      * @return <tt>true</tt> if the specified <tt>Format</tt> matches this one,
@@ -259,7 +259,7 @@ public class VideoFormat extends Format
      * Generate a format that's less restrictive than this format but contains
      * the basic attributes that will make this resulting format useful for
      * format matching.
-     * 
+     *
      * @return A <tt>Format</tt> that's less restrictive than the this format.
      */
     @Override
@@ -279,7 +279,7 @@ public class VideoFormat extends Format
     /**
      * Gets a <tt>String</tt> representation of the attributes of this
      * <tt>VideoFormat</tt>. For example: "RGB, 352x240, ...".
-     * 
+     *
      * @return A <tt>String</tt> that describes the <tt>VideoFormat</tt>
      *         attributes.
      */

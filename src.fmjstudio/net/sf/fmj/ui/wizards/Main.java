@@ -3,9 +3,9 @@ package net.sf.fmj.ui.wizards;
 import javax.media.format.*;
 
 /**
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class Main
 {

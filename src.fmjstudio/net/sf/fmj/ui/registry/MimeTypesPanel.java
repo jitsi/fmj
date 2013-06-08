@@ -5,9 +5,9 @@ import java.awt.*;
 import javax.swing.*;
 
 /**
- * 
+ *
  * @author Warren Bloomer
- * 
+ *
  */
 public class MimeTypesPanel extends JPanel
 {

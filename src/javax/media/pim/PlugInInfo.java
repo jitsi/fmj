@@ -4,9 +4,9 @@ import javax.media.*;
 
 /**
  * Part of internal implementation of javax.media.PlugInManager.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 class PlugInInfo
 {

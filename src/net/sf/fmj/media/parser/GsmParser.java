@@ -12,7 +12,7 @@ import net.sf.fmj.utility.*;
 
 /**
  * Parser for GSM media files.
- * 
+ *
  * @author Martin Harvan
  */
 public class GsmParser extends AbstractDemultiplexer

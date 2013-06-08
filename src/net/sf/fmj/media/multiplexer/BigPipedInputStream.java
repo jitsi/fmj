@@ -4,9 +4,9 @@ import java.io.*;
 
 /**
  * Enhances PipedInputStream to have a larger buffer.
- * 
+ *
  * @author Ken Larson
- * 
+ *
  */
 public class BigPipedInputStream extends PipedInputStream
 {

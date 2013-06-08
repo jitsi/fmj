@@ -931,7 +931,7 @@ public class GSMEncoder
 
             /*
              * 4.2.2 Offset compensation
-             * 
+             *
              * This part implements a high-pass filter and requires extended
              * arithmetic precision for the recursive part of this filter. The
              * input of this procedure is the array so[0...159] and the output
