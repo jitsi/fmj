@@ -33,7 +33,7 @@ import net.sf.fmj.utility.*;
  *
  * @author Warren Bloomer
  * @author Ken Larson
- *
+ * @author Lyubomir Marinov
  */
 public class Registry
 {
@@ -76,7 +76,26 @@ public class Registry
 
     public static final int NUM_PLUGIN_TYPES = 5;
 
-    public static boolean disableLoad = false;
+    /**
+     * The indicator which determines whether the commit of this
+     * <tt>Registry</tt> to a file is disabled (in which case {@link #commit()}
+     * does nothing).
+     */
+    private final boolean disableCommit;
+
+    /**
+     * The boolean system property which indicates whether <tt>Registry</tt> is
+     * to be committed to a file (via {@link #commit()}). 
+     */
+    private static final String SYSTEM_PROPERTY_DISABLE_COMMIT
+        = "net.sf.fmj.utility.JmfRegistry.disableCommit";
+
+    /**
+     * The boolean system property which indicates whether <tt>Registry</tt> is
+     * to be loaded from a file at initialization time. 
+     */
+    private static final String SYSTEM_PROPERTY_DISABLE_LOAD
+        = "net.sf.fmj.utility.JmfRegistry.disableLoad";
 
     /**
      * Get the singleton.
@@ -104,12 +123,18 @@ public class Registry
      */
     private Registry()
     {
+        String TRUE = Boolean.TRUE.toString();
+        String FALSE = Boolean.FALSE.toString();
+
+        disableCommit
+            = System
+                .getProperty(SYSTEM_PROPERTY_DISABLE_COMMIT, FALSE)
+                    .equals(TRUE);
         try
         {
-            if (disableLoad
-                    || System.getProperty(
-                            "net.sf.fmj.utility.JmfRegistry.disableLoad",
-                            "false").equals("true"))
+            if (System
+                    .getProperty(SYSTEM_PROPERTY_DISABLE_LOAD, FALSE)
+                        .equals(TRUE))
             {
                 setDefaults(); // this capability needed for unit tests or
                                // applets
@@ -119,15 +144,11 @@ public class Registry
         { // ignore, we must be in an applet.
         }
 
-        if (!disableLoad)
+        if (!load())
         {
-            if (!load())
-            {
-                logger.fine("Using registry defaults.");
-                setDefaults();
-            }
+            logger.fine("Using registry defaults.");
+            setDefaults();
         }
-
     }
 
     public synchronized boolean addDevice(CaptureDeviceInfo newDevice)
@@ -147,14 +168,25 @@ public class Registry
      */
     public synchronized void commit() throws IOException
     {
+        if (disableCommit)
+            return;
+
         final int registryFormat = DEFAULT_REGISTRY_WRITE_FORMAT;
         // write to registry file
         final File file = getRegistryFile(registryFormat);
         final FileOutputStream fos = new FileOutputStream(file);
-        RegistryIOFactory.createRegistryIO(registryFormat, registryContents)
-                .write(fos);
-        fos.flush();
-        fos.close();
+
+        try
+        {
+            RegistryIOFactory
+                .createRegistryIO(registryFormat, registryContents)
+                    .write(fos);
+            fos.flush();
+        }
+        finally
+        {
+            fos.close();
+        }
         logger.info("Wrote registry file: " + file.getAbsolutePath());
     }
 
@@ -221,11 +253,12 @@ public class Registry
     private File getRegistryFile(int registryFormat)
     {
         /** the name of the file used to store the registry */
-        String filename = System
-                .getProperty(
-                        "net.sf.fmj.utility.JmfRegistry.filename",
-                        registryFormat == RegistryIOFactory.PROPERTIES ? ".fmj.registry.properties"
-                                : ".fmj.registry.xml"); // allow override
+        String filename
+            = System.getProperty(
+                    "net.sf.fmj.utility.JmfRegistry.filename",
+                    (registryFormat == RegistryIOFactory.PROPERTIES)
+                        ? ".fmj.registry.properties"
+                        : ".fmj.registry.xml"); // allow override
         File file = new File(filename);
 
         if (!file.isAbsolute())
@@ -333,9 +366,8 @@ public class Registry
     public synchronized void setContentPrefixList(List<String> list)
     {
         if (READD_JAVAX && !list.contains("javax"))
-        {
             list.add("javax");
-        }
+
         registryContents.contentPrefixList.clear();
         registryContents.contentPrefixList.addAll(list);
     }
@@ -400,9 +432,8 @@ public class Registry
     public synchronized void setProtocolPrefixList(List<String> list)
     {
         if (READD_JAVAX && !list.contains("javax"))
-        {
             list.add("javax");
-        }
+
         registryContents.protocolPrefixList.clear();
         registryContents.protocolPrefixList.addAll(list);
     }
