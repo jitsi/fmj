@@ -4,13 +4,14 @@ import java.util.*;
 
 public final class TrueRandom
 {
-    private static Random random;
+    private static final Random random = new Random();
 
-    static
+    public static int nextInt()
     {
-        random = new Random();
+        return random.nextInt();
     }
-    public static long rand()
+
+    public static long nextLong()
     {
         return random.nextLong();
     }

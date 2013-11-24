@@ -125,8 +125,6 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     public RTPSessionMgr()
     {
         bindtome = false;
-        cache = null;
-        sendercount = 0;
         localDataAddress = null;
         localDataPort = 0;
         localControlAddress = null;
@@ -180,8 +178,6 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     public RTPSessionMgr(DataSource datasource) throws IOException
     {
         bindtome = false;
-        cache = null;
-        sendercount = 0;
         localDataAddress = null;
         localDataPort = 0;
         localControlAddress = null;
@@ -272,8 +268,6 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     public RTPSessionMgr(RTPPushDataSource rtppushdatasource)
     {
         bindtome = false;
-        cache = null;
-        sendercount = 0;
         localDataAddress = null;
         localDataPort = 0;
         localControlAddress = null;
@@ -788,16 +782,26 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         return datasource;
     }
 
-    public SendStream createSendStream(int i,
-            javax.media.protocol.DataSource datasource, int j)
-            throws UnsupportedFormatException, IOException, SSRCInUseException
+    public SendStream createSendStream(
+            int ssrc,
+            javax.media.protocol.DataSource datasource,
+            int j)
+        throws UnsupportedFormatException, IOException, SSRCInUseException
     {
-        SSRCInfo ssrcinfo = cache.lookup(i);
-        if (ssrcinfo != null)
+        if (sendercount == 0)
         {
-            throw new SSRCInUseException("SSRC supplied is already in use");
+            /*
+             * It is pointless to try to detect a collision with the specified
+             * SSRC because it will not be used anyway.
+             */
         }
-        int k = i;
+        else
+        {
+            SSRCInfo ssrcinfo = cache.lookup(ssrc);
+            if (ssrcinfo != null)
+                throw new SSRCInUseException("SSRC supplied is already in use");
+        }
+
         if (cache.rtcp_bw_fraction == 0.0D)
         {
             throw new IOException(
@@ -823,7 +827,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
             cache.getMainCache().put(obj.ssrc, obj);
         } else
         {
-            obj = (SendSSRCInfo) cache.get(k, dataaddress, dataport, 3);
+            obj = (SendSSRCInfo) cache.get(ssrc, dataaddress, dataport, 3);
             obj.ours = true;
             if (!nosockets)
             {
@@ -838,15 +842,11 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         ((SSRCInfo) (obj)).sinkstream.setSSRCInfo(obj);
         obj.setFormat(format);
         if (format instanceof VideoFormat)
-        {
             obj.clockrate = 0x15f90;
-        } else if (format instanceof AudioFormat)
-        {
+        else if (format instanceof AudioFormat)
             obj.clockrate = (int) ((AudioFormat) format).getSampleRate();
-        } else
-        {
+        else
             throw new UnsupportedFormatException("Format not supported", format);
-        }
         obj.pds = datasource;
         pushbufferstream.setTransferHandler(((SSRCInfo) (obj)).sinkstream);
         if (multi_unicast)
@@ -881,9 +881,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                         dataaddress.getHostAddress());
             }
             if (rtpTransmitter == null)
-            {
                 throw new IOException("Cannot create a transmitter");
-            }
         }
         ((SSRCInfo) (obj)).sinkstream.setTransmitter(rtpTransmitter);
         addSendStream(obj);
@@ -928,23 +926,38 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
 
     @Override
     public SendStream createSendStream(
-            javax.media.protocol.DataSource datasource, int i)
-            throws IOException, UnsupportedFormatException
+            javax.media.protocol.DataSource datasource,
+            int i)
+        throws IOException, UnsupportedFormatException
     {
-        int j = 0;
-        do
+        int ssrc;
+
+        if ((sendercount == 0) && (cache.ourssrc != null))
         {
-            j = (int) generateSSRC();
-        } while (cache.lookup(j) != null);
+            /*
+             * It is pointless to generate a new SSRC because it will not be
+             * used anyway.
+             */
+            ssrc = cache.ourssrc.ssrc;
+        }
+        else
+        {
+            do
+            {
+                ssrc = (int) generateSSRC(GenerateSSRCCause.CREATE_SEND_STREAM);
+            }
+            while (cache.lookup(ssrc) != null);
+        }
+
         SendStream sendstream = null;
+
         try
         {
-            sendstream = createSendStream(j, datasource, i);
+            sendstream = createSendStream(ssrc, datasource, i);
             if (newRtpInterface)
-            {
                 setRemoteAddresses();
-            }
-        } catch (SSRCInUseException ssrcinuseexception)
+        }
+        catch (SSRCInUseException ssrcinuseexception)
         {
         }
         return sendstream;
@@ -1054,8 +1067,19 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
 
     public long generateSSRC()
     {
-        long l = TrueRandom.rand();
-        return l;
+        return TrueRandom.nextInt();
+    }
+
+    /**
+     * Generates a new synchronization source (SSRC) identifier.
+     *
+     * @param cause a <tt>GenerateSSRCCause</tt> value which indicates the cause
+     * of the invocation of the method
+     * @return a new synchronization source (SSRC) identifier
+     */
+    protected long generateSSRC(GenerateSSRCCause cause)
+    {
+        return generateSSRC();
     }
 
     @Override
@@ -1198,17 +1222,26 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     }
 
     /**
-     * Emcho: Returns the SSRC ID that we are currently using or -1 if we don't
-     * know it just yet.
+     * Returns the synchronization source (SSRC) ID used by this
+     * <tt>RTPSessionMgr</tt> or <tt>Long.MAX_VALUE</tt> if no such SSRC has
+     * been generated yet or is unknown at this time (for whatever reason).
+     * <p>
+     * Note: <tt>Long.MAX_VALUE</tt> is used instead of <tt>-1</tt> because the
+     * synchronization source (SSRC) ID is internally stored as a 32-bit signed
+     * integer.
+     * </p>
      *
-     * @return the SSRC ID that we are currently using or -1 if we don't know it
-     *         just yet.
+     * @return the synchronization source (SSRC) ID used by this
+     * <tt>RTPSessionMgr</tt> or <tt>Long.MAX_VALUE</tt> if no such SSRC has
+     * been generated yet or is unknown at this time (for whatever reason)
+     * @author Emil Ivov
      */
     public long getLocalSSRC()
     {
-        if (cache != null && cache.ourssrc != null)
-            return cache.ourssrc.ssrc;
-        return -1;
+        return
+            ((cache == null) || (cache.ourssrc == null))
+                ? Long.MAX_VALUE
+                : cache.ourssrc.ssrc;
     }
 
     public int getMulticastScope()
@@ -1332,8 +1365,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
 
     public SSRCInfo getSSRCInfo(int i)
     {
-        SSRCInfo ssrcinfo = cache.lookup(i);
-        return ssrcinfo;
+        return cache.lookup(i);
     }
 
     public RTPStream getStream(long l)
@@ -1367,7 +1399,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                 new SourceDescription(3, SOURCE_DESC_EMAIL, 1, false),
                 new SourceDescription(1, s, 1, false),
                 new SourceDescription(6, SOURCE_DESC_TOOL, 1, false) };
-        int i = (int) generateSSRC();
+        int ssrc = (int) generateSSRC(GenerateSSRCCause.INITIALIZE);
         ttl = 1;
         participating = (rtpConnector.getRTCPBandwidthFraction() != 0.0D);
         cache = new SSRCCache(this);
@@ -1388,7 +1420,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         {
             cache.rtcp_sender_bw_fraction = 0.25D;
         }
-        cache.ourssrc = cache.get(i, null, 0, 2);
+        cache.ourssrc = cache.get(ssrc, null, 0, 2);
         cache.ourssrc.setAlive(true);
         if (!isCNAME(asourcedescription))
         {
@@ -1398,7 +1430,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         {
             cache.ourssrc.setSourceDescription(asourcedescription);
         }
-        cache.ourssrc.ssrc = i;
+        cache.ourssrc.ssrc = ssrc;
         cache.ourssrc.setOurs(true);
         initialized = true;
         rtpRawReceiver = new RTPRawReceiver(rtpConnector, defaultstats);
@@ -1450,15 +1482,9 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         }
         newRtpInterface = true;
         remoteAddresses = new Vector();
-        int i = (int) generateSSRC();
+        int i = (int) generateSSRC(GenerateSSRCCause.INITIALIZE);
         ttl = 1;
-        if (d == 0.0D)
-        {
-            participating = false;
-        } else
-        {
-            participating = true;
-        }
+        participating = (d != 0.0D);
         if (asessionaddress.length == 0)
         {
             throw new InvalidSessionAddressException(
@@ -1758,7 +1784,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
             SourceDescription asourcedescription[], double d, double d1)
             throws InvalidSessionAddressException
     {
-        long l = generateSSRC();
+        long l = generateSSRC(GenerateSSRCCause.INIT_SESSION);
         return initSession(sessionaddress, l, asourcedescription, d, d1);
     }
 
@@ -1774,7 +1800,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         {
             nonparticipating = true;
         }
-        defaultSSRC = generateSSRC();
+        defaultSSRC = generateSSRC(GenerateSSRCCause.INIT_SESSION);
         cache = new SSRCCache(this);
         formatinfo.setCache(cache);
         cache.rtcp_bw_fraction = d;
@@ -1979,36 +2005,53 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                  * RTPSessionMgr.
                  */
 
-                int newSSRC;
+                long lNewSSRC = Long.MAX_VALUE;
+                int iNewSSRC = 0;
 
                 do
                 {
-                    newSSRC = (int) generateSSRC();
-                } while (cache.lookup(newSSRC) != null);
+                    lNewSSRC
+                        = generateSSRC(GenerateSSRCCause.REMOVE_SEND_STREAM);
+                    /*
+                     * The synchronization source (SSRC) identifier factory is
+                     * allowed to cancel the operation.
+                     */
+                    if (lNewSSRC == Long.MAX_VALUE)
+                        break;
+                    else
+                        iNewSSRC = (int) lNewSSRC;
+                } while (cache.lookup(iNewSSRC) != null);
 
-                passivessrcinfo = cache.get(newSSRC, null, 0, 2);
-                passivessrcinfo.setAlive(true);
-
-                SourceDescription asourcedescription[] = {
-                        new SourceDescription(3, SOURCE_DESC_EMAIL, 1, false),
-                        new SourceDescription(1, generateCNAME(), 1, false),
-                        new SourceDescription(6, SOURCE_DESC_TOOL, 1,
-                                false) };
-                if (!isCNAME(asourcedescription))
+                if (lNewSSRC == Long.MAX_VALUE)
                 {
-                    passivessrcinfo
-                            .setSourceDescription(setCNAME(asourcedescription));
-                } else
-                {
-                    passivessrcinfo.setSourceDescription(asourcedescription);
+                    /*
+                     * The synchronization source (SSRC) identifier factory has
+                     * canceled the operation.
+                     */
+                    passivessrcinfo = new PassiveSSRCInfo(cache.ourssrc);
                 }
-                passivessrcinfo.ssrc = newSSRC;
-                passivessrcinfo.setOurs(true);
+                else
+                {
+                    passivessrcinfo = cache.get(iNewSSRC, null, 0, 2);
+                    passivessrcinfo.setAlive(true);
+
+                    SourceDescription asourcedescription[] = {
+                            new SourceDescription(3, SOURCE_DESC_EMAIL, 1, false),
+                            new SourceDescription(1, generateCNAME(), 1, false),
+                            new SourceDescription(6, SOURCE_DESC_TOOL, 1, false) };
+
+                    passivessrcinfo.setSourceDescription(
+                            isCNAME(asourcedescription)
+                                ? asourcedescription
+                                : setCNAME(asourcedescription));
+                    passivessrcinfo.ssrc = iNewSSRC;
+                }
             } else
             {
-                passivessrcinfo = new PassiveSSRCInfo(getSSRCCache().ourssrc);
+                passivessrcinfo = new PassiveSSRCInfo(cache.ourssrc);
             }
 
+            passivessrcinfo.setOurs(true);
             cache.ourssrc = passivessrcinfo;
             cache.getMainCache().put(passivessrcinfo.ssrc, passivessrcinfo);
 
@@ -2518,13 +2561,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         if (!dataaddress.isMulticastAddress()
                 && !dataaddress.equals(inetaddress))
         {
-            if (isBroadcast(dataaddress) && !Win32())
-            {
-                bindtome = false;
-            } else
-            {
-                bindtome = true;
-            }
+            bindtome = !isBroadcast(dataaddress) || Win32();
         }
         if (bindtome)
         {

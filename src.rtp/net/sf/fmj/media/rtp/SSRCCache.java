@@ -34,7 +34,7 @@ public class SSRCCache
     int avgrtcpsize;
     Hashtable conflicttable;
     SSRCInfo ourssrc;
-    public RTPSessionMgr sm;
+    public final RTPSessionMgr sm;
 
     SSRCCache(RTPSessionMgr sm)
     {
@@ -52,7 +52,6 @@ public class SSRCCache
         rtcpsent = false;
         avgrtcpsize = 128;
         conflicttable = new Hashtable(5);
-        ourssrc = null;
         stats = sm.defaultstats;
         transstats = sm.transstats;
         sourceInfoCache = new RTPSourceInfoCache();
@@ -79,7 +78,6 @@ public class SSRCCache
         rtcpsent = false;
         avgrtcpsize = 128;
         conflicttable = new Hashtable(5);
-        ourssrc = null;
         stats = sm.defaultstats;
         transstats = sm.transstats;
         sourceInfoCache = sic;
@@ -250,7 +248,7 @@ public class SSRCCache
                         return ssrcinfo3;
                     }
                     info = new SendSSRCInfo(this, ssrc);
-                    info.initsource((int) TrueRandom.rand());
+                    info.initsource(TrueRandom.nextInt());
                 }
                 if (mode == 1)
                     info = new RecvSSRCInfo(this, ssrc);
@@ -304,13 +302,15 @@ public class SSRCCache
 
     private void LocalCollision(int ssrc)
     {
-        int newssrc = 0;
+        int newSSRC = 0;
         do
-            newssrc = (int) TrueRandom.rand();
-        while (lookup(newssrc) != null);
+        {
+            newSSRC = (int) sm.generateSSRC(GenerateSSRCCause.LOCAL_COLLISION);
+        }
+        while (lookup(newSSRC) != null);
         SSRCInfo newinfo = new PassiveSSRCInfo(ourssrc);
-        newinfo.ssrc = newssrc;
-        cache.put(newssrc, newinfo);
+        newinfo.ssrc = newSSRC;
+        cache.put(newSSRC, newinfo);
         changessrc(newinfo);
         ourssrc = newinfo;
         stats.update(3, 1);

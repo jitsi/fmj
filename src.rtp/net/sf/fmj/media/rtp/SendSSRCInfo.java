@@ -38,9 +38,9 @@ public class SendSSRCInfo extends SSRCInfo implements SenderReport, SendStream
         lastBufSeq = -1L;
         stats = null;
         rtcprep = null;
-        super.baseseq = (int) TrueRandom.rand();
+        super.baseseq = TrueRandom.nextInt();
         super.maxseq = super.baseseq;
-        super.lasttimestamp = (int) TrueRandom.rand();
+        super.lasttimestamp = TrueRandom.nextLong();
         super.sender = true;
         super.wassender = true;
         super.sinkstream = new RTPSinkStream();
@@ -58,9 +58,9 @@ public class SendSSRCInfo extends SSRCInfo implements SenderReport, SendStream
         lastBufSeq = -1L;
         stats = null;
         rtcprep = null;
-        super.baseseq = (int) TrueRandom.rand();
+        super.baseseq = TrueRandom.nextInt();
         super.maxseq = super.baseseq;
-        super.lasttimestamp = (int) TrueRandom.rand();
+        super.lasttimestamp = TrueRandom.nextLong();
         super.sender = true;
         super.wassender = true;
         super.sinkstream = new RTPSinkStream();
@@ -300,8 +300,8 @@ public class SendSSRCInfo extends SSRCInfo implements SenderReport, SendStream
         {
             inited = true;
             super.probation = 0;
-            initsource((int) TrueRandom.rand());
-            super.lasttimestamp = (int) TrueRandom.rand();
+            initsource(TrueRandom.nextInt());
+            super.lasttimestamp = TrueRandom.nextLong();
         }
         if (super.pds != null)
             super.pds.start();
@@ -316,5 +316,4 @@ public class SendSSRCInfo extends SSRCInfo implements SenderReport, SendStream
         if (super.sinkstream != null)
             super.sinkstream.stop();
     }
-
 }
