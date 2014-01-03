@@ -51,7 +51,7 @@ public class PlugInManager
         if (!init())
             return false;
         return ((Boolean) callImpl(addPlugInMethod, new Object[] { classname,
-                in, out, new Integer(type) })).booleanValue();
+                in, out, Integer.valueOf(type) })).booleanValue();
 
     }
 
@@ -87,7 +87,7 @@ public class PlugInManager
         if (!init())
             return null;
         return (Vector) callImpl(getPlugInListMethod, new Object[] { input,
-                output, new Integer(type) });
+                output, Integer.valueOf(type) });
     }
 
     private static Method getStaticMethodOnImplClass(String name,
@@ -107,7 +107,7 @@ public class PlugInManager
         if (!init())
             return null;
         return (Format[]) callImpl(getSupportedInputFormatsMethod,
-                new Object[] { className, new Integer(type) });
+                new Object[] { className, Integer.valueOf(type) });
     }
 
     public static Format[] getSupportedOutputFormats(String className, int type)
@@ -115,7 +115,7 @@ public class PlugInManager
         if (!init())
             return null;
         return (Format[]) callImpl(getSupportedOutputFormatsMethod,
-                new Object[] { className, new Integer(type) });
+                new Object[] { className, Integer.valueOf(type) });
 
     }
 
@@ -168,7 +168,7 @@ public class PlugInManager
         if (!init())
             return false;
         return ((Boolean) callImpl(removePlugInMethod, new Object[] {
-                classname, new Integer(type) })).booleanValue();
+                classname, Integer.valueOf(type) })).booleanValue();
     }
 
     public static void setPlugInList(Vector plugins, int type)
@@ -176,7 +176,7 @@ public class PlugInManager
         if (!init())
             return;
         callImpl(setPlugInListMethod,
-                new Object[] { plugins, new Integer(type) });
+                new Object[] { plugins, Integer.valueOf(type) });
     }
 
     public PlugInManager()
