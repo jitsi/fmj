@@ -46,16 +46,10 @@ public class Registry
     /** logger for this class */
     private static final Logger logger = LoggerSingleton.logger;
 
-    private static final int[] REGISTRY_FORMATS = new int[] {
-            RegistryIOFactory.XML, RegistryIOFactory.PROPERTIES, };
-    private static final int DEFAULT_REGISTRY_WRITE_FORMAT = RegistryIOFactory.XML; // for
-                                                                                    // now,
-                                                                                    // we
-                                                                                    // only
-                                                                                    // support
-                                                                                    // writing
-                                                                                    // to
-                                                                                    // XML.
+    private static final int[] REGISTRY_FORMATS
+        = new int[] { RegistryIOFactory.XML, RegistryIOFactory.PROPERTIES, };
+    private static final int DEFAULT_REGISTRY_WRITE_FORMAT
+        = RegistryIOFactory.XML; // for now, we only support writing to XML.
 
     /** the singleton registry object */
     private static Registry registry = null;
@@ -273,8 +267,10 @@ public class Registry
      */
     private InputStream getRegistryResourceStream(int registryFormat)
     {
-        return Registry.class
-                .getResourceAsStream(registryFormat == RegistryIOFactory.PROPERTIES ? "/fmj.registry.properties"
+        return
+            Registry.class.getResourceAsStream(
+                    (registryFormat == RegistryIOFactory.PROPERTIES)
+                        ? "/fmj.registry.properties"
                         : "/fmj.registry.xml");
     }
 
@@ -308,13 +304,14 @@ public class Registry
                 final FileInputStream fis = new FileInputStream(f);
                 RegistryIOFactory.createRegistryIO(registryFormat,
                         registryContents).load(fis);
-                logger.info("Loaded registry from file: " + f.getAbsolutePath());
+                logger.info(
+                        "Loaded registry from file: " + f.getAbsolutePath());
                 return true;
             }
         } catch (Throwable t)
         {
-            logger.warning("Problem loading registry from file: "
-                    + t.getMessage());
+            logger.warning(
+                    "Problem loading registry from file: " + t.getMessage());
         }
         return false;
     }
@@ -325,20 +322,22 @@ public class Registry
         {
             final InputStream is = getRegistryResourceStream(registryFormat);
             if (is == null)
-            {
                 return false;
-            }
+
             RegistryIOFactory
-                    .createRegistryIO(registryFormat, registryContents)
+                .createRegistryIO(registryFormat, registryContents)
                     .load(is);
-            logger.info("Loaded registry from resource, format: "
-                    + (registryFormat == RegistryIOFactory.PROPERTIES ? "Properties"
+            logger.info(
+                    "Loaded registry from resource, format: "
+                        + ((registryFormat == RegistryIOFactory.PROPERTIES)
+                            ? "Properties"
                             : "XML"));
             return true;
         } catch (Throwable t)
         {
-            logger.warning("Problem loading registry from resource: "
-                    + t.getMessage());
+            logger.warning(
+                    "Problem loading registry from resource: "
+                        + t.getMessage());
             return false;
         }
     }
@@ -395,11 +394,8 @@ public class Registry
                 final PlugInInfo i = PlugInUtility.getPlugInInfo((String) o);
                 if (i != null)
                     registryContents.plugins[i.type - 1].add(i.className);
-
             }
-
         }
-
     }
 
     /**
@@ -413,7 +409,7 @@ public class Registry
     public synchronized void setPluginList(int pluginType, List<String> plugins)
     {
         // use the plugin vector for the given type
-        final Vector<String> pluginList = registryContents.plugins[pluginType - 1];
+        Vector<String> pluginList = registryContents.plugins[pluginType - 1];
         pluginList.clear();
         pluginList.addAll(plugins);
     }

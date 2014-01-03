@@ -525,9 +525,8 @@ public class PlaybackEngine extends BasicController implements ModuleListener
 
         if (node.plugin == null)
         {
-            // There's nothing to build.
-            // i.e. the output from the source (demux) works just fine.
-            // Probably just need to be multiplexed.
+            // There's nothing to build. I.e. the output from the source (demux)
+            // works just fine. Probably just need to be multiplexed.
             return null;
         }
 
@@ -597,7 +596,7 @@ public class PlaybackEngine extends BasicController implements ModuleListener
         // management.
 
         dst = src;
-        while (true)
+        do
         {
             dst.setModuleListener(this);
             modules.addElement(dst);
@@ -611,6 +610,7 @@ public class PlaybackEngine extends BasicController implements ModuleListener
                     || (dst = (BasicModule) ic.getModule()) == null)
                 break;
         }
+        while (true);
 
         // Set the first output connector.
         tc.firstOC.setFormat(tc.getOriginalFormat());

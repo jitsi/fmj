@@ -7,7 +7,7 @@ import java.util.logging.*;
  */
 public class Log
 {
-    public static boolean isEnabled = false; /* The default JMF value is false. */
+    public static final boolean isEnabled; // The default JMF value is false.
     private static int indent = 0;
 
     /**
@@ -18,10 +18,12 @@ public class Log
     static
     {
         // Check the registry file to see if logging is turned on.
-        Object llog = com.sun.media.util.Registry.get("allowLogging");
+        Object allowLogging = com.sun.media.util.Registry.get("allowLogging");
 
-        if ((llog != null) && (llog instanceof Boolean))
-            isEnabled = ((Boolean) llog).booleanValue();
+        isEnabled
+            = ((allowLogging != null) && (allowLogging instanceof Boolean))
+                ? ((Boolean) allowLogging).booleanValue()
+                : false;
 
         if (isEnabled)
             writeHeader();
@@ -56,12 +58,9 @@ public class Log
     public static synchronized void error(Object str)
     {
         if (isEnabled && logger.isLoggable(Level.SEVERE))
-        {
             logger.severe((str!=null ? str.toString() : "null"));
-        } else
-        {
+        else
             System.err.println(str);
-        }
     }
 
     public static int getIndent()
@@ -88,9 +87,7 @@ public class Log
     public static synchronized void warning(Object str)
     {
         if (isEnabled && logger.isLoggable(Level.WARNING))
-        {
-                logger.warning((str!=null ? str.toString() : "null"));
-        }
+            logger.warning((str!=null ? str.toString() : "null"));
     }
 
     public static synchronized void write(Object str)
