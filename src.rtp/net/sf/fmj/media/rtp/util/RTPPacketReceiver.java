@@ -8,8 +8,20 @@ import javax.media.rtp.*;
 
 import net.sf.fmj.media.*;
 
-public class RTPPacketReceiver implements PacketSource, SourceTransferHandler
+/**
+ *
+ * @author Lyubomir Marinov
+ */
+public class RTPPacketReceiver
+    implements PacketSource,
+               SourceTransferHandler
 {
+    /**
+     * The name of the <tt>PushBufferStream</tt> class.
+     */
+    private static final String PUSH_BUFFER_STREAM_CLASS_NAME
+        = PushBufferStream.class.getName();
+
     RTPPushDataSource rtpsource;
     CircularBuffer bufQue;
     boolean closed;
@@ -44,7 +56,8 @@ public class RTPPacketReceiver implements PacketSource, SourceTransferHandler
         }
     }
 
-    public Packet receiveFrom() throws IOException
+    public Packet receiveFrom()
+            throws IOException
     {
         Buffer buf;
         synchronized (bufQue)
@@ -55,12 +68,14 @@ public class RTPPacketReceiver implements PacketSource, SourceTransferHandler
                 bufQue.notify();
             }
             while (!bufQue.canRead() && !closed)
+            {
                 try
                 {
                     bufQue.wait(1000L);
                 } catch (InterruptedException e)
                 {
                 }
+            }
             if (closed)
             {
                 buf = null;
@@ -71,16 +86,33 @@ public class RTPPacketReceiver implements PacketSource, SourceTransferHandler
                 dataRead = true;
             }
         }
+
         byte data[];
+        int flags;
+        int length;
+
         if (buf != null)
+        {
             data = (byte[]) buf.getData();
+            flags = buf.getFlags();
+            length = buf.getLength();
+        }
         else
+        {
             data = new byte[1];
+            flags = 0;
+            length = 0;
+        }
+
         UDPPacket p = new UDPPacket();
+
         p.receiptTime = System.currentTimeMillis();
+
         p.data = data;
+        p.flags = flags;
+        p.length = length;
         p.offset = 0;
-        p.length = buf != null ? buf.getLength() : 0;
+
         return p;
     }
 
@@ -96,32 +128,62 @@ public class RTPPacketReceiver implements PacketSource, SourceTransferHandler
         synchronized (bufQue)
         {
             while (!bufQue.canWrite() && !closed)
+            {
                 try
                 {
                     bufQue.wait(1000L);
                 } catch (InterruptedException e)
                 {
                 }
+            }
             if (closed)
                 return;
             buf = bufQue.getEmptyBuffer();
         }
-        int size = sourcestream.getMinimumTransferSize();
-        byte data[] = (byte[]) buf.getData();
-        int len = 0;
-        if (data == null || data.length < size)
-        {
-            data = new byte[size];
-            buf.setData(data);
-        }
-        try
-        {
-            len = sourcestream.read(data, 0, size);
-        } catch (IOException e)
-        {
-        }
-        buf.setLength(len);
+
+        buf.setFlags(0);
         buf.setOffset(0);
+
+        /*
+         * If sourcestream is capable of adapting to the PushBufferStream
+         * interface, it may want to provide Buffer properties other than data,
+         * length and offset such as flags.
+         */
+        PushBufferStream pbs
+            = (PushBufferStream)
+                sourcestream.getControl(PUSH_BUFFER_STREAM_CLASS_NAME);
+
+        if (pbs == null)
+        {
+            int size = sourcestream.getMinimumTransferSize();
+            byte data[] = (byte[]) buf.getData();
+            int len = 0;
+            if (data == null || data.length < size)
+            {
+                data = new byte[size];
+                buf.setData(data);
+            }
+            try
+            {
+                len = sourcestream.read(data, 0, size);
+            }
+            catch (IOException e)
+            {
+            }
+            buf.setLength(len);
+        }
+        else
+        {
+            try
+            {
+                pbs.read(buf);
+            }
+            catch (IOException e)
+            {
+                buf.setLength(0);
+            }
+        }
+
         synchronized (bufQue)
         {
             bufQue.writeReport();

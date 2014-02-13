@@ -33,7 +33,7 @@ public class RTPDemultiplexer
         if (info.dstream != null)
         {
             buffer.setData(rtpPacket.base.data);
-            buffer.setFlags(0);
+            buffer.setFlags(rtpPacket.flags);
             if (rtpPacket.marker == 1)
                 buffer.setFlags(buffer.getFlags() | Buffer.FLAG_RTP_MARKER);
             buffer.setLength(rtpPacket.payloadlength);
