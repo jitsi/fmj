@@ -24,7 +24,7 @@ public abstract class BasicController implements Controller, Duration
 {
     private int targetState = Unrealized;
     protected int state = Unrealized;
-    private Vector listenerList = null;
+    private List<ControllerListener> listenerList = null;
     private SendEventQueue sendEvtQueue;
     private ConfigureWorkThread configureThread = null;
     private RealizeWorkThread realizeThread = null;
@@ -194,16 +194,12 @@ public abstract class BasicController implements Controller, Duration
     final public void addControllerListener(ControllerListener listener)
     {
         if (listenerList == null)
-        {
-            listenerList = new Vector();
-        }
+            listenerList = new ArrayList<ControllerListener>();
 
         synchronized (listenerList)
         {
             if (!listenerList.contains(listener))
-            {
-                listenerList.addElement(listener);
-            }
+                listenerList.add(listener);
         }
     }
 
@@ -397,13 +393,8 @@ public abstract class BasicController implements Controller, Duration
 
         synchronized (listenerList)
         {
-            Enumeration list = listenerList.elements();
-            while (list.hasMoreElements())
-            {
-                ControllerListener listener = (ControllerListener) list
-                        .nextElement();
+            for (ControllerListener listener : listenerList)
                 listener.controllerUpdate(evt);
-            }
         }
     }
 
@@ -830,10 +821,7 @@ public abstract class BasicController implements Controller, Duration
             return;
         synchronized (listenerList)
         {
-            if (listenerList != null)
-            {
-                listenerList.removeElement(listener);
-            }
+            listenerList.remove(listener);
         }
     }
 
@@ -1193,7 +1181,6 @@ class SendEventQueue extends ThreadedEventQueue
 abstract class StateTransitionWorkThread extends MediaThread
 {
     BasicController controller;
-    Vector eventQueue = new Vector();
     boolean allEventsArrived = false;
 
     StateTransitionWorkThread()

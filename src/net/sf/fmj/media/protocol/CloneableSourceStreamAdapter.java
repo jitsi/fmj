@@ -343,7 +343,7 @@ public class CloneableSourceStreamAdapter
     // INNER CLASSES
     // //////////////////////////
 
-    Vector slaves = new Vector();
+    Vector<SourceStream> slaves = new Vector<SourceStream>();
 
     protected int numTracks = 0;
 
@@ -374,9 +374,10 @@ public class CloneableSourceStreamAdapter
         else if (master instanceof PushBufferStream)
             ((PushBufferStream) master).read(b);
 
-        for (Enumeration e = slaves.elements(); e.hasMoreElements();)
+        for (Enumeration<SourceStream> e = slaves.elements();
+                e.hasMoreElements();)
         {
-            Object stream = e.nextElement();
+            SourceStream stream = e.nextElement();
             ((PushBufferStreamSlave) stream).setBuffer((Buffer) b.clone());
             Thread.yield();
         }
@@ -393,9 +394,10 @@ public class CloneableSourceStreamAdapter
             totalRead
                 = ((PushSourceStream) master).read(buffer, offset, length);
 
-        for (Enumeration e = slaves.elements(); e.hasMoreElements();)
+        for (Enumeration<SourceStream> e = slaves.elements();
+                e.hasMoreElements();)
         {
-            Object stream = e.nextElement();
+            SourceStream stream = e.nextElement();
             byte[] copyBuffer = new byte[totalRead];
             System.arraycopy(buffer, offset, copyBuffer, 0, totalRead);
             ((PushSourceStreamSlave) stream).setBuffer(copyBuffer);

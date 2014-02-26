@@ -121,7 +121,7 @@ public class MediaHTTPD extends NanoHTTPD
 
         logger.fine(method + " '" + uri + "' ");
 
-        Enumeration e = header.propertyNames();
+        Enumeration<?> e = header.propertyNames();
         while (e.hasMoreElements())
         {
             String value = (String) e.nextElement();

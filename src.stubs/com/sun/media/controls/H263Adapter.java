@@ -13,8 +13,6 @@ import javax.media.control.*;
  */
 public class H263Adapter implements H263Control
 {
-    private boolean settable;
-    private Codec owner;
     private boolean advancedPrediction;
     private boolean arithmeticCoding;
     private boolean errorCompensation;
@@ -27,8 +25,6 @@ public class H263Adapter implements H263Control
             boolean compensation, boolean frames, boolean vector, int hrd_b,
             int kb, boolean settable)
     {
-        super();
-        this.owner = owner;
         advancedPrediction = prediction;
         arithmeticCoding = coding;
         errorCompensation = compensation;
@@ -36,7 +32,6 @@ public class H263Adapter implements H263Control
         unrestrictedVector = vector;
         hrd_B = hrd_b;
         bppMaxKb = kb;
-        this.settable = settable;
     }
 
     public boolean getAdvancedPrediction()

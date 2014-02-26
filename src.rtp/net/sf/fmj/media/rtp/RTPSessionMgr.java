@@ -495,7 +495,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                 .addElement(sessionaddress);
         if (cache != null)
         {
-            for (Enumeration elements = cache.cache.elements();
+            for (Enumeration<Object> elements = cache.cache.elements();
                     elements.hasMoreElements();)
             {
                 SSRCInfo ssrcinfo = (SSRCInfo) elements.nextElement();
@@ -692,7 +692,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         {
             SSRCInfo ssrcinfo;
 
-            for (Enumeration elements = cache.cache.elements();
+            for (Enumeration<Object> elements = cache.cache.elements();
                     elements.hasMoreElements();
                     stopParticipating(s, ssrcinfo))
             {
@@ -899,7 +899,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                         .addElement(sessionaddress1);
                 if (cache != null)
                 {
-                    for (Enumeration elements = cache.cache.elements();
+                    for (Enumeration<Object> elements = cache.cache.elements();
                             elements.hasMoreElements();)
                     {
                         SSRCInfo ssrcinfo1 = (SSRCInfo) elements.nextElement();
@@ -982,7 +982,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         if (cache != null)
         {
             SSRCInfo ssrcinfo;
-            for (Enumeration elements = cache.cache.elements();
+            for (Enumeration<Object> elements = cache.cache.elements();
                     elements.hasMoreElements();
                     stopParticipating("dispose", ssrcinfo))
             {
@@ -1087,11 +1087,12 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     {
         Vector vector1 = new Vector();
         RTPSourceInfoCache rtpsourceinfocache = cache.getRTPSICache();
-        Hashtable hashtable = rtpsourceinfocache.getCacheTable();
-        for (Enumeration enumeration = hashtable.elements(); enumeration
-                .hasMoreElements();)
+        Hashtable<String,RTPSourceInfo> hashtable
+            = rtpsourceinfocache.getCacheTable();
+        for (Enumeration<RTPSourceInfo> enumeration = hashtable.elements();
+                enumeration.hasMoreElements();)
         {
-            Participant participant = (Participant) enumeration.nextElement();
+            Participant participant = enumeration.nextElement();
             if (participant == null
                     || !(participant instanceof LocalParticipant)
                     || !nonparticipating)
@@ -1112,11 +1113,12 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     {
         Vector vector = new Vector();
         RTPSourceInfoCache rtpsourceinfocache = cache.getRTPSICache();
-        Hashtable hashtable = rtpsourceinfocache.getCacheTable();
-        for (Enumeration enumeration = hashtable.elements(); enumeration
-                .hasMoreElements();)
+        Hashtable<String,RTPSourceInfo> hashtable
+            = rtpsourceinfocache.getCacheTable();
+        for (Enumeration<RTPSourceInfo> enumeration = hashtable.elements();
+                enumeration.hasMoreElements();)
         {
-            Participant participant = (Participant) enumeration.nextElement();
+            Participant participant = enumeration.nextElement();
             if (participant != null
                     && (!(participant instanceof LocalParticipant) || !nonparticipating))
             {
@@ -1187,11 +1189,12 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     public LocalParticipant getLocalParticipant()
     {
         RTPSourceInfoCache rtpsourceinfocache = cache.getRTPSICache();
-        Hashtable hashtable = rtpsourceinfocache.getCacheTable();
-        for (Enumeration enumeration = hashtable.elements(); enumeration
-                .hasMoreElements();)
+        Hashtable<String,RTPSourceInfo> hashtable
+            = rtpsourceinfocache.getCacheTable();
+        for (Enumeration<RTPSourceInfo> enumeration = hashtable.elements();
+                enumeration.hasMoreElements();)
         {
-            Participant participant = (Participant) enumeration.nextElement();
+            Participant participant = enumeration.nextElement();
             if (participant != null && !nonparticipating
                     && (participant instanceof LocalParticipant))
             {
@@ -1254,11 +1257,12 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     {
         Vector vector1 = new Vector();
         RTPSourceInfoCache rtpsourceinfocache = cache.getRTPSICache();
-        Hashtable hashtable = rtpsourceinfocache.getCacheTable();
-        for (Enumeration enumeration = hashtable.elements(); enumeration
-                .hasMoreElements();)
+        Hashtable<String,RTPSourceInfo> hashtable
+            = rtpsourceinfocache.getCacheTable();
+        for (Enumeration<RTPSourceInfo> enumeration = hashtable.elements();
+                enumeration.hasMoreElements();)
         {
-            Participant participant = (Participant) enumeration.nextElement();
+            Participant participant = enumeration.nextElement();
             if (participant == null
                     || !(participant instanceof LocalParticipant)
                     || !nonparticipating)
@@ -1320,11 +1324,12 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     {
         Vector vector = new Vector();
         RTPSourceInfoCache rtpsourceinfocache = cache.getRTPSICache();
-        Hashtable hashtable = rtpsourceinfocache.getCacheTable();
-        for (Enumeration enumeration = hashtable.elements(); enumeration
-                .hasMoreElements();)
+        Hashtable<String,RTPSourceInfo> hashtable
+            = rtpsourceinfocache.getCacheTable();
+        for (Enumeration<RTPSourceInfo> enumeration = hashtable.elements();
+                enumeration.hasMoreElements();)
         {
-            Participant participant = (Participant) enumeration.nextElement();
+            Participant participant = enumeration.nextElement();
             if (participant != null
                     && (participant instanceof RemoteParticipant))
             {
@@ -2777,18 +2782,21 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
 
     public void UpdateEncodings(javax.media.protocol.DataSource datasource)
     {
-        RTPControlImpl rtpcontrolimpl = (RTPControlImpl) datasource
-                .getControl(RTPControl.class.getName());
+        RTPControlImpl rtpcontrolimpl
+            = (RTPControlImpl)
+                datasource.getControl(RTPControl.class.getName());
         if (rtpcontrolimpl != null && rtpcontrolimpl.codeclist != null)
         {
             Integer integer;
-            for (Enumeration enumeration = rtpcontrolimpl.codeclist.keys(); enumeration
-                    .hasMoreElements(); formatinfo.add(integer.intValue(),
-                    (Format) rtpcontrolimpl.codeclist.get(integer)))
+            for (Enumeration<Integer> enumeration
+                        = rtpcontrolimpl.codeclist.keys();
+                    enumeration.hasMoreElements();
+                    formatinfo.add(
+                            integer.intValue(),
+                            rtpcontrolimpl.codeclist.get(integer)))
             {
-                integer = (Integer) enumeration.nextElement();
+                integer = enumeration.nextElement();
             }
-
         }
     }
 

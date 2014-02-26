@@ -363,7 +363,8 @@ public class SimpleGraphBuilder
     // damencho from 4 to 5
     protected int STAGES = 5;
 
-    protected Hashtable plugIns = new Hashtable(40);
+    protected Hashtable<String,GraphNode> plugIns
+        = new Hashtable<String,GraphNode>(40);
 
     protected GraphNode targetPlugins[] = null;
 
@@ -746,17 +747,16 @@ public class SimpleGraphBuilder
 
         candidates.addElement(hsyn);
 
-        // clear up the hashtable plugIns too, only let it keep
-        // all the failed nodes, so that we are not going to
-        // attemp these nodes again.
+        // clear up the hashtable plugIns too, only let it keep all the failed
+        // nodes, so that we are not going to attempt these nodes again.
         failed.failed = true;
         plugIns.put(failed.plugin.getClass().getName(), failed);
 
-        Enumeration e = plugIns.keys();
+        Enumeration<String> e = plugIns.keys();
         while (e.hasMoreElements())
         {
-            String ss = (String) e.nextElement();
-            GraphNode nn = (GraphNode) plugIns.get(ss);
+            String ss = e.nextElement();
+            GraphNode nn = plugIns.get(ss);
             if (!nn.failed)
                 plugIns.remove(ss);
         }
@@ -768,11 +768,11 @@ public class SimpleGraphBuilder
     public void reset()
     {
         // damencho change enum keyword to compile with 1.5
-        Enumeration enum1 = plugIns.elements();
+        Enumeration<GraphNode> enum1 = plugIns.elements();
         GraphNode n;
         while (enum1.hasMoreElements())
         {
-            n = (GraphNode) enum1.nextElement();
+            n = enum1.nextElement();
             n.resetAttempted();
         }
     }

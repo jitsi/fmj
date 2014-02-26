@@ -11,7 +11,7 @@ import net.sf.fmj.media.util.*;
 public abstract class RTPControlImpl implements RTPControl, RTPInfo
 {
     String cname;
-    Hashtable codeclist;
+    Hashtable<Integer,Format> codeclist;
     int rtptime;
     int seqno;
     int payload;
@@ -22,14 +22,13 @@ public abstract class RTPControlImpl implements RTPControl, RTPInfo
     public RTPControlImpl()
     {
         cname = null;
-        codeclist = null;
         rtptime = 0;
         seqno = 0;
         payload = -1;
         codec = "";
         currentformat = null;
         stream = null;
-        codeclist = new Hashtable(5);
+        codeclist = new Hashtable<Integer,Format>(5);
     }
 
     public void addFormat(Format info, int payload)
@@ -51,16 +50,16 @@ public abstract class RTPControlImpl implements RTPControl, RTPInfo
 
     public Format getFormat(int payload)
     {
-        return (Format) codeclist.get(new Integer(payload));
+        return codeclist.get(new Integer(payload));
     }
 
     public Format[] getFormatList()
     {
         Format infolist[] = new Format[codeclist.size()];
         int i = 0;
-        for (Enumeration e = codeclist.elements(); e.hasMoreElements();)
+        for (Enumeration<Format> e = codeclist.elements(); e.hasMoreElements();)
         {
-            Format f = (Format) e.nextElement();
+            Format f = e.nextElement();
             infolist[i++] = (Format) f.clone();
         }
 

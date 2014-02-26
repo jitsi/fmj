@@ -247,7 +247,7 @@ public class NanoHTTPD
 
                 if (header != null)
                 {
-                    Enumeration e = header.keys();
+                    Enumeration<Object> e = header.keys();
                     while (e.hasMoreElements())
                     {
                         String key = (String) e.nextElement();
@@ -565,7 +565,7 @@ public class NanoHTTPD
     {
         System.out.println(method + " '" + uri + "' ");
 
-        Enumeration e = header.propertyNames();
+        Enumeration<?> e = header.propertyNames();
         while (e.hasMoreElements())
         {
             String value = (String) e.nextElement();

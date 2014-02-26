@@ -2,7 +2,6 @@ package net.sf.fmj.ui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.logging.*;
 
 import javax.swing.*;
 
@@ -22,8 +21,6 @@ import com.lti.utils.*;
  */
 public class FmjStudio
 {
-    private static final Logger logger = LoggerSingleton.logger;
-
     /**
      * Main method.
      *

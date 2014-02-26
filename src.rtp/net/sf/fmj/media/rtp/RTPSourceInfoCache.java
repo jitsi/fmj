@@ -5,20 +5,20 @@ import java.util.*;
 public class RTPSourceInfoCache
 {
     public SSRCCache ssrccache;
-    Hashtable cache;
+    Hashtable<String,RTPSourceInfo> cache;
     RTPSourceInfoCache main;
 
     public RTPSourceInfoCache()
     {
-        cache = new Hashtable(20);
+        cache = new Hashtable<String,RTPSourceInfo>(20);
     }
 
     public RTPSourceInfo get(String cname, boolean local)
     {
-        RTPSourceInfo info = null;
+        RTPSourceInfo info;
         synchronized (this)
         {
-            info = (RTPSourceInfo) cache.get(cname);
+            info = cache.get(cname);
             if (info == null && !local)
             {
                 info = new RTPRemoteSourceInfo(cname, main);
@@ -33,7 +33,7 @@ public class RTPSourceInfoCache
         return info;
     }
 
-    public Hashtable getCacheTable()
+    public Hashtable<String,RTPSourceInfo> getCacheTable()
     {
         return cache;
     }

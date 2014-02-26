@@ -18,16 +18,11 @@ import net.sf.fmj.media.util.*;
  */
 public abstract class ImageIODecoder extends AbstractCodec implements Codec
 {
-    private final String formatName;
-
     private final Format[] supportedOutputFormats = new Format[] { new RGBFormat(
             null, -1, Format.byteArray, -1.0f, -1, -1, -1, -1), };
 
     public ImageIODecoder(String formatName)
     {
-        super();
-        this.formatName = formatName;
-
         if (!ImageIO.getImageReadersByFormatName(formatName).hasNext())
         {
             throw new RuntimeException("No ImageIO reader found for "

@@ -71,9 +71,6 @@ public class InputStreamReader extends InputStream
         }
     }
 
-    private final InputStream is;
-    private final int bufferSize;
-
     private ReaderThread readerThread;
     private final ProducerConsumerQueue emptyQueue = new ProducerConsumerQueue();
 
@@ -87,10 +84,6 @@ public class InputStreamReader extends InputStream
 
     public InputStreamReader(final InputStream is, final int bufferSize)
     {
-        super();
-        this.is = is;
-        this.bufferSize = bufferSize;
-
         for (int i = 0; i < 2; ++i)
         {
             final Buffer b = new Buffer();
