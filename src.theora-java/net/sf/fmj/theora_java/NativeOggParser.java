@@ -61,11 +61,6 @@ public class NativeOggParser extends AbstractDemultiplexer
 
         }
 
-        public boolean canSkipNanos()
-        {
-            return false;
-        }
-
         @Override
         public void deallocate()
         {
@@ -175,19 +170,6 @@ public class NativeOggParser extends AbstractDemultiplexer
                 }
             }
         }
-
-        // TODO: implement seeking using av_seek_frame
-        /**
-         *
-         * @return nanos skipped, 0 if unable to skip.
-         * @throws IOException
-         */
-        public long skipNanos(long nanos) throws IOException
-        {
-            return 0;
-
-        }
-
     }
 
     private abstract class PullSourceStreamTrack extends AbstractTrack
@@ -211,11 +193,6 @@ public class NativeOggParser extends AbstractDemultiplexer
                 // set format
                 format = convertCodecPixelFormat(ti);
             }
-        }
-
-        public boolean canSkipNanos()
-        {
-            return false;
         }
 
         @Override
@@ -311,18 +288,6 @@ public class NativeOggParser extends AbstractDemultiplexer
             }
 
         }
-
-        /**
-         *
-         * @return nanos skipped, 0 if unable to skip.
-         * @throws IOException
-         */
-        public long skipNanos(long nanos) throws IOException
-        {
-            return 0; // TODO
-
-        }
-
     }
 
     private static final Logger logger = LoggerSingleton.logger;
@@ -362,11 +327,6 @@ public class NativeOggParser extends AbstractDemultiplexer
     private int audiobuf_ready = 0;
 
     private short[] audiobuf;
-
-    private long /* ogg_int64_t */audiobuf_granulepos = 0; /*
-                                                            * time position of
-                                                            * last sample
-                                                            */
 
     /** In bytes. */
     private int audiofd_fragsize; /*
@@ -730,10 +690,6 @@ public class NativeOggParser extends AbstractDemultiplexer
                     audiobuf_fill += i * vi.channels * 2;
                     if (audiobuf_fill == audiofd_fragsize)
                         audiobuf_ready = 1;
-                    if (vd.granulepos >= 0)
-                        audiobuf_granulepos = vd.granulepos - ret + i;
-                    else
-                        audiobuf_granulepos += i;
 
                 } else
                 {
@@ -795,9 +751,6 @@ public class NativeOggParser extends AbstractDemultiplexer
     {
         synchronized (OGG_SYNC_OBJ)
         {
-            int i;
-            int j;
-
             while (theora_p != 0 && videobuf_ready == 0)
             {
                 /* theora is one in, one out... */
@@ -889,8 +842,6 @@ public class NativeOggParser extends AbstractDemultiplexer
         {
             try
             {
-                final String urlStr;
-
                 if (USE_DATASOURCE_URL_ONLY)
                 {
                     // just use the file URL from the datasource

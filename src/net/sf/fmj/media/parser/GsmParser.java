@@ -19,10 +19,8 @@ public class GsmParser extends AbstractDemultiplexer
 {
     private class PullSourceStreamTrack extends AbstractTrack
     {
-        private javax.sound.sampled.AudioFormat javaSoundInputFormat;
         private PullSourceStream stream;
         private long frameLength;
-        private long totalBytesRead;
         private static final int GSM_FRAME_SIZE = 33;
 
         public PullSourceStreamTrack(PullSourceStream stream)
@@ -30,15 +28,6 @@ public class GsmParser extends AbstractDemultiplexer
             super();
             this.stream = stream;
             frameLength = stream.getContentLength() / GSM_FRAME_SIZE;
-
-        }
-
-        private long bytesToNanos(long bytes)
-        {
-            final long frames = bytes / GSM_FRAME_SIZE;
-            final double seconds = frames / GSM_FRAME_RATE;
-            final double nanos = secondsToNanos(seconds);
-            return (long) nanos;
         }
 
         @Override
@@ -70,23 +59,6 @@ public class GsmParser extends AbstractDemultiplexer
                     AudioFormat.SIGNED, 264, -1, Format.byteArray);
         }
 
-        public long getTotalBytesRead()
-        {
-            return totalBytesRead;
-        }
-
-        /**
-         * @return -1L if cannot convert, because frame size and frame rate are
-         *         not known.
-         */
-        private long nanosToBytes(long nanos)
-        {
-            final double seconds = nanosToSeconds(nanos);
-            final double frames = seconds * GSM_FRAME_RATE;
-            final double bytes = frames * GSM_FRAME_SIZE;
-            return (long) bytes;
-        }
-
         @Override
         public void readFrame(Buffer buffer)
         {
@@ -115,35 +87,6 @@ public class GsmParser extends AbstractDemultiplexer
                 logger.log(Level.WARNING, "" + e, e);
             }
         }
-
-        public void setPssForReadFrame(PullSourceStream pullSourceStream)
-        {
-            this.stream = pullSourceStream;
-
-        }
-
-        public long skipNanos(long nanos) throws IOException
-        {
-            final long bytes = nanosToBytes(nanos);
-            if (bytes <= 0)
-            {
-                logger.fine("GsmParser: skipping nanos: " + 0);
-                return 0;
-            }
-            final long bytesSkipped = 0;
-            totalBytesRead += bytesSkipped;
-            if (bytesSkipped == bytes)
-            {
-                logger.fine("GsmParser: skipping nanos: " + nanos);
-                return nanos;
-            } else
-            {
-                final long result = bytesToNanos(bytesSkipped);
-                logger.fine("GsmParser: skipping nanos: " + result);
-                return result;
-            }
-
-        }
     }
 
     private static double GSM_FRAME_RATE = 50; // Frame rate of Gsm media
@@ -152,19 +95,6 @@ public class GsmParser extends AbstractDemultiplexer
                                                // that makes frame rate 50
 
     private static final Logger logger = LoggerSingleton.logger;
-
-    private static InputStream markSupportedInputStream(InputStream is)
-    {
-        if (is.markSupported())
-            return is;
-        else
-            return new BufferedInputStream(is);
-    }
-
-    private static final double nanosToSeconds(double nanos)
-    {
-        return nanos / 1000000000.0;
-    }
 
     private static final double secondsToNanos(double secs)
     {
@@ -177,8 +107,6 @@ public class GsmParser extends AbstractDemultiplexer
     private PullDataSource source;
 
     private PullSourceStreamTrack[] tracks;
-
-    private PullDataSource sourceForReadFrame;
 
     @Override
     public ContentDescriptor[] getSupportedInputContentDescriptors()

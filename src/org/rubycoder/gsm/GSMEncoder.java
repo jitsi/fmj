@@ -49,7 +49,6 @@ public class GSMEncoder
     private static void Coefficients_40_159(int LARpp_j[], int LARp[])
     {
         int i;
-        int ltmp;
 
         for (i = 0; i < 8; i++)
         {
@@ -150,7 +149,6 @@ public class GSMEncoder
             0, 0 };
     private final int[] gsm_NRFAC = { 29128, 26215, 23832, 21846, 20165, 18725,
             17476, 16384 };
-    private static final int[] QLB = { 3277, 11469, 21299, 32767 };
     private static final int MIN_WORD = -32767 - 1;
     private static final int MAX_WORD = 32767;
     private static final int MIN_LONGWORD = (-2147483647 - 1);
@@ -159,21 +157,10 @@ public class GSMEncoder
     private final int[] u = new int[8];
     private final int[][] LARpp = new int[2][8];
     private int j;
-    private int v[] = new int[9];
-    private int msr;
     private final int[] e = new int[50];
     private int z1;
     private int L_z2;
     private int mp;
-    private int ltp_cut;
-    private char verbose;
-    private char fast;
-    private char wav_fmt;
-
-    private char frame_index; // todo: should be unsigned (so far seems to be
-                              // unused)
-
-    private char frame_chain; // todo: should be unsigned
 
     private int dpOffset;
 
@@ -336,7 +323,6 @@ public class GSMEncoder
     {
         int i;
         int temp, temp1, temp2, temp3;
-        int ltmp;
         int xmpi = 0;
 
         assert (mant >= 0 && mant <= 7);
@@ -583,7 +569,7 @@ public class GSMEncoder
     private void Coefficients_0_12(int LARpp_j_1[], int LARpp_j[], int LARp[])
     {
         int i;
-        int ltmp;
+
         for (i = 0; i < 8; i++)
         {
             LARp[i] = add(sasr(LARpp_j_1[i], 2), sasr(LARpp_j[i], 2));
@@ -594,7 +580,6 @@ public class GSMEncoder
     private void Coefficients_13_26(int LARpp_j_1[], int LARpp_j[], int LARp[])
     {
         int i;
-        int ltmp;
 
         for (i = 0; i < 8; i++)
         {
@@ -605,7 +590,6 @@ public class GSMEncoder
     private void Coefficients_27_39(int LARpp_j_1[], int LARpp_j[], int LARp[])
     {
         int i;
-        int ltmp;
 
         for (i = 0; i < 8; i++)
         {
@@ -617,7 +601,6 @@ public class GSMEncoder
     private void DecodingOfTheCodedLogAreaRatios(int[] larc, int[] larpp)
     {
         int temp1;
-        int ltmp;
         int larci = 0;
         int larppi = 0;
 
@@ -747,7 +730,6 @@ public class GSMEncoder
         dpOffset = 120;
         dppOffset = 120;
         dOffset = 0;
-        int soOffset = 0;
         ncOffset = 0;
         bcOffset = 0;
         eOffset = 0;
@@ -768,7 +750,7 @@ public class GSMEncoder
             Gsm_RPE_Encoding(e, xmaxc, mc, xmc);
             {
                 int i;
-                int ltmp;
+
                 for (i = 0; i <= 39; i++)
                     dp[dpOffset + i] = add(e[5 + i], dpp[dppOffset + i]);
             }
@@ -784,7 +766,6 @@ public class GSMEncoder
 
     public void GSM()
     {
-        int nrp = 40;
     }
 
     private int gsm_div(int num, int denum)
@@ -912,9 +893,6 @@ public class GSMEncoder
         int msp, lsp;
         int SO;
 
-        int ltmp; /* for ADD */
-        int utmp; /* for L_ADD */
-
         int k = 160;
         int si = 0;
         int soi = 0;
@@ -994,7 +972,7 @@ public class GSMEncoder
             int[] dpp, int[] e)
     {
         int k;
-        int ltmp;
+
         switch (bc)
         {
         case 0:
@@ -1036,7 +1014,7 @@ public class GSMEncoder
     private void Quantization_and_coding(int[] lar)
     {
         int temp;
-        int ltmp;
+
         int lari = 0;
         temp = gsm_mult(20480, lar[lari]);
         temp = add(temp, 0);
@@ -1100,7 +1078,6 @@ public class GSMEncoder
     {
         int i, m, n;
         int temp;
-        int ltmp;
         int ri = 0;
         int[] ACF = new int[9]; /* 0..8 */
         int[] P = new int[9]; /* 0..8 */
@@ -1289,7 +1266,6 @@ public class GSMEncoder
     {
         int i;
         int di, zzz, ui, sav, rpi;
-        int ltmp;
         int si = offset;
 
         for (; k_n-- > 0; si++)

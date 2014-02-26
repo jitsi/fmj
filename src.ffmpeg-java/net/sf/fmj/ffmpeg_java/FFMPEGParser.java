@@ -43,20 +43,11 @@ public class FFMPEGParser extends AbstractDemultiplexer
         // TODO: track listener
 
         private final int audioStreamIndex;
-        AVStream stream;
         private AVCodecContext codecCtx;
         private final AVCodec codec;
         private Pointer buffer;
         private int bufferSize;
         private final AudioFormat format;
-
-        /**
-         * We have to keep track of frame number ourselves.
-         * frame.display_picture_number seems to often always be zero. See:
-         * http:
-         * //lists.mplayerhq.hu/pipermail/ffmpeg-user/2005-September/001244.html
-         */
-        private long frameNo;
 
         public AudioTrack(int audioStreamIndex, AVStream stream,
                 AVCodecContext codecCtx) throws ResourceUnavailableException
@@ -64,7 +55,6 @@ public class FFMPEGParser extends AbstractDemultiplexer
             super();
 
             this.audioStreamIndex = audioStreamIndex;
-            this.stream = stream;
             this.codecCtx = codecCtx;
 
             synchronized (AV_SYNC_OBJ)
@@ -91,11 +81,6 @@ public class FFMPEGParser extends AbstractDemultiplexer
                 format = convertCodecAudioFormat(codecCtx);
             }
 
-        }
-
-        public boolean canSkipNanos()
-        {
-            return false;
         }
 
         // @Override
@@ -236,19 +221,6 @@ public class FFMPEGParser extends AbstractDemultiplexer
             }
 
         }
-
-        // TODO: implement seeking using av_seek_frame
-        /**
-         *
-         * @return nanos skipped, 0 if unable to skip.
-         * @throws IOException
-         */
-        public long skipNanos(long nanos) throws IOException
-        {
-            return 0;
-
-        }
-
     }
 
     private abstract class PullSourceStreamTrack extends AbstractTrack
@@ -341,12 +313,6 @@ public class FFMPEGParser extends AbstractDemultiplexer
             }
         }
 
-        public boolean canSkipNanos()
-        {
-            return false;
-        }
-
-        // @Override
         @Override
         public void deallocate()
         {
@@ -510,19 +476,6 @@ public class FFMPEGParser extends AbstractDemultiplexer
                 return;
             }
         }
-
-        // TODO: implement seeking using av_seek_frame
-        /**
-         *
-         * @return nanos skipped, 0 if unable to skip.
-         * @throws IOException
-         */
-        public long skipNanos(long nanos) throws IOException
-        {
-            return 0;
-
-        }
-
     }
 
     private static final Logger logger = LoggerSingleton.logger;
@@ -1047,7 +1000,9 @@ public class FFMPEGParser extends AbstractDemultiplexer
 
     protected void queryInputContentDescriptors()
     {
-        Map additionalFormatMimeTypes = new HashMap();
+        Map<String,String[]> additionalFormatMimeTypes
+            = new HashMap<String,String[]>();
+
         additionalFormatMimeTypes.put("4xm", FOURXM_MIMETYPE); // Format of some
                                                                // games by 4X
                                                                // Technologies
@@ -1220,7 +1175,8 @@ public class FFMPEGParser extends AbstractDemultiplexer
 
         // map with mimetype as key and content descriptor as value to avoid
         // multiple descriptors
-        Map mimeTypes = new HashMap();
+        Map<String,ContentDescriptor> mimeTypes
+            = new HashMap<String,ContentDescriptor>();
         int i = 1;
 
         AVInputFormat avInputFormat = AVFORMAT

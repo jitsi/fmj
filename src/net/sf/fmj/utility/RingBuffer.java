@@ -13,12 +13,6 @@ public class RingBuffer
     private int writeIndex;
     private int overrunCounter;
 
-    // default ctor
-    private RingBuffer()
-    {
-        // disallow
-    }
-
     // ctor for the jitter buffer
     public RingBuffer(int maxItems)
     {

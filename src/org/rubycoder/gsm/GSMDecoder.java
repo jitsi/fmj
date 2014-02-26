@@ -68,7 +68,6 @@ public final class GSMDecoder
             int LARp[])
     {
         int i;
-        int ltmp;
 
         for (i = 0; i < 8; i++)
         {
@@ -81,7 +80,6 @@ public final class GSMDecoder
             int LARp[])
     {
         int i;
-        int ltmp;
 
         for (i = 0; i < 8; i++)
         {
@@ -93,7 +91,6 @@ public final class GSMDecoder
             int LARp[])
     {
         int i;
-        int ltmp;
 
         for (i = 0; i < 8; i++)
         {
@@ -105,7 +102,6 @@ public final class GSMDecoder
     private static void Coefficients_40_159(int LARpp_j[], int LARp[])
     {
         int i;
-        int ltmp;
 
         for (i = 0; i < 8; i++)
         {
@@ -116,7 +112,6 @@ public final class GSMDecoder
     private static void decodingOfTheCodedLogAreaRatios(int LARc[], int LARpp[])
     {
         int temp1;
-        int ltmp;
 
         // STEP( 0, -32, 13107 );
 
@@ -276,8 +271,6 @@ public final class GSMDecoder
 
     private final int[] dp0 = new int[280];
 
-    private int u[] = new int[8];
-
     private final int[][] LARpp = new int[2][8];
 
     private int j;
@@ -293,7 +286,6 @@ public final class GSMDecoder
     {
         int i, p;
         int temp, temp1, temp2, temp3;
-        int ltmp;
 
         // assert(mant >0 && mant <= 7 );
 
@@ -512,7 +504,6 @@ public final class GSMDecoder
     private void longTermSynthesisFiltering(int Ncr, int bcr, int erp[],
             int dp0[])
     {
-        int ltmp;
         int k;
         int brp, drpp, Nr;
 

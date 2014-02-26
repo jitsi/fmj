@@ -46,11 +46,6 @@ public class XmlMovieParser extends AbstractDemultiplexer
             this.format = format;
         }
 
-        public boolean canSkipNanos()
-        {
-            return false;
-        }
-
         @Override
         public void deallocate()
         {
@@ -100,18 +95,6 @@ public class XmlMovieParser extends AbstractDemultiplexer
             buffer.copy(b);
 
         }
-
-        /**
-         *
-         * @return nanos skipped, 0 if unable to skip.
-         * @throws IOException
-         */
-        public long skipNanos(long nanos) throws IOException
-        {
-            return 0; // TODO
-
-        }
-
     }
 
     private static final Logger logger = LoggerSingleton.logger;
@@ -247,7 +230,7 @@ public class XmlMovieParser extends AbstractDemultiplexer
     public void setSource(DataSource source) throws IOException,
             IncompatibleSourceException
     {
-        final String protocol = source.getLocator().getProtocol();
+        source.getLocator().getProtocol();
 
         if (!(source instanceof PullDataSource))
             throw new IncompatibleSourceException();

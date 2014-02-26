@@ -50,11 +50,6 @@ public class JavaOggParser extends AbstractDemultiplexer
 
         }
 
-        public boolean canSkipNanos()
-        {
-            return false;
-        }
-
         @Override
         public void deallocate()
         {
@@ -164,19 +159,6 @@ public class JavaOggParser extends AbstractDemultiplexer
                 }
             }
         }
-
-        // TODO: implement seeking using av_seek_frame
-        /**
-         *
-         * @return nanos skipped, 0 if unable to skip.
-         * @throws IOException
-         */
-        public long skipNanos(long nanos) throws IOException
-        {
-            return 0;
-
-        }
-
     }
 
     private abstract class PullSourceStreamTrack extends AbstractTrack
@@ -200,11 +182,6 @@ public class JavaOggParser extends AbstractDemultiplexer
                 // set format
                 format = convertCodecPixelFormat(ti);
             }
-        }
-
-        public boolean canSkipNanos()
-        {
-            return false;
         }
 
         @Override
@@ -300,18 +277,6 @@ public class JavaOggParser extends AbstractDemultiplexer
             }
 
         }
-
-        /**
-         *
-         * @return nanos skipped, 0 if unable to skip.
-         * @throws IOException
-         */
-        public long skipNanos(long nanos) throws IOException
-        {
-            return 0; // TODO
-
-        }
-
     }
 
     private static final Logger logger = LoggerSingleton.logger;

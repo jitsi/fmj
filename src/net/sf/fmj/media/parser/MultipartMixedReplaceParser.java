@@ -139,11 +139,6 @@ public class MultipartMixedReplaceParser extends AbstractDemultiplexer
 
         }
 
-        public boolean canSkipNanos()
-        {
-            return false;
-        }
-
         @Override
         public void deallocate()
         {
@@ -599,18 +594,6 @@ public class MultipartMixedReplaceParser extends AbstractDemultiplexer
             //
             // return trimmedResult;
         }
-
-        /**
-         *
-         * @return nanos skipped, 0 if unable to skip.
-         * @throws IOException
-         */
-        public long skipNanos(long nanos) throws IOException
-        {
-            return 0; // TODO
-
-        }
-
     }
 
     public static final String TIMESTAMP_KEY = "X-FMJ-Timestamp"; // will be

@@ -56,7 +56,6 @@ public abstract class AbstractControlPanel extends JPanel
     public static final int USE_GAINMETER_CONTROL = 128;
 
     private AbstractControls controls;
-    private Player player;
     protected final Skin skin;
 
     /**
@@ -85,7 +84,6 @@ public abstract class AbstractControlPanel extends JPanel
         this.skin = skin;
         setControlPanelLayout();
         setControlPanelBorder();
-        this.player = player;
         controls = createControls(player);
         addComponents(flags);
     }

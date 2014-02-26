@@ -43,23 +43,13 @@ abstract class AbstractControls implements ControllerListener
         }
     }
 
-    private Player player;
+    private final Player player;
 
-    private Hashtable controlTable = new Hashtable();
-
-    private final Skin skin;
-
-    // Make explicit requirement of having subclass call
-    // single argument constructor.
-    private AbstractControls(Skin skin)
-    {
-        this.skin = skin;
-    }
+    private final Hashtable<String,AbstractListenerControl> controlTable
+        = new Hashtable<String,AbstractListenerControl>();
 
     protected AbstractControls(Skin skin, Player player)
     {
-        this.skin = skin;
-
         if (player.getState() < Controller.Realized)
             throw new NotRealizedError("Player must be realized");
 
@@ -125,7 +115,7 @@ abstract class AbstractControls implements ControllerListener
      */
     public AbstractListenerControl getControl(String name)
     {
-        return (AbstractListenerControl) controlTable.get(name);
+        return controlTable.get(name);
     }
 
     /**
@@ -136,14 +126,16 @@ abstract class AbstractControls implements ControllerListener
      */
     public AbstractListenerControl[] getControls()
     {
-        Vector v = new Vector();
-        Enumeration elements = controlTable.elements();
+        Vector<AbstractListenerControl> v
+            = new Vector<AbstractListenerControl>();
+        Enumeration<AbstractListenerControl> elements = controlTable.elements();
+
         while (elements.hasMoreElements())
-        {
             v.addElement(elements.nextElement());
-        }
-        AbstractListenerControl[] controls = new AbstractListenerControl[v
-                .size()];
+
+        AbstractListenerControl[] controls
+            = new AbstractListenerControl[v.size()];
+
         v.copyInto(controls);
         return controls;
     }
@@ -182,12 +174,9 @@ abstract class AbstractControls implements ControllerListener
     private void setControlsPlayer(Player player)
     {
         Controller c = player;
-        Enumeration e = controlTable.elements();
+        Enumeration<AbstractListenerControl> e = controlTable.elements();
+
         while (e.hasMoreElements())
-        {
-            AbstractListenerControl alc = (AbstractListenerControl) e
-                    .nextElement();
-            alc.setController(c);
-        }
+            e.nextElement().setController(c);
     }
 }
