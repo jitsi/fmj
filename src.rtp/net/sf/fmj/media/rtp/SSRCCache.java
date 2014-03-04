@@ -7,6 +7,7 @@ import javax.media.format.*;
 import javax.media.rtp.*;
 import javax.media.rtp.event.*;
 
+import net.sf.fmj.media.*;
 import net.sf.fmj.media.rtp.util.*;
 
 public class SSRCCache
@@ -231,10 +232,28 @@ public class SSRCCache
                     SSRCInfo ssrcinfo2 = null;
                     return ssrcinfo2;
                 }
-                System.out.println("changing to Passive");
-                System.out.println("existing one " + info);
+                //System.out.println("changing to Passive");
+                //System.out.println("existing one " + info);
                 SSRCInfo newinfo = new PassiveSSRCInfo(info);
-                System.out.println("new one is " + newinfo);
+                //System.out.println("new one is " + newinfo);
+
+                // When the SSRCInfo for a ReceiveStream is replaced by a
+                // PassiveSSRCInfo, the ReceiveStream is effectively removed
+                // (e.g. does not exist in RTPManager.getReceiveStreams()
+                // anymore), but the application is not notified. We fake a
+                // TimeoutEvent here in order to allow the application to react
+                // without having to poll RTPManager.getReceiveStreams().
+                if (info instanceof ReceiveStream)
+                {
+                    Log.comment("Replacing a ReceiveStream (ssrc="
+                            + info.getSSRC() + ") with a "
+                            + "PassiveSSRCInfo. Faking a TimeoutEvent.");
+                    TimeoutEvent evt
+                            = new TimeoutEvent(sm, info.sourceInfo,
+                            (ReceiveStream) info, false);
+                    eventhandler.postEvent(evt);
+                }
+
                 info = newinfo;
                 cache.put(ssrc, info);
             }
