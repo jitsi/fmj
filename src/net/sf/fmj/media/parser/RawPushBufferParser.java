@@ -97,7 +97,7 @@ public class RawPushBufferParser extends RawStreamParser
          */
         public boolean findH261Key(Buffer b)
         {
-            int width, height, payloadLen, offset, skipBytes;
+            int width, height, offset, skipBytes;
             byte data[];
 
             if ((data = (byte[]) b.getData()) == null)
@@ -261,9 +261,8 @@ public class RawPushBufferParser extends RawStreamParser
         {
             if (!checkDepacketizer)
             {
-                // Check to see if there's a depacketizer associated
-                // with the format. If so, we'll use it for parsing
-                // the input.
+                // Check to see if there's a depacketizer associated with the
+                // format. If so, we'll use it for parsing the input.
                 Vector pnames = PlugInManager.getPlugInList(buf.getFormat(),
                         null, Depacketizer.DEPACKETIZER);
                 if (pnames.size() != 0)
@@ -755,10 +754,12 @@ public class RawPushBufferParser extends RawStreamParser
     public void setSource(DataSource source) throws IOException,
             IncompatibleSourceException
     {
+        SourceStream[] streams;
+
         if (!(source instanceof PushBufferDataSource))
         {
-            throw new IncompatibleSourceException("DataSource not supported: "
-                    + source);
+            throw new IncompatibleSourceException(
+                    "DataSource not supported: " + source);
         } else
         {
             streams = ((PushBufferDataSource) source).getStreams();
@@ -776,8 +777,10 @@ public class RawPushBufferParser extends RawStreamParser
         }
 
         if (!supports(streams))
-            throw new IncompatibleSourceException("DataSource not supported: "
-                    + source);
+        {
+            throw new IncompatibleSourceException(
+                    "DataSource not supported: " + source);
+        }
 
         this.source = source;
         this.streams = streams;

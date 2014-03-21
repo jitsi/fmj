@@ -147,10 +147,12 @@ public class RawPullStreamParser extends RawParser
     public void setSource(DataSource source) throws IOException,
             IncompatibleSourceException
     {
+        SourceStream[] streams;
+
         if (!(source instanceof PullDataSource))
         {
-            throw new IncompatibleSourceException("DataSource not supported: "
-                    + source);
+            throw new IncompatibleSourceException(
+                    "DataSource not supported: " + source);
         } else
         {
             streams = ((PullDataSource) source).getStreams();
@@ -168,14 +170,13 @@ public class RawPullStreamParser extends RawParser
         }
 
         if (!supports(streams))
-            throw new IncompatibleSourceException("DataSource not supported: "
-                    + source);
+        {
+            throw new IncompatibleSourceException(
+                    "DataSource not supported: " + source);
+        }
 
         this.source = source;
         this.streams = streams;
-
-        // System.out.println("content length is " +
-        // streams[0].getContentLength());
     }
 
     /**
