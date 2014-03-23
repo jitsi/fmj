@@ -147,18 +147,39 @@ public class FormatInfo
     {
         if (i >= formatList.length)
             expandTable(i);
-        Format format1;
-        if ((format1 = formatList[i]) != null)
-            return;
+
+        Format existingFormat = formatList[i];
+
+        if (existingFormat != null)
+        {
+            /*
+             * XXX If the specified format is matches-equivalent to the
+             * existingFormat, it shouldn't disturb the rest of the code/logic.
+             * However, the specified format may contain additional and/or more
+             * recent information (e.g. format parameters which are not
+             * differentiating) which may be vital to the application.
+             */
+            if ((format == null)
+                    || !existingFormat.matches(format)
+                    || !format.matches(existingFormat))
+                return;
+        }
+
         formatList[i] = format;
         if (cache != null && (format instanceof VideoFormat))
             cache.clockrate[i] = 0x15f90;
         if (cache != null && (format instanceof AudioFormat))
+        {
             if (mpegAudio.matches(format))
+            {
                 cache.clockrate[i] = 0x15f90;
+            }
             else
-                cache.clockrate[i] = (int) ((AudioFormat) format)
-                        .getSampleRate();
+            {
+                cache.clockrate[i]
+                    = (int) ((AudioFormat) format).getSampleRate();
+            }
+        }
     }
 
     private void expandTable(int i)
