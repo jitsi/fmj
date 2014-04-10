@@ -25,6 +25,11 @@ public class Buffer
     protected long timeStamp = TIME_UNKNOWN;
 
     /**
+     * The RTP time stamp of the data in this <tt>Buffer</tt>.
+     */
+    protected long rtpTimeStamp = TIME_UNKNOWN;
+
+    /**
      * The duration of the data held in this <tt>Buffer</tt>, in nanoseconds.
      * The duration specifies how long it will take for this <tt>Buffer</tt> to
      * be presented when the playback rate is 1.0. If the duration for this
@@ -256,6 +261,7 @@ public class Buffer
         buf.length = length;
         buf.offset = offset;
         buf.timeStamp = timeStamp;
+        buf.rtpTimeStamp = rtpTimeStamp;
         buf.duration = duration;
         buf.sequenceNumber = sequenceNumber;
         buf.flags = flags;
@@ -301,6 +307,7 @@ public class Buffer
         length = buffer.length;
         offset = buffer.offset;
         timeStamp = buffer.timeStamp;
+        rtpTimeStamp = buffer.rtpTimeStamp;
         duration = buffer.duration;
         sequenceNumber = buffer.sequenceNumber;
         flags = buffer.flags;
@@ -396,6 +403,16 @@ public class Buffer
     public int getOffset()
     {
         return offset;
+    }
+
+    /**
+     * Gets the RTP time stamp of this <tt>Buffer</tt>.
+     *
+     * @return the RTP time stamp of this <tt>Buffer</tt>.
+     */
+    public long getRtpTimeStamp()
+    {
+        return rtpTimeStamp;
     }
 
     /**
@@ -595,6 +612,16 @@ public class Buffer
     public void setOffset(int offset)
     {
         this.offset = offset;
+    }
+
+    /**
+     * Sets the RTP time stamp of this <tt>Buffer</tt>.
+     *
+     * @param rtpTimeStamp the value to set.
+     */
+    public void setRtpTimeStamp(long rtpTimeStamp)
+    {
+        this.rtpTimeStamp = rtpTimeStamp;
     }
 
     /**

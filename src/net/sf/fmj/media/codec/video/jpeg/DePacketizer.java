@@ -287,6 +287,7 @@ public class DePacketizer extends AbstractCodec implements Codec
             bDest.setData(data);
             bDest.setLength(offsetAfterHeaders + frameLength + trailing);
             bDest.setOffset(0);
+            bDest.setRtpTimeStamp(bFirst.getRtpTimeStamp());
             bDest.setTimeStamp(bFirst.getTimeStamp()); // TODO: is the source
                                                        // buffer timestamp in
                                                        // same units?

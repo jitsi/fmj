@@ -102,6 +102,7 @@ public class RawStreamParser extends RawParser
             buffer.setData(data);
             buffer.setLength(filled.getLength());
             buffer.setFormat(format);
+            buffer.setRtpTimeStamp(filled.getRtpTimeStamp());
             buffer.setTimeStamp(Buffer.TIME_UNKNOWN);
 
             synchronized (bufferQ)

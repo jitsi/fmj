@@ -42,6 +42,7 @@ public class RTPDemultiplexer
             long ts = streamSynch.calcTimestamp(info.ssrc, rtpPacket.payloadType,
                     rtpPacket.timestamp);
             buffer.setTimeStamp(ts);
+            buffer.setRtpTimeStamp(rtpPacket.timestamp);
 
             buffer.setFlags(buffer.getFlags() | Buffer.FLAG_RTP_TIME);
             buffer.setSequenceNumber(rtpPacket.seqnum);

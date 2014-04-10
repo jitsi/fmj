@@ -391,6 +391,7 @@ public class MonitorAdapter implements MonitorControl, Owned
         buffer.setHeader(input.getHeader());
         buffer.setLength(input.getLength());
         buffer.setOffset(input.getOffset());
+        buffer.setRtpTimeStamp(input.getRtpTimeStamp());
         buffer.setTimeStamp(input.getTimeStamp());
 
         // Put the buffer into the queue.
