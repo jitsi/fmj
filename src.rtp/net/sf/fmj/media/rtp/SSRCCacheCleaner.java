@@ -87,8 +87,7 @@ public class SSRCCacheCleaner implements Runnable
                                     laststream);
                         } else
                         {
-                            reportInterval *= 5D;
-                            if (info.lastHeardFrom + reportInterval <= time)
+                            if (info.lastHeardFrom + reportInterval * 5 <= time)
                                 event = new InactiveReceiveStreamEvent(
                                         cache.sm, info.sourceInfo, null,
                                         laststream);
