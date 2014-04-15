@@ -94,7 +94,7 @@ class FormatTable
 public class Resource
 {
     // Hashtable that stores all the properties.
-    private static Hashtable hash = null;
+    private static Hashtable<String, Object> hash = null;
 
     // Name of the properties file, including path.
     private static String filename = null;
@@ -112,7 +112,7 @@ public class Resource
      */
     static
     {
-        hash = new Hashtable();
+        hash = new Hashtable<String, Object>();
 
         boolean securityPrivelege = true;
 
@@ -143,7 +143,7 @@ public class Resource
 
         if (!readResource(is))
         {
-            hash = new Hashtable();
+            hash = new Hashtable<String, Object>();
         }
     }
 
@@ -270,10 +270,7 @@ public class Resource
      */
     public static final synchronized Object get(String key)
     {
-        if (key != null)
-            return hash.get(key);
-        else
-            return null;
+        return (key != null) ? hash.get(key) : null;
     }
 
     /**
@@ -495,22 +492,13 @@ public class Resource
                 System.err.println("Version number mismatch.\nThere could be"
                         + " errors in reading the resource");
             }
-            hash = new Hashtable();
+            hash = new Hashtable<String, Object>();
             for (int i = 0; i < tableSize; i++)
             {
                 String key = ois.readUTF();
                 boolean failed = false;
-                byte[] serObject;
                 try
                 {
-                    /*
-                     * serObject = (byte[])ois.readObject();
-                     * ByteArrayInputStream bais = new
-                     * ByteArrayInputStream(serObject); ObjectInputStream tois =
-                     * new ObjectInputStream(bais); Object value =
-                     * tois.readObject(); hash.put(key, value); tois.close();
-                     */
-
                     Object value = ois.readObject();
                     hash.put(key, value);
                 } catch (ClassNotFoundException cnfe)
@@ -559,13 +547,13 @@ public class Resource
      */
     public static final synchronized void removeGroup(String keyStart)
     {
-        Vector keys = new Vector();
+        Vector<String> keys = new Vector<String>();
         if (keyStart != null)
         {
-            Enumeration e = hash.keys();
+            Enumeration<String> e = hash.keys();
             while (e.hasMoreElements())
             {
-                String key = (String) e.nextElement();
+                String key = e.nextElement();
                 if (key.startsWith(keyStart))
                     keys.addElement(key);
             }
@@ -579,7 +567,7 @@ public class Resource
 
     public static final synchronized void reset()
     {
-        hash = new Hashtable();
+        hash = new Hashtable<String, Object>();
     }
 
     /**

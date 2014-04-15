@@ -16,8 +16,8 @@ import javax.media.format.*;
  */
 public class ContentAndTrackFormatPanel extends javax.swing.JPanel
 {
-    private Map trackControlPanels = new HashMap(); // of
-                                                    // Integer->TrackControlPanel
+    private final Map<Integer, TrackControlPanel> trackControlPanels
+        = new HashMap<Integer, TrackControlPanel>();
 
     private TrackControlPanel audioTrackControlPanel;
 
@@ -52,8 +52,7 @@ public class ContentAndTrackFormatPanel extends javax.swing.JPanel
 
         audioTrackControlPanel.getCheckBoxEnableTrack().setSelected(enabled);
 
-        trackControlPanels.put(new Integer(track), audioTrackControlPanel);
-
+        trackControlPanels.put(Integer.valueOf(track), audioTrackControlPanel);
     }
 
     public AudioFormatPanel getAudioFormatPanel()
@@ -73,7 +72,7 @@ public class ContentAndTrackFormatPanel extends javax.swing.JPanel
 
     public TrackControlPanel getTrackControlPanel(int track)
     {
-        return (TrackControlPanel) trackControlPanels.get(new Integer(track));
+        return trackControlPanels.get(Integer.valueOf(track));
     }
 
     /**

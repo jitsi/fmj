@@ -223,10 +223,11 @@ class XMLRegistryIO implements RegistryIO
     {
         Element contentElement = document.createElement(ELEMENT_CONTENT_PREFIX);
 
-        Iterator prefixIter = registryContents.contentPrefixList.iterator();
+        Iterator<String> prefixIter
+            = registryContents.contentPrefixList.iterator();
         while (prefixIter.hasNext())
         {
-            String prefix = (String) prefixIter.next();
+            String prefix = prefixIter.next();
             Element prefixElement = document.createElement(ELEMENT_PREFIX);
             prefixElement.setTextContent(prefix);
             contentElement.appendChild(prefixElement);
@@ -250,29 +251,28 @@ class XMLRegistryIO implements RegistryIO
     {
         Element mimeElement = document.createElement(ELEMENT_MIMETYPES);
 
-        final Iterator typesIterator = registryContents.mimeTable
-                .getMimeTypes().iterator();
+        Iterator<String> typesIterator
+            = registryContents.mimeTable.getMimeTypes().iterator();
         while (typesIterator.hasNext())
         {
-            final String type = (String) typesIterator.next();
-            final List extensions = registryContents.mimeTable
-                    .getExtensions(type);
+            String type = typesIterator.next();
+            List<String> extensions
+                = registryContents.mimeTable.getExtensions(type);
 
-            final Element typeElement = document
-                    .createElement(ELEMENT_MIMETYPE);
+            Element typeElement = document.createElement(ELEMENT_MIMETYPE);
             typeElement.setAttribute("value", type);
-            typeElement.setAttribute("default-ext",
+            typeElement.setAttribute(
+                    "default-ext",
                     registryContents.mimeTable.getDefaultExtension(type));
             mimeElement.appendChild(typeElement);
 
             for (int i = 0; i < extensions.size(); ++i)
             {
-                String ext = (String) extensions.get(i);
-                final Element extElement = document.createElement("ext");
+                String ext = extensions.get(i);
+                Element extElement = document.createElement("ext");
                 extElement.setTextContent(ext);
                 typeElement.appendChild(extElement);
             }
-
         }
 
         return mimeElement;
@@ -288,14 +288,14 @@ class XMLRegistryIO implements RegistryIO
             Document document)
     {
         Element pluginsElement = document.createElement(typeName);
-        Vector plugins = registryContents.plugins[pluginType - 1];
+        Vector<String> plugins = registryContents.plugins[pluginType - 1];
 
         if (plugins != null)
         {
-            Iterator pluginIter = plugins.iterator();
+            Iterator<String> pluginIter = plugins.iterator();
             while (pluginIter.hasNext())
             {
-                String classname = (String) pluginIter.next();
+                String classname = pluginIter.next();
                 Element pluginElement = document.createElement(ELEMENT_CLASS);
                 pluginElement.setTextContent(classname);
 
@@ -322,10 +322,11 @@ class XMLRegistryIO implements RegistryIO
     private Element getProtocolElement(Document document)
     {
         Element protocolElement = document.createElement(ELEMENT_PROTO_PREFIX);
-        Iterator prefixIter = registryContents.protocolPrefixList.iterator();
+        Iterator<String> prefixIter
+            = registryContents.protocolPrefixList.iterator();
         while (prefixIter.hasNext())
         {
-            String prefix = (String) prefixIter.next();
+            String prefix = prefixIter.next();
             Element prefixElement = document.createElement(ELEMENT_PREFIX);
             prefixElement.setTextContent(prefix);
             protocolElement.appendChild(prefixElement);
@@ -378,29 +379,29 @@ class XMLRegistryIO implements RegistryIO
             ClassNotFoundException
     {
         registryContents.captureDeviceInfoList.clear();
-        final List list = getChildren(element, ELEMENT_DEVICE);
+        List<Element> list = getChildren(element, ELEMENT_DEVICE);
         for (int i = 0; i < list.size(); i++)
         {
-            final Element deviceElement = (Element) list.get(i);
-            final Element deviceNameElement = getChild(deviceElement,
-                    ELEMENT_DEVICE_NAME);
-            final Element deviceLocatorElement = getChild(deviceElement,
-                    ELEMENT_DEVICE_LOCATOR);
-            final List formatElementsList = getChildren(deviceElement,
-                    ELEMENT_DEVICE_FORMAT);
-            final javax.media.Format[] formats = new javax.media.Format[formatElementsList
-                    .size()];
+            Element deviceElement = list.get(i);
+            Element deviceNameElement
+                = getChild(deviceElement, ELEMENT_DEVICE_NAME);
+            Element deviceLocatorElement
+                = getChild(deviceElement, ELEMENT_DEVICE_LOCATOR);
+            List<Element> formatElementsList
+                = getChildren(deviceElement, ELEMENT_DEVICE_FORMAT);
+            javax.media.Format[] formats
+                = new javax.media.Format[formatElementsList.size()];
             for (int j = 0; j < formatElementsList.size(); ++j)
             {
-                final Element formatElement = (Element) formatElementsList
-                        .get(j);
-                final Element serializedElement = getChild(formatElement,
-                        ELEMENT_DEVICE_FORMAT_SERIALIZED);
-                formats[j] = SerializationUtils
-                        .deserialize(getTextTrim(serializedElement));
+                Element formatElement = formatElementsList.get(j);
+                Element serializedElement
+                    = getChild(formatElement, ELEMENT_DEVICE_FORMAT_SERIALIZED);
+                formats[j]
+                    = SerializationUtils.deserialize(
+                            getTextTrim(serializedElement));
             }
 
-            final CaptureDeviceInfo info = new CaptureDeviceInfo(
+            CaptureDeviceInfo info = new CaptureDeviceInfo(
                     getTextTrim(deviceNameElement), new MediaLocator(
                             getTextTrim(deviceLocatorElement)), formats);
             registryContents.captureDeviceInfoList.add(info);
@@ -413,10 +414,10 @@ class XMLRegistryIO implements RegistryIO
     private void loadContentPrefixes(Element element)
     {
         registryContents.contentPrefixList.clear();
-        List list = getChildren(element, ELEMENT_PREFIX);
+        List<Element> list = getChildren(element, ELEMENT_PREFIX);
         for (int i = 0; i < list.size(); i++)
         {
-            Element prefixElement = (Element) list.get(i);
+            Element prefixElement = list.get(i);
             registryContents.contentPrefixList.add(getTextTrim(prefixElement));
         }
     }
@@ -462,17 +463,17 @@ class XMLRegistryIO implements RegistryIO
     {
         registryContents.mimeTable.clear();
 
-        final List list = getChildren(element, ELEMENT_MIMETYPE);
+        List<Element> list = getChildren(element, ELEMENT_MIMETYPE);
         for (int i = 0; i < list.size(); i++)
         {
-            final Element typeElement = (Element) list.get(i);
+            Element typeElement = list.get(i);
             String type = typeElement.getAttribute("value");
             String defaultExtension = typeElement.getAttribute("default-ext");
 
-            final List list2 = getChildren(typeElement, "ext");
+            List<Element> list2 = getChildren(typeElement, "ext");
             for (int j = 0; j < list2.size(); j++)
             {
-                final Element extElement = (Element) list2.get(j);
+                final Element extElement = list2.get(j);
                 String ext = extElement.getTextContent();
 
                 registryContents.mimeTable.addMimeType(ext, type);
