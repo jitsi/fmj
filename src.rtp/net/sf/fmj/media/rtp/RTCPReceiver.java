@@ -151,8 +151,7 @@ public class RTCPReceiver implements PacketConsumer
             {
                 rtcpsrpacket.reports[k].receiptTime = ((Packet) (rtcpsrpacket)).receiptTime;
                 int l = rtcpsrpacket.reports[k].ssrc;
-                RTCPReportBlock artcpreportblock[] = (RTCPReportBlock[]) ssrcinfo.reports
-                        .get(l);
+                RTCPReportBlock artcpreportblock[] = ssrcinfo.reports.get(l);
                 if (artcpreportblock == null)
                 {
                     artcpreportblock = new RTCPReportBlock[2];
@@ -217,8 +216,7 @@ public class RTCPReceiver implements PacketConsumer
             {
                 rtcprrpacket.reports[i1].receiptTime = ((Packet) (rtcprrpacket)).receiptTime;
                 int j1 = rtcprrpacket.reports[i1].ssrc;
-                RTCPReportBlock artcpreportblock1[] = (RTCPReportBlock[]) ssrcinfo.reports
-                        .get(j1);
+                RTCPReportBlock artcpreportblock1[] = ssrcinfo.reports.get(j1);
                 if (artcpreportblock1 == null)
                 {
                     artcpreportblock1 = new RTCPReportBlock[2];

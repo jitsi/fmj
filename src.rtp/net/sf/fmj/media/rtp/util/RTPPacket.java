@@ -57,9 +57,9 @@ public class RTPPacket extends Packet
     }
 
     @Override
-    public Object clone()
+    public RTPPacket clone()
     {
-        RTPPacket p = new RTPPacket((Packet) base.clone());
+        RTPPacket p = new RTPPacket(base.clone());
         p.extensionPresent = extensionPresent;
         p.marker = marker;
         p.payloadType = payloadType;

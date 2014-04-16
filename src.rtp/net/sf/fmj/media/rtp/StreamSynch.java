@@ -4,18 +4,18 @@ import net.sf.fmj.media.rtp.util.*;
 
 public class StreamSynch
 {
-    private static SSRCTable sources;
+    private static SSRCTable<SynchSource> sources;
 
     public StreamSynch()
     {
         if (sources == null)
-            sources = new SSRCTable();
+            sources = new SSRCTable<SynchSource>();
     }
 
     public long calcTimestamp(int ssrc, int pt, long rtpTimestamp)
     {
         long timestamp = -1L;
-        SynchSource source = (SynchSource) sources.get(ssrc);
+        SynchSource source = sources.get(ssrc);
         if (source != null)
         {
             long rate = 1L;
@@ -64,7 +64,7 @@ public class StreamSynch
         double fraction = ntpTimestampLSW / 4294967296D;
         long ntpTimestamp = ntpTimestampMSW * 0x3b9aca00L
                 + (long) (fraction * 1000000000D);
-        SynchSource source = (SynchSource) sources.get(ssrc);
+        SynchSource source = sources.get(ssrc);
         if (source == null)
         {
             sources.put(ssrc, new SynchSource(ssrc, rtpTimestamp, ntpTimestamp));

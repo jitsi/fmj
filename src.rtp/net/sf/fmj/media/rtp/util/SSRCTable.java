@@ -2,11 +2,11 @@ package net.sf.fmj.media.rtp.util;
 
 import java.util.*;
 
-public class SSRCTable
+public class SSRCTable<T>
 {
     static final int INCR = 16;
-    int ssrcList[];
-    Object objList[];
+    int[] ssrcList;
+    Object[] objList;
     int total;
 
     public SSRCTable()
@@ -16,29 +16,29 @@ public class SSRCTable
         total = 0;
     }
 
-    public synchronized Enumeration<Object> elements()
+    public synchronized Enumeration<T> elements()
     {
-        return new Enumeration<Object>()
+        return new Enumeration<T>()
         {
-            int next;
+            private int next = 0;
 
-            {
-                next = 0;
-            }
-
+            @Override
             public boolean hasMoreElements()
             {
                 return next < total;
             }
 
-            public Object nextElement()
+            @Override
+            public T nextElement()
             {
                 synchronized (SSRCTable.this)
                 {
                     if (next < total)
                     {
-                        Object obj = objList[next++];
-                        return obj;
+                        @SuppressWarnings("unchecked")
+                        T t = (T) objList[next++];
+
+                        return t;
                     }
                 }
                 throw new NoSuchElementException("SSRCTable Enumeration");
@@ -46,16 +46,24 @@ public class SSRCTable
         };
     }
 
-    public synchronized Object get(int ssrc)
+    public synchronized T get(int ssrc)
     {
-        int i;
-        if ((i = indexOf(ssrc)) < 0)
+        int i = indexOf(ssrc);
+
+        if (i < 0)
+        {
             return null;
+        }
         else
-            return objList[i];
+        {
+            @SuppressWarnings("unchecked")
+            T t = (T) objList[i];
+
+            return t;
+        }
     }
 
-    public synchronized int getSSRC(Object obj)
+    public synchronized int getSSRC(T obj)
     {
         for (int i = 0; i < total; i++)
             if (objList[i] == obj)
@@ -98,7 +106,7 @@ public class SSRCTable
         return total == 0;
     }
 
-    public synchronized void put(int ssrc, Object obj)
+    public synchronized void put(int ssrc, T obj)
     {
         if (total == 0)
         {
@@ -122,12 +130,12 @@ public class SSRCTable
 
         if (total == ssrcList.length)
         {
-            int sl[] = new int[ssrcList.length + 16];
-            Object ol[] = new Object[objList.length + 16];
+            int[] sl = new int[ssrcList.length + 16];
+            Object[] ol = new Object[objList.length + 16];
             if (i > 0)
             {
                 System.arraycopy(ssrcList, 0, sl, 0, total);
-                System.arraycopy((objList), 0, (ol), 0, total);
+                System.arraycopy(objList, 0, ol, 0, total);
             }
             ssrcList = sl;
             objList = ol;
@@ -143,12 +151,15 @@ public class SSRCTable
         total++;
     }
 
-    public synchronized Object remove(int ssrc)
+    public synchronized T remove(int ssrc)
     {
         int i;
         if ((i = indexOf(ssrc)) < 0)
             return null;
-        Object res = objList[i];
+
+        @SuppressWarnings("unchecked")
+        T res = (T) objList[i];
+
         for (; i < total - 1; i++)
         {
             ssrcList[i] = ssrcList[i + 1];
@@ -172,7 +183,7 @@ public class SSRCTable
         total = 0;
     }
 
-    public synchronized void removeObj(Object obj)
+    public synchronized void removeObj(T obj)
     {
         if (obj == null)
             return;

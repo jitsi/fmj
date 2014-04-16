@@ -36,10 +36,10 @@ public class SSRCCacheCleaner implements Runnable
             return;
         double reportInterval
             = cache.calcReportInterval(cache.ourssrc.sender, true);
-        for (Enumeration elements = cache.cache.elements();
+        for (Enumeration<SSRCInfo> elements = cache.cache.elements();
                 elements.hasMoreElements();)
         {
-            SSRCInfo info = (SSRCInfo) elements.nextElement();
+            SSRCInfo info = elements.nextElement();
             if (!info.ours)
                 if (info.byeReceived)
                 {

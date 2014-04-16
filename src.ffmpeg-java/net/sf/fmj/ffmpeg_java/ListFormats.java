@@ -431,16 +431,20 @@ public class ListFormats
 
     public static int getPreferedPixelFormat()
     {
-        return getPixelFormatFromBufferedImageType(getPreferedBufferedImageType());
+        return
+            getPixelFormatFromBufferedImageType(getPreferedBufferedImageType());
     }
 
     public static ContentDescriptor[] getSupportedOutputContentDescriptors(
             Format[] formats)
     {
         // get content descriptors from ffmpeg
-        List contentDescriptors = listMuxes();
-        return (ContentDescriptor[]) contentDescriptors
-                .toArray(new ContentDescriptor[0]);
+        List<String> contentDescriptors = listMuxes();
+
+        // FIXME listMuxes returns Strings, not ContentDescriptors.
+        return
+            (ContentDescriptor[])
+                    contentDescriptors.toArray(new ContentDescriptor[0]);
     }
 
     public static final boolean isBigEndian()
@@ -490,39 +494,36 @@ public class ListFormats
         }
     }
 
-    static List listMuxes()
+    static List<String> listMuxes()
     {
-        List contentDescriptors = new ArrayList();
+        List<String> contentDescriptors = new ArrayList<String>();
 
         int i = 1;
 
-        AVOutputFormat avOutputFormat = AVFORMAT.guess_format(
-                FIRST_FFMPEG_MUX_NAME, null, null);
+        AVOutputFormat avOutputFormat
+            = AVFORMAT.guess_format(FIRST_FFMPEG_MUX_NAME, null, null);
         // AVOutputFormat avOutputFormat = new
         // AVOutputFormat((Pointer)AVFormatLibrary.first_oformat.getValue());
 
         while (avOutputFormat != null)
         {
-            String mimeType = null;
-            if (avOutputFormat.mime_type != null
-                    && avOutputFormat.mime_type.length() > 0)
-            {
-                mimeType = avOutputFormat.mime_type;
-            } else
-            {
+            String mimeType = avOutputFormat.mime_type;
+
+            if (mimeType == null || (mimeType.length() <= 0))
                 mimeType = "ffmpeg/" + avOutputFormat.name;
-            }
-            logger.log(Level.FINEST, i++ + ". " + avOutputFormat.name + " - "
+
+            logger.log(
+                Level.FINEST,
+                i++ + ". " + avOutputFormat.name + " - "
                     + avOutputFormat.long_name + " : " + mimeType);
-            contentDescriptors.add(ContentDescriptor
-                    .mimeTypeToPackageName(mimeType));
-            if (avOutputFormat.next != null /* && avOutputFormat.next.isValid() */)
-            {
-                avOutputFormat = new AVOutputFormat(avOutputFormat.next);
-            } else
-            {
-                avOutputFormat = null;
-            }
+
+            contentDescriptors.add(
+                    ContentDescriptor.mimeTypeToPackageName(mimeType));
+
+            avOutputFormat
+                = (avOutputFormat.next != null /* && avOutputFormat.next.isValid() */)
+                    ? new AVOutputFormat(avOutputFormat.next)
+                    : null;
         }
         return contentDescriptors;
     }
@@ -535,5 +536,4 @@ public class ListFormats
         listDecoder();
         listEncoder();
     }
-
 }

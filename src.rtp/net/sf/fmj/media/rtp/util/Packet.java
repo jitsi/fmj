@@ -40,7 +40,7 @@ public class Packet
     }
 
     @Override
-    public Object clone()
+    public Packet clone()
     {
         Packet p = new Packet(this);
         p.data = data.clone();

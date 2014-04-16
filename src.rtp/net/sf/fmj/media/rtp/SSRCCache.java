@@ -12,7 +12,7 @@ import net.sf.fmj.media.rtp.util.*;
 
 public class SSRCCache
 {
-    SSRCTable cache;
+    SSRCTable<SSRCInfo> cache;
     RTPSourceInfoCache sourceInfoCache;
     OverallStats stats;
     OverallTransStats transstats;
@@ -39,7 +39,7 @@ public class SSRCCache
 
     SSRCCache(RTPSessionMgr sm)
     {
-        cache = new SSRCTable();
+        cache = new SSRCTable<SSRCInfo>();
         stats = null;
         transstats = null;
         clockrate = new int[128];
@@ -65,7 +65,7 @@ public class SSRCCache
 
     SSRCCache(RTPSessionMgr sm, RTPSourceInfoCache sic)
     {
-        cache = new SSRCTable();
+        cache = new SSRCTable<SSRCInfo>();
         stats = null;
         transstats = null;
         clockrate = new int[128];
@@ -90,13 +90,12 @@ public class SSRCCache
     int aliveCount()
     {
         int tot = 0;
-        for (Enumeration e = cache.elements(); e.hasMoreElements();)
+        for (Enumeration<SSRCInfo> e = cache.elements(); e.hasMoreElements();)
         {
-            SSRCInfo s = (SSRCInfo) e.nextElement();
+            SSRCInfo s = e.nextElement();
             if (s.alive)
                 tot++;
         }
-
         return tot;
     }
 
@@ -285,7 +284,7 @@ public class SSRCCache
         return info;
     }
 
-    SSRCTable getMainCache()
+    SSRCTable<SSRCInfo> getMainCache()
     {
         return cache;
     }
@@ -322,12 +321,12 @@ public class SSRCCache
 
     SSRCInfo lookup(int ssrc)
     {
-        return (SSRCInfo) cache.get(ssrc);
+        return cache.get(ssrc);
     }
 
     void remove(int ssrc)
     {
-        SSRCInfo info = (SSRCInfo) cache.remove(ssrc);
+        SSRCInfo info = cache.remove(ssrc);
         if (info != null)
             info.delete();
     }

@@ -191,15 +191,13 @@ public class SimpleGraphBuilder
      * to see if it supports the given input and output formats.
      */
     static public GraphNode getPlugInNode(String name, int type,
-            Hashtable plugIns)
+            Map<String, GraphNode> plugIns)
     {
         GraphNode gn = null;
-        Object obj = null;
-        boolean add = false;
 
         // Check the hash registry to see if we've already instantiated that
         // object. If not, we'll instantiate it.
-        if (plugIns == null || (gn = (GraphNode) plugIns.get(name)) == null)
+        if (plugIns == null || (gn = plugIns.get(name)) == null)
         {
             PlugIn p = createPlugIn(name, type);
 

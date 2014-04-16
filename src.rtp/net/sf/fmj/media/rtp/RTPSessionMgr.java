@@ -84,7 +84,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     protected Vector sendstreamlistener = null;
     private static final int GET_ALL_PARTICIPANTS = -1;
     boolean encryption = false;
-    SSRCTable dslist = null;
+    SSRCTable<DataSource> dslist = null;
     StreamSynch streamSynch = null;
     FormatInfo formatinfo = null;
     DataSource defaultsource = null;
@@ -151,7 +151,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         streamlistener = new Vector();
         sendstreamlistener = new Vector();
         encryption = false;
-        dslist = new SSRCTable();
+        dslist = new SSRCTable<DataSource>();
         formatinfo = null;
         defaultsource = null;
         defaultstream = null;
@@ -204,7 +204,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         streamlistener = new Vector();
         sendstreamlistener = new Vector();
         encryption = false;
-        dslist = new SSRCTable();
+        dslist = new SSRCTable<DataSource>();
         formatinfo = null;
         defaultsource = null;
         defaultstream = null;
@@ -294,7 +294,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         streamlistener = new Vector();
         sendstreamlistener = new Vector();
         encryption = false;
-        dslist = new SSRCTable();
+        dslist = new SSRCTable<DataSource>();
         formatinfo = null;
         defaultsource = null;
         defaultstream = null;
@@ -346,18 +346,11 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     public void addMRL(RTPMediaLocator rtpmedialocator)
     {
         int i = (int) rtpmedialocator.getSSRC();
-        if (i == 0)
+        if (i != 0)
         {
-            return;
-        }
-        DataSource datasource = (DataSource) dslist.get(i);
-        if (datasource != null)
-        {
-            return;
-        } else
-        {
-            DataSource datasource1 = createNewDS(rtpmedialocator);
-            return;
+            DataSource datasource = dslist.get(i);
+            if (datasource == null)
+                createNewDS(rtpmedialocator);
         }
     }
 
@@ -495,10 +488,10 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                 .addElement(sessionaddress);
         if (cache != null)
         {
-            for (Enumeration<Object> elements = cache.cache.elements();
+            for (Enumeration<SSRCInfo> elements = cache.cache.elements();
                     elements.hasMoreElements();)
             {
-                SSRCInfo ssrcinfo = (SSRCInfo) elements.nextElement();
+                SSRCInfo ssrcinfo = elements.nextElement();
                 if (ssrcinfo instanceof SendSSRCInfo)
                 {
                     ssrcinfo.reporter.transmit.sender.control = true;
@@ -678,9 +671,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     public void closeSession()
     {
         if (dslist.isEmpty() || nosockets)
-        {
             closeSession("DataSource disconnected");
-        }
     }
 
     public void closeSession(String s)
@@ -692,17 +683,16 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         {
             SSRCInfo ssrcinfo;
 
-            for (Enumeration<Object> elements = cache.cache.elements();
+            for (Enumeration<SSRCInfo> elements = cache.cache.elements();
                     elements.hasMoreElements();
                     stopParticipating(s, ssrcinfo))
             {
-                ssrcinfo = (SSRCInfo) elements.nextElement();
+                ssrcinfo = elements.nextElement();
                 if (ssrcinfo.dstream != null)
                     ssrcinfo.dstream.close();
                 if (ssrcinfo instanceof SendSSRCInfo)
                     ((SendSSRCInfo) ssrcinfo).close();
             }
-
         }
         for (int i = 0; i < sendstreamlist.size(); i++)
             removeSendStream((SendStream) sendstreamlist.elementAt(i));
@@ -899,10 +889,10 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                         .addElement(sessionaddress1);
                 if (cache != null)
                 {
-                    for (Enumeration<Object> elements = cache.cache.elements();
+                    for (Enumeration<SSRCInfo> elements = cache.cache.elements();
                             elements.hasMoreElements();)
                     {
-                        SSRCInfo ssrcinfo1 = (SSRCInfo) elements.nextElement();
+                        SSRCInfo ssrcinfo1 = elements.nextElement();
                         if (ssrcinfo1 instanceof SendSSRCInfo)
                         {
                             ssrcinfo1.reporter.transmit.sender.control = true;
@@ -982,11 +972,11 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         if (cache != null)
         {
             SSRCInfo ssrcinfo;
-            for (Enumeration<Object> elements = cache.cache.elements();
+            for (Enumeration<SSRCInfo> elements = cache.cache.elements();
                     elements.hasMoreElements();
                     stopParticipating("dispose", ssrcinfo))
             {
-                ssrcinfo = (SSRCInfo) elements.nextElement();
+                ssrcinfo = elements.nextElement();
                 if (ssrcinfo.dstream != null)
                     ssrcinfo.dstream.close();
                 if (ssrcinfo instanceof SendSSRCInfo)
@@ -1150,17 +1140,9 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     public DataSource getDataSource(RTPMediaLocator rtpmedialocator)
     {
         if (rtpmedialocator == null)
-        {
             return defaultsource;
-        }
         int i = (int) rtpmedialocator.getSSRC();
-        if (i == 0)
-        {
-            return defaultsource;
-        } else
-        {
-            return (DataSource) dslist.get(i);
-        }
+        return (i == 0) ? defaultsource : dslist.get(i);
     }
 
     public long getDefaultSSRC()

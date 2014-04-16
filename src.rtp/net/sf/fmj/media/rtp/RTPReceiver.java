@@ -26,8 +26,6 @@ public class RTPReceiver extends PacketFilter
 
     private boolean rtcpstarted;
 
-    private boolean setpriority;
-
     /*
      * TODO Boris Grozev: The field mismatchprinted always equals false and may
      * be removed.
@@ -36,7 +34,7 @@ public class RTPReceiver extends PacketFilter
 
     private final String content;
 
-    final SSRCTable probationList;
+    final SSRCTable<RTPPacket> probationList;
 
     static final int MAX_DROPOUT = 3000;
 
@@ -54,9 +52,8 @@ public class RTPReceiver extends PacketFilter
     {
         lastseqnum = -1;
         rtcpstarted = false;
-        setpriority = false;
         content = "";
-        probationList = new SSRCTable();
+        probationList = new SSRCTable<RTPPacket>();
         controlstr = "javax.media.rtp.RTPControl";
         errorPayload = -1;
         cache = ssrccache;
@@ -351,8 +348,7 @@ public class RTPReceiver extends PacketFilter
         }
         if (!ssrcinfo.streamconnect)
         {
-            DataSource datasource = (DataSource) cache.sm.dslist
-                    .get(ssrcinfo.ssrc);
+            DataSource datasource = cache.sm.dslist.get(ssrcinfo.ssrc);
             if (datasource == null)
             {
                 DataSource datasource1 = cache.sm.getDataSource(null);
@@ -433,8 +429,7 @@ public class RTPReceiver extends PacketFilter
                 mismatchprinted = false;
             if (flag)
             {
-                RTPPacket rtppacket1 = (RTPPacket) probationList
-                        .remove(ssrcinfo.ssrc);
+                RTPPacket rtppacket1 = probationList.remove(ssrcinfo.ssrc);
                 if (rtppacket1 != null)
                     rtpdemultiplexer.demuxpayload(new SourceRTPPacket(
                             rtppacket1, ssrcinfo));

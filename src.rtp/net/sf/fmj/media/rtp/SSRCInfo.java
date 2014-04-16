@@ -40,7 +40,7 @@ public abstract class SSRCInfo implements Report
     boolean ours;
     int ssrc;
     boolean streamconnect;
-    SSRCTable reports;
+    SSRCTable<RTCPReportBlock[]> reports;
     boolean active;
     boolean newrecvstream;
     boolean recvstrmap;
@@ -105,7 +105,7 @@ public abstract class SSRCInfo implements Report
         sender = false;
         ours = false;
         streamconnect = false;
-        reports = new SSRCTable();
+        reports = new SSRCTable<RTCPReportBlock[]>();
         active = false;
         newrecvstream = false;
         recvstrmap = false;
@@ -159,7 +159,7 @@ public abstract class SSRCInfo implements Report
         sender = false;
         ours = false;
         streamconnect = false;
-        reports = new SSRCTable();
+        reports = new SSRCTable<RTCPReportBlock[]>();
         active = false;
         newrecvstream = false;
         recvstrmap = false;
@@ -338,22 +338,18 @@ public abstract class SSRCInfo implements Report
         return sourceInfo != null ? sourceInfo.getCNAME() : null;
     }
 
-    public Vector getFeedbackReports()
+    public Vector<RTCPReportBlock> getFeedbackReports()
     {
-        RTCPReportBlock reportblklist[] = null;
-        Vector reportlist;
-        if (reports.size() == 0)
-        {
-            reportlist = new Vector(0);
+        Vector<RTCPReportBlock> reportlist
+            = new Vector<RTCPReportBlock>(reports.size());
+        if (reportlist.size() == 0)
             return reportlist;
-        }
-        reportlist = new Vector(reports.size());
-        Enumeration reportblks = reports.elements();
+        Enumeration<RTCPReportBlock[]> reportblks = reports.elements();
         try
         {
             while (reportblks.hasMoreElements())
             {
-                reportblklist = (RTCPReportBlock[]) reportblks.nextElement();
+                RTCPReportBlock[] reportblklist = reportblks.nextElement();
                 RTCPReportBlock report = new RTCPReportBlock();
                 report = reportblklist[0];
                 reportlist.addElement(report);
@@ -385,9 +381,9 @@ public abstract class SSRCInfo implements Report
         return sourceInfo;
     }
 
-    public Vector getSourceDescription()
+    public Vector<SourceDescription> getSourceDescription()
     {
-        Vector sdeslist = new Vector();
+        Vector<SourceDescription> sdeslist = new Vector<SourceDescription>();
         sdeslist.addElement(sourceInfo.getCNAMESDES());
         if (name != null)
             sdeslist.addElement(name);

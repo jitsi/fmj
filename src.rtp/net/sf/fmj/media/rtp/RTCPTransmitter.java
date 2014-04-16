@@ -97,11 +97,11 @@ public class RTCPTransmitter
 
     protected RTCPReportBlock[] makerecreports(long time)
     {
-        Vector reports = new Vector();
-        for (Enumeration<Object> elements = cache.cache.elements();
+        Vector<RTCPReportBlock> reports = new Vector<RTCPReportBlock>();
+        for (Enumeration<SSRCInfo> elements = cache.cache.elements();
                 elements.hasMoreElements();)
         {
-            SSRCInfo info = (SSRCInfo) elements.nextElement();
+            SSRCInfo info = elements.nextElement();
             if (!info.ours && info.sender)
             {
                 RTCPReportBlock rep = new RTCPReportBlock();
