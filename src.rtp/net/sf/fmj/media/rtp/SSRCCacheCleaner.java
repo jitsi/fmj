@@ -16,11 +16,13 @@ public class SSRCCacheCleaner implements Runnable
     boolean timeToClean;
     private boolean killed;
     private StreamSynch streamSynch;
+    private long lastCleaned;
 
     public SSRCCacheCleaner(SSRCCache cache, StreamSynch streamSynch)
     {
         timeToClean = false;
         killed = false;
+        lastCleaned = -1;
         this.cache = cache;
         this.streamSynch = streamSynch;
         thread = new RTPMediaThread(this, "SSRC Cache Cleaner");
@@ -32,6 +34,7 @@ public class SSRCCacheCleaner implements Runnable
     public synchronized void cleannow()
     {
         long time = System.currentTimeMillis();
+        lastCleaned = time;
         if (cache.ourssrc == null)
             return;
         double reportInterval
@@ -133,11 +136,15 @@ public class SSRCCacheCleaner implements Runnable
         {
             do
             {
-                while (!timeToClean && !killed)
-                    wait();
+                if (!timeToClean && !killed)
+                    wait(5000);
                 if (killed)
                     return;
-                cleannow();
+                if (!timeToClean
+                      && lastCleaned + 5000 <= System.currentTimeMillis())
+                    timeToClean = true;
+                if (timeToClean)
+                    cleannow();
                 timeToClean = false;
             } while (true);
         } catch (Exception e)
