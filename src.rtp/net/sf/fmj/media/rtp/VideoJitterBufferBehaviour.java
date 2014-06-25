@@ -50,6 +50,8 @@ class VideoJitterBufferBehaviour
 
     private int tooMuchBufferingCount = 0;
 
+    private final int MIN_SIZE;
+
     /**
      * Initializes a new <tt>VideoJitterBufferBehaviour</tt> instance for the
      * purposes of a specific <tt>RTPSourceStream</tt>.
@@ -60,6 +62,14 @@ class VideoJitterBufferBehaviour
     public VideoJitterBufferBehaviour(RTPSourceStream stream)
     {
         super(stream);
+
+        MIN_SIZE
+                = com.sun.media.util.Registry.getInt(
+                "video_jitter_buffer_MIN_SIZE",
+                4);
+
+        if (q.getCapacity() < MIN_SIZE)
+            grow(MIN_SIZE);
     }
 
     private void cutByHalf()
