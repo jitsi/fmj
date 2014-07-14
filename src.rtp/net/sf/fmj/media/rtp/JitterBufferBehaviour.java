@@ -19,6 +19,40 @@ interface JitterBufferBehaviour
     void dropPkt();
 
     /**
+     * Gets the absolute maximum delay in milliseconds that an adaptive jitter
+     * buffer can reach under worst case conditions. If this value exceeds 65535
+     * milliseconds, then 65535 shall be returned. Returns <tt>maximumDelay</tt>
+     * for a fixed jitter buffer implementation.
+     *
+     * @return the absolute maximum delay in milliseconds that an adaptive
+     * jitter buffer can reach under worst case conditions
+     */
+    int getAbsoluteMaximumDelay();
+
+    /**
+     * Gets the current maximum jitter buffer delay in milliseconds which
+     * corresponds to the earliest arriving packet that would not be discarded.
+     * In simple queue implementations it may correspond to the nominal size. In
+     * adaptive jitter buffer implementations, the value may dynamically vary up
+     * to <tt>absoluteMaximumDelay</tt>.
+     *
+     * @return the current maximum jitter buffer delay in milliseconds which
+     * corresponds to the earliest arriving packet that would not be discarded
+     */
+    int getMaximumDelay();
+
+    /**
+     * Gets the current nominal jitter buffer delay in milliseconds, which
+     * corresponds to the nominal jitter buffer delay for packets that arrive
+     * exactly on time.
+     *
+     * @return the current nominal jitter buffer delay in milliseconds, which
+     * corresponds to the nominal jitter buffer delay for packets that arrive
+     * exactly on time
+     */
+    int getNominalDelay();
+
+    /**
      * Determines whether the jitter buffer logic implemented by this instance
      * exhibits adaptive (as opposed to fixed) behaviour.
      *

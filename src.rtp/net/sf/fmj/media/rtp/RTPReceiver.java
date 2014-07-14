@@ -174,12 +174,18 @@ public class RTPReceiver extends PacketFilter
             ssrcinfo.payloadType = rtppacket.payloadType;
         }
         int diff = rtppacket.seqnum - ssrcinfo.maxseq;
-        if (ssrcinfo.maxseq + 1 != rtppacket.seqnum && diff > 0)
-            ssrcinfo.stats.update(RTPStats.PDULOST, diff - 1);
-        //Packets arriving out of order have already been counted as lost (by
-        //the clause above), so decrease the lost count.
-        if (diff > -MAX_MISORDER && diff < 0)
-            ssrcinfo.stats.update(RTPStats.PDULOST, -1);
+        if (diff > 0)
+        {
+            if (ssrcinfo.maxseq + 1 != rtppacket.seqnum)
+                ssrcinfo.stats.update(RTPStats.PDULOST, diff - 1);
+        }
+        else if (diff < 0)
+        {
+            // Packets arriving out of order have already been counted as lost
+            // (by the clause above), so decrease the lost count.
+            if (diff > -MAX_MISORDER)
+                ssrcinfo.stats.update(RTPStats.PDULOST, -1);
+        }
         if (ssrcinfo.wrapped)
             ssrcinfo.wrapped = false;
         boolean flag = false;

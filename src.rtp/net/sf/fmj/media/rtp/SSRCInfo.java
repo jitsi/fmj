@@ -125,7 +125,6 @@ public abstract class SSRCInfo implements Report
         lasttimestamp = 0L;
         lastPayloadType = -1;
         jitter = 0.0D;
-        stats = null;
         clockrate = 0;
         this.cache = cache;
         this.ssrc = ssrc;
@@ -147,11 +146,8 @@ public abstract class SSRCInfo implements Report
         tool = null;
         note = null;
         priv = null;
-        lastSRntptimestamp = 0L;
-        lastSRrtptimestamp = 0L;
         lastSRoctetcount = 0L;
         lastSRpacketcount = 0L;
-        lastRTCPreceiptTime = 0L;
         lastSRreceiptTime = 0L;
         lastHeardFrom = 0L;
         quiet = false;
@@ -170,16 +166,13 @@ public abstract class SSRCInfo implements Report
         wassender = false;
         currentformat = null;
         payloadType = -1;
-        dsource = null;
         pds = null;
-        dstream = null;
         sinkstream = null;
         maxseq = 0;
         cycles = 0;
         lasttimestamp = 0L;
         lastPayloadType = -1;
         jitter = 0.0D;
-        stats = null;
         clockrate = 0;
         cache = info.cache;
         alive = info.alive;
@@ -342,7 +335,7 @@ public abstract class SSRCInfo implements Report
     {
         Vector<RTCPReportBlock> reportlist
             = new Vector<RTCPReportBlock>(reports.size());
-        if (reportlist.size() == 0)
+        if (reports.size() == 0)
             return reportlist;
         Enumeration<RTCPReportBlock[]> reportblks = reports.elements();
         try
@@ -350,8 +343,7 @@ public abstract class SSRCInfo implements Report
             while (reportblks.hasMoreElements())
             {
                 RTCPReportBlock[] reportblklist = reportblks.nextElement();
-                RTCPReportBlock report = new RTCPReportBlock();
-                report = reportblklist[0];
+                RTCPReportBlock report = reportblklist[0];
                 reportlist.addElement(report);
             }
         } catch (NoSuchElementException e)
@@ -593,6 +585,22 @@ public abstract class SSRCInfo implements Report
                     break;
                 }
         }
+    }
 
+    /**
+     * Gets the number of expected packets since the beginning of
+     * reception/transmission as defined by RFC 3550 i.e. the extended last
+     * sequence number received less the initial sequence number received.
+     *
+     * @return the number of expected packets since the beginning of
+     * reception/transmission
+     */
+    public long getExpectedPacketCount()
+    {
+        long maxseq = this.maxseq & 0xFFFFL;
+        long cycles = this.cycles;
+        long baseseq = this.baseseq & 0xFFFFL;
+
+        return maxseq + cycles - baseseq + 1;
     }
 }

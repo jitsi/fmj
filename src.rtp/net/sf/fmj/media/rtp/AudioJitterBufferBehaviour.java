@@ -217,6 +217,72 @@ class AudioJitterBufferBehaviour
 
     /**
      * {@inheritDoc}
+     *
+     * If this <tt>JitterBufferBehaviour</tt> is adaptive, computes the absolute
+     * maximum delay based on {@link #AJB_MAX_SIZE}.
+     */
+    @Override
+    public int getAbsoluteMaximumDelay()
+    {
+        long absoluteMaximumDelay;
+
+        if (isAdaptive())
+        {
+            long msPerPkt = this.msPerPkt;
+
+            if (msPerPkt <= 0)
+                msPerPkt = DEFAULT_MS_PER_PKT;
+            absoluteMaximumDelay = AJB_MAX_SIZE * msPerPkt;
+        }
+        else
+        {
+            absoluteMaximumDelay = super.getAbsoluteMaximumDelay();
+        }
+        return
+            (absoluteMaximumDelay > 65535) ? 65535 : (int) absoluteMaximumDelay;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Computes the maximum delay based on the <tt>capacity</tt> of the
+     * <tt>JitterBuffer</tt>/{@link #q}.
+     */
+    @Override
+    public int getMaximumDelay()
+    {
+        long msPerPkt = this.msPerPkt;
+
+        if (msPerPkt <= 0)
+            msPerPkt = DEFAULT_MS_PER_PKT;
+
+        long maximumDelay = q.getCapacity() * msPerPkt;
+
+        return (maximumDelay > 65535) ? 65535 : (int) maximumDelay;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Computes the nominal delay based on the <tt>capacity</tt> of the
+     * <tt>JitterBuffer</tt>/{@link #q} and knowing that a {@link #replenish}
+     * requires a half of that <tt>capacity</tt>.
+     */
+    @Override
+    public int getNominalDelay()
+    {
+        long msPerPkt = this.msPerPkt;
+
+        if (msPerPkt <= 0)
+            msPerPkt = DEFAULT_MS_PER_PKT;
+
+        long nominalDelay = (q.getCapacity() / 2) * msPerPkt;
+
+        return (nominalDelay > 65535) ? 65535 : (int) nominalDelay;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     protected void grow(int capacity)

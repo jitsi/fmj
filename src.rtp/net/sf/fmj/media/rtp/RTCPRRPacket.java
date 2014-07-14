@@ -9,25 +9,24 @@ public class RTCPRRPacket extends RTCPPacket
 
     RTCPRRPacket(int ssrc, RTCPReportBlock reports[])
     {
-        this.ssrc = ssrc;
-        this.reports = reports;
         if (reports.length > 31)
             throw new IllegalArgumentException("Too many reports");
-        else
-            return;
+
+        this.ssrc = ssrc;
+        this.reports = reports;
     }
 
     RTCPRRPacket(RTCPPacket parent)
     {
         super(parent);
-        super.type = 201;
+        super.type = RR;
     }
 
     @Override
-    void assemble(DataOutputStream out) throws IOException
+    protected void assemble(DataOutputStream out) throws IOException
     {
         out.writeByte(128 + reports.length);
-        out.writeByte(201);
+        out.writeByte(RR);
         out.writeShort(1 + reports.length * 6);
         out.writeInt(ssrc);
         for (int i = 0; i < reports.length; i++)
@@ -40,7 +39,6 @@ public class RTCPRRPacket extends RTCPPacket
             out.writeInt((int) reports[i].lsr);
             out.writeInt((int) reports[i].dlsr);
         }
-
     }
 
     @Override

@@ -3,6 +3,7 @@ package net.sf.fmj.media.rtp;
 import java.io.*;
 
 import net.sf.fmj.media.rtp.util.*;
+import net.sf.fmj.utility.*;
 
 public class RTCPCompoundPacket extends RTCPPacket
 {
@@ -11,71 +12,74 @@ public class RTCPCompoundPacket extends RTCPPacket
     public RTCPCompoundPacket(Packet base)
     {
         super(base);
-        super.type = -1;
+        super.type = COMPOUND;
     }
 
     public RTCPCompoundPacket(RTCPPacket packets[])
     {
         this.packets = packets;
-        super.type = -1;
+        super.type = COMPOUND;
         super.received = false;
     }
 
     @Override
-    void assemble(DataOutputStream out) throws IOException
+    protected void assemble(DataOutputStream out) throws IOException
     {
         throw new IllegalArgumentException("Recursive Compound Packet");
     }
 
     public void assemble(int len, boolean encrypted)
     {
-        super.length = len;
-        super.offset = 0;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(len);
-        DataOutputStream out = new DataOutputStream(baos);
+        length = len;
+        offset = 0;
+
+        if ((data == null) || (data.length < len))
+            data = new byte[len];
+
+        ByteBufferOutputStream bbos = new ByteBufferOutputStream(data, 0, len);
+        DataOutputStream dos = new DataOutputStream(bbos);
         int laststart;
         try
         {
             if (encrypted)
-                super.offset += 4;
-            laststart = super.offset;
+                offset += 4;
+            laststart = offset;
             for (int i = 0; i < packets.length; i++)
             {
-                laststart = baos.size();
-                packets[i].assemble(out);
+                laststart = bbos.size();
+                packets[i].assemble(dos);
             }
 
         } catch (IOException e)
         {
             throw new NullPointerException("Impossible IO Exception");
         }
-        int prelen = baos.size();
-        super.data = baos.toByteArray();
+        int prelen = bbos.size();
         if (prelen > len)
             throw new NullPointerException("RTCP Packet overflow");
         if (prelen < len)
         {
-            if (super.data.length < len)
-                System.arraycopy(super.data, 0, super.data = new byte[len], 0,
-                        prelen);
-            super.data[laststart] |= 0x20;
-            super.data[len - 1] = (byte) (len - prelen);
-            int temp = (super.data[laststart + 3] & 0xff) + (len - prelen >> 2);
+            if (data.length < len)
+                System.arraycopy(data, 0, data = new byte[len], 0, prelen);
+            data[laststart] |= 0x20;
+            data[len - 1] = (byte) (len - prelen);
+            int temp = (data[laststart + 3] & 0xff) + (len - prelen >> 2);
             if (temp >= 256)
-                super.data[laststart + 2] += len - prelen >> 10;
-            super.data[laststart + 3] = (byte) temp;
+                data[laststart + 2] += len - prelen >> 10;
+            data[laststart + 3] = (byte) temp;
         }
     }
 
     @Override
     public int calcLength()
     {
-        int len = 0;
         if (packets == null || packets.length < 1)
             throw new IllegalArgumentException("Bad RTCP Compound Packet");
+
+        int len = 0;
+
         for (int i = 0; i < packets.length; i++)
             len += packets[i].calcLength();
-
         return len;
     }
 

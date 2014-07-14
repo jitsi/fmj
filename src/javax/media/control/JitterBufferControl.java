@@ -1,14 +1,26 @@
 package javax.media.control;
 
-import javax.media.Control;
+import javax.media.*;
 
 /**
  * Control for the packet queue
  *
  * @author Boris Grozev
+ * @author Lyubomir Marinov
  */
-public interface PacketQueueControl extends Control
+public interface JitterBufferControl extends Control
 {
+    /**
+     * Gets the absolute maximum delay in milliseconds that an adaptive jitter
+     * buffer can reach under worst case conditions. If this value exceeds 65535
+     * milliseconds, then 65535 shall be returned. Returns <tt>maximumDelay</tt>
+     * for a fixed jitter buffer implementation.
+     *
+     * @return the absolute maximum delay in milliseconds that an adaptive
+     * jitter buffer can reach under worst case conditions
+     */
+    int getAbsoluteMaximumDelay();
+
     /**
      * Returns the current approximate delay in milliseconds that the queue
      * introduces.
@@ -77,11 +89,34 @@ public interface PacketQueueControl extends Control
     public int getDiscardedShrink();
 
     /**
+     * Gets the current maximum jitter buffer delay in milliseconds which
+     * corresponds to the earliest arriving packet that would not be discarded.
+     * In simple queue implementations it may correspond to the nominal size. In
+     * adaptive jitter buffer implementations, the value may dynamically vary up
+     * to <tt>absoluteMaximumDelay</tt>.
+     *
+     * @return the current maximum jitter buffer delay in milliseconds which
+     * corresponds to the earliest arriving packet that would not be discarded
+     */
+    int getMaximumDelay();
+
+    /**
      * Returns the maximum size that the queue reached (in number of packets).
      *
      * @return the maximum size that the queue reached (in number of packets).
      */
     public int getMaxSizeReached();
+
+    /**
+     * Gets the current nominal jitter buffer delay in milliseconds, which
+     * corresponds to the nominal jitter buffer delay for packets that arrive
+     * exactly on time.
+     *
+     * @return the current nominal jitter buffer delay in milliseconds, which
+     * corresponds to the nominal jitter buffer delay for packets that arrive
+     * exactly on time
+     */
+    int getNominalDelay();
 
     /**
      * Whether the adaptive jitter buffer mode is enabled.

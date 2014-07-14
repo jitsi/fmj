@@ -11,31 +11,30 @@ public class RTCPAPPPacket extends RTCPPacket
 
     public RTCPAPPPacket(int ssrc, int name, int subtype, byte data[])
     {
-        this.ssrc = ssrc;
-        this.name = name;
-        this.subtype = subtype;
-        this.data = data;
-        super.type = 204;
-        super.received = false;
         if ((data.length & 3) != 0)
             throw new IllegalArgumentException("Bad data length");
         if (subtype < 0 || subtype > 31)
             throw new IllegalArgumentException("Bad subtype");
-        else
-            return;
+
+        this.ssrc = ssrc;
+        this.name = name;
+        this.subtype = subtype;
+        this.data = data;
+        super.type = APP;
+        super.received = false;
     }
 
     public RTCPAPPPacket(RTCPPacket parent)
     {
         super(parent);
-        super.type = 204;
+        super.type = APP;
     }
 
     @Override
-    void assemble(DataOutputStream out) throws IOException
+    protected void assemble(DataOutputStream out) throws IOException
     {
         out.writeByte(128 + subtype);
-        out.writeByte(204);
+        out.writeByte(APP);
         out.writeShort(2 + (data.length >> 2));
         out.writeInt(ssrc);
         out.writeInt(name);

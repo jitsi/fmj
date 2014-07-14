@@ -137,13 +137,16 @@ public class RTCPRawReceiver extends PacketFilter
     {
         RTCPCompoundPacket base = new RTCPCompoundPacket(packet);
         Vector<RTCPPacket> subpackets = new Vector<RTCPPacket>(2);
-        DataInputStream in = new DataInputStream(new ByteArrayInputStream(
-                ((Packet) (base)).data, ((Packet) (base)).offset,
-                ((Packet) (base)).length));
+        DataInputStream in
+            = new DataInputStream(
+                    new ByteArrayInputStream(
+                            base.data,
+                            base.offset,
+                            base.length));
         try
         {
             int length;
-            for (int offset = 0; offset < ((Packet) (base)).length; offset += length)
+            for (int offset = 0; offset < base.length; offset += length)
             {
                 int firstbyte = in.readUnsignedByte();
                 if ((firstbyte & 0xc0) != 128)
@@ -152,13 +155,13 @@ public class RTCPRawReceiver extends PacketFilter
                 length = in.readUnsignedShort();
                 length = length + 1 << 2;
                 int padlen = 0;
-                if (offset + length > ((Packet) (base)).length)
+                if (offset + length > base.length)
                     throw new BadFormatException();
-                if (offset + length == ((Packet) (base)).length)
+                if (offset + length == base.length)
                 {
                     if ((firstbyte & 0x20) != 0)
                     {
-                        padlen = ((Packet) (base)).data[(((Packet) (base)).offset + ((Packet) (base)).length) - 1] & 0xff;
+                        padlen = base.data[base.offset + base.length - 1] & 0xff;
                         if (padlen == 0)
                             throw new BadFormatException();
                     }
@@ -169,11 +172,11 @@ public class RTCPRawReceiver extends PacketFilter
                 RTCPPacket p;
                 switch (type)
                 {
-                case 200:
-                    stats.update(12, 1);
+                case RTCPPacket.SR:
+                    stats.update(OverallStats.SRRECD, 1);
                     if (inlength != 28 + 24 * firstbyte)
                     {
-                        stats.update(18, 1);
+                        stats.update(OverallStats.MALFORMEDSR, 1);
                         System.out.println("bad format.");
                         throw new BadFormatException();
                     }
@@ -205,10 +208,10 @@ public class RTCPRawReceiver extends PacketFilter
 
                     break;
 
-                case 201:
+                case RTCPPacket.RR:
                     if (inlength != 8 + 24 * firstbyte)
                     {
-                        stats.update(15, 1);
+                        stats.update(OverallStats.MALFORMEDRR, 1);
                         throw new BadFormatException();
                     }
                     RTCPRRPacket rrp = new RTCPRRPacket(base);
@@ -232,7 +235,7 @@ public class RTCPRawReceiver extends PacketFilter
 
                     break;
 
-                case 202:
+                case RTCPPacket.SDES:
                     RTCPSDESPacket sdesp = new RTCPSDESPacket(base);
                     p = sdesp;
                     sdesp.sdes = new RTCPSDES[firstbyte];
@@ -250,7 +253,7 @@ public class RTCPRawReceiver extends PacketFilter
                         {
                             if (j < 1 || j > 8)
                             {
-                                stats.update(16, 1);
+                                stats.update(OverallStats.MALFORMEDSDES, 1);
                                 throw new BadFormatException();
                             }
                             if (j == 1)
@@ -265,7 +268,7 @@ public class RTCPRawReceiver extends PacketFilter
                         }
                         if (!gotcname)
                         {
-                            stats.update(16, 1);
+                            stats.update(OverallStats.MALFORMEDSDES, 1);
                             throw new BadFormatException();
                         }
                         chunk.items = new RTCPSDESItem[items.size()];
@@ -279,12 +282,12 @@ public class RTCPRawReceiver extends PacketFilter
 
                     if (inlength != sdesoff)
                     {
-                        stats.update(16, 1);
+                        stats.update(OverallStats.MALFORMEDSDES, 1);
                         throw new BadFormatException();
                     }
                     break;
 
-                case 203:
+                case RTCPPacket.BYE:
                     RTCPBYEPacket byep = new RTCPBYEPacket(base);
                     p = byep;
                     byep.ssrc = new int[firstbyte];
@@ -305,14 +308,14 @@ public class RTCPRawReceiver extends PacketFilter
                     reasonlen = reasonlen + 3 & -4;
                     if (inlength != 4 + 4 * firstbyte + reasonlen)
                     {
-                        stats.update(17, 1);
+                        stats.update(OverallStats.MALFORMEDBYE, 1);
                         throw new BadFormatException();
                     }
                     in.readFully(byep.reason);
                     in.skip(reasonlen - byep.reason.length);
                     break;
 
-                case 204:
+                case RTCPPacket.APP:
                     if (inlength < 12)
                         throw new BadFormatException();
                     RTCPAPPPacket appp = new RTCPAPPPacket(base);
@@ -326,7 +329,7 @@ public class RTCPRawReceiver extends PacketFilter
                     break;
 
                 default:
-                    stats.update(14, 1);
+                    stats.update(OverallStats.UNKNOWNTYPE, 1);
                     throw new BadFormatException();
                 }
                 p.offset = offset;

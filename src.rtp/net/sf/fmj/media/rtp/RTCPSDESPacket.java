@@ -9,23 +9,22 @@ public class RTCPSDESPacket extends RTCPPacket
     public RTCPSDESPacket(RTCPPacket parent)
     {
         super(parent);
-        super.type = 202;
+        super.type = SDES;
     }
 
     public RTCPSDESPacket(RTCPSDES sdes[])
     {
-        this.sdes = sdes;
         if (sdes.length > 31)
             throw new IllegalArgumentException("Too many SDESs");
-        else
-            return;
+
+        this.sdes = sdes;
     }
 
     @Override
-    void assemble(DataOutputStream out) throws IOException
+    protected void assemble(DataOutputStream out) throws IOException
     {
         out.writeByte(128 + sdes.length);
-        out.writeByte(202);
+        out.writeByte(SDES);
         out.writeShort(calcLength() - 4 >> 2);
         for (int i = 0; i < sdes.length; i++)
         {
@@ -41,9 +40,7 @@ public class RTCPSDESPacket extends RTCPPacket
 
             for (int j = (sublen + 4 & -4) - sublen; j > 0; j--)
                 out.writeByte(0);
-
         }
-
     }
 
     @Override

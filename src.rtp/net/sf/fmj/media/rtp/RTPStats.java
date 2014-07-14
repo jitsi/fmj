@@ -25,6 +25,11 @@ public class RTPStats implements ReceptionStats
     private int PDUDrop;
     private int ADUDrop;
 
+    /**
+     * The burst characteristics/metrics and the algorithm for measuring them.
+     */
+    private final BurstMetrics burstMetrics = new BurstMetrics();
+
     public RTPStats()
     {
         numLost = 0;
@@ -101,28 +106,31 @@ public class RTPStats implements ReceptionStats
     {
         switch (which)
         {
-        case PDULOST: // '\0'
+        case PDULOST:
             numLost++;
+            getBurstMetrics().update(which);
             break;
 
-        case PDUPROCSD: // '\001'
+        case PDUPROCSD:
             numProc++;
+            getBurstMetrics().update(which);
             break;
 
-        case PDUMISORD: // '\002'
+        case PDUMISORD:
             numMisord++;
             break;
 
-        case PDUINVALID: // '\003'
+        case PDUINVALID:
             numInvalid++;
             break;
 
-        case PDUDUP: // '\004'
+        case PDUDUP:
             numDup++;
             break;
 
         case PDUDROP:
             PDUDrop++;
+            getBurstMetrics().update(which);
             break;
         }
     }
@@ -131,23 +139,35 @@ public class RTPStats implements ReceptionStats
     {
         switch (which)
         {
-        case PDULOST: // '\0'
-            numLost = numLost + amount;
+        case PDULOST:
+            if (amount > 0)
+            {
+                /*
+                 * The incrementing of PDULOST is already handled by the method
+                 * update(int). Do not duplicate the source code for the sake of
+                 * maintenance.
+                 */
+                while (amount-- > 0) update(which);
+            }
+            else
+            {
+                numLost += amount;
+            }
             break;
 
-        case PAYLOAD: // '\005'
+        case PAYLOAD:
             payload = amount;
             break;
 
-        case QSIZE: // '\007'
+        case QSIZE:
             qSize = amount;
             break;
 
-        case PDUDROP: // '\b'
+        case PDUDROP:
             PDUDrop = amount;
             break;
 
-        case ADUDROP: // '\t'
+        case ADUDROP:
             ADUDrop = amount;
             break;
         }
@@ -157,5 +177,17 @@ public class RTPStats implements ReceptionStats
     {
         if (which == ENCODE)
             encodeName = name;
+    }
+
+    /**
+     * Gets the burst characteristics/metrics and the algorithm for measuring
+     * them.
+     *
+     * @return the burst characteristics/metrics and the algorithm for measuring
+     * them
+     */
+    public BurstMetrics getBurstMetrics()
+    {
+        return burstMetrics;
     }
 }

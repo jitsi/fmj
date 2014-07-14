@@ -55,7 +55,6 @@ public class RTCPTransmitter
         RTCPBYEPacket byep = new RTCPBYEPacket(ssrclist, reason);
         packets[packets.length - 1] = byep;
         RTCPCompoundPacket cp = new RTCPCompoundPacket(packets);
-        RTCPTransmitter _tmp = this;
         double delay;
         if (cache.aliveCount() > 50)
         {
@@ -133,9 +132,7 @@ public class RTCPTransmitter
     {
         Vector packets = new Vector();
         SSRCInfo ourinfo = ssrcInfo;
-        boolean senderreport = false;
-        if (ourinfo.sender)
-            senderreport = true;
+        boolean senderreport = ourinfo.sender;
         long time = System.currentTimeMillis();
         RTCPReportBlock reports[] = makerecreports(time);
         RTCPReportBlock firstrep[] = reports;
@@ -243,7 +240,7 @@ public class RTCPTransmitter
                 cache.rtcpsent = true;
         } catch (IOException e)
         {
-            stats.update(6, 1);
+            stats.update(OverallStats.TRANSMITFAILED, 1);
             cache.sm.transstats.transmit_failed++;
         }
     }

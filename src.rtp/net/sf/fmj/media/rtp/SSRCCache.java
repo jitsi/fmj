@@ -204,7 +204,7 @@ public class SSRCCache
                             info.port = port;
                         } else
                         {
-                            stats.update(4, 1);
+                            stats.update(OverallStats.REMOTECOLL, 1);
                             transstats.remote_coll++;
                             RemoteCollisionEvent evt = new RemoteCollisionEvent(
                                     sm, info.ssrc);
@@ -315,7 +315,7 @@ public class SSRCCache
         cache.put(newSSRC, newinfo);
         changessrc(newinfo);
         ourssrc = newinfo;
-        stats.update(3, 1);
+        stats.update(OverallStats.LOCALCOLL, 1);
         transstats.local_coll++;
     }
 

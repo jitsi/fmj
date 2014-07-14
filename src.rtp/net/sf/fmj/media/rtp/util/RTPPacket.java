@@ -2,6 +2,8 @@ package net.sf.fmj.media.rtp.util;
 
 import java.io.*;
 
+import net.sf.fmj.utility.*;
+
 public class RTPPacket extends Packet
 {
     public Packet base;
@@ -29,25 +31,33 @@ public class RTPPacket extends Packet
 
     public void assemble(int len, boolean encrypted)
     {
-        super.length = len;
-        super.offset = 0;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(len);
-        DataOutputStream out = new DataOutputStream(baos);
+        length = len;
+        offset = 0;
+
+        if ((data == null) || (data.length < len))
+            data = new byte[len];
+
+        ByteBufferOutputStream bbos = new ByteBufferOutputStream(data, 0, len);
+        DataOutputStream dos = new DataOutputStream(bbos);
         try
         {
-            out.writeByte(128);
+            dos.writeByte(128);
             int mp = payloadType;
             if (marker == 1)
                 mp = payloadType | 0x80;
-            out.writeByte((byte) mp);
-            out.writeShort(seqnum);
-            out.writeInt((int) timestamp);
-            out.writeInt(ssrc);
-            out.write(base.data, payloadoffset, payloadlength);
-            super.data = baos.toByteArray();
-        } catch (IOException e)
+            dos.writeByte((byte) mp);
+            dos.writeShort(seqnum);
+            dos.writeInt((int) timestamp);
+            dos.writeInt(ssrc);
+            dos.write(base.data, payloadoffset, payloadlength);
+        }
+        catch (IOException e)
         {
             System.out.println("caught IOException in DOS");
+        }
+        finally
+        {
+            try { dos.close(); } catch (IOException e) {}
         }
     }
 

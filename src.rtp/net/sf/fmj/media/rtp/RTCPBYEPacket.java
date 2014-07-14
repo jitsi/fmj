@@ -9,28 +9,24 @@ public class RTCPBYEPacket extends RTCPPacket
 
     public RTCPBYEPacket(int ssrc[], byte reason[])
     {
-        this.ssrc = ssrc;
-        if (reason != null)
-            this.reason = reason;
-        else
-            this.reason = new byte[0];
         if (ssrc.length > 31)
             throw new IllegalArgumentException("Too many SSRCs");
-        else
-            return;
+
+        this.ssrc = ssrc;
+        this.reason = (reason == null) ? new byte[0] : reason;
     }
 
     public RTCPBYEPacket(RTCPPacket parent)
     {
         super(parent);
-        super.type = 203;
+        super.type = BYE;
     }
 
     @Override
-    void assemble(DataOutputStream out) throws IOException
+    protected void assemble(DataOutputStream out) throws IOException
     {
         out.writeByte(128 + ssrc.length);
-        out.writeByte(203);
+        out.writeByte(BYE);
         out.writeShort(ssrc.length
                 + (reason.length <= 0 ? 0 : reason.length + 4 >> 2));
         for (int i = 0; i < ssrc.length; i++)
@@ -42,7 +38,6 @@ public class RTCPBYEPacket extends RTCPPacket
             out.write(reason);
             for (int i = (reason.length + 4 & -4) - reason.length - 1; i > 0; i--)
                 out.writeByte(0);
-
         }
     }
 

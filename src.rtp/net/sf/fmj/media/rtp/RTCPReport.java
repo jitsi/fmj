@@ -47,32 +47,38 @@ import javax.media.rtp.rtcp.*;
  */
 public abstract class RTCPReport implements Report
 {
-    // The participant that sent the report
-    protected Participant participant;
-
-    // The header of the report
-    protected RTCPHeader header;
-
-    // The vector of feedback reports in this report
-    protected Vector feedbackReports = new Vector();
-
-    // The source descriptions in the report
-    protected Vector sourceDescriptions = new Vector();
-
-    // The number of bytes of SDES packets read
-    protected int sdesBytes = 0;
+    // The reason for leaving if this is a bye packet
+    private String byeReason = "";
 
     // The CNAME of the source
     private String cName = null;
 
+    // The vector of feedback reports in this report
+    protected Vector feedbackReports = new Vector();
+
+    // The header of the report
+    protected RTCPHeader header;
+
     // True if this is a bye event
     private boolean isBye = false;
 
-    // The reason for leaving if this is a bye packet
-    private String byeReason = "";
+    // The participant that sent the report
+    protected Participant participant;
+
+    // The number of bytes of SDES packets read
+    protected int sdesBytes = 0;
+
+    // The source descriptions in the report
+    protected Vector sourceDescriptions = new Vector();
 
     // The ssrc of the report
     private long ssrc = 0;
+
+    /**
+     * The <tt>System</tt> time in milliseconds at which this
+     * <tt>RTCPReport</tt> has been received or sent by the local endpoint.
+     */
+    private long systemTimeStamp;
 
     /**
      * Creates a new <tt>RTCPReport</tt> instance.
@@ -92,6 +98,36 @@ public abstract class RTCPReport implements Report
             throw new IOException("Invalid Length");
 
         ssrc = header.getSsrc();
+
+        /*
+         * We know the forms of the RTCP sender report (SR) and receiver report
+         * (RR). Additionally, we know that they differ, besides the packet type
+         * (PT), by a 20-byte sender information section.
+         */
+        int rtcpReportBlockOffset = RTCPHeader.SIZE;
+
+        switch (header.getPacketType())
+        {
+        case RTCPPacket.SR:
+            rtcpReportBlockOffset += RTCPSenderInfo.SIZE;
+            //$FALL-THROUGH$
+        case RTCPPacket.RR:
+            readFeedbackReports(
+                    data,
+                    offset + rtcpReportBlockOffset,
+                    length - rtcpReportBlockOffset);
+            // Read any source descriptions
+            offset += (header.getLength() + 1) * 4;
+            length -= (header.getLength() + 1) * 4;
+            readSourceDescription(data, offset, length);
+            offset += sdesBytes;
+            length -= sdesBytes;
+            readBye(data, offset, length);
+            break;
+        default:
+            // We do not know about any other RTCP report.
+            break;
+        }
     }
 
     /**
@@ -153,6 +189,18 @@ public abstract class RTCPReport implements Report
     public long getSSRC()
     {
         return ssrc;
+    }
+
+    /**
+     * Gets the <tt>System</tt> time in milliseconds at which this
+     * <tt>RTCPReport</tt> has been received or sent by the local endpoint.
+     *
+     * @return the <tt>System</tt> time in milliseconds at which this
+     * <tt>RTCPReport</tt> has been received or sent by the local endpoint
+     */
+    public long getSystemTimeStamp()
+    {
+        return systemTimeStamp;
     }
 
     /**
@@ -293,4 +341,15 @@ public abstract class RTCPReport implements Report
         }
     }
 
+    /**
+     * Sets the <tt>System</tt> time in milliseconds at which this
+     * <tt>RTCPReport</tt> has been received or sent by the local endpoint.
+     *
+     * @param systemTimeStamp the <tt>System</tt> time in milliseconds at which
+     * this <tt>RTCPReport</tt> has been received or sent by the local endpoint
+     */
+    public void setSystemTimeStamp(long systemTimeStamp)
+    {
+        this.systemTimeStamp = systemTimeStamp;
+    }
 }

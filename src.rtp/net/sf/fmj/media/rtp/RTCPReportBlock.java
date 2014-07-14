@@ -2,8 +2,6 @@ package net.sf.fmj.media.rtp;
 
 import javax.media.rtp.rtcp.*;
 
-import net.sf.fmj.media.rtp.util.*;
-
 public class RTCPReportBlock implements Feedback
 {
     public static String toString(RTCPReportBlock reports[])
@@ -67,9 +65,8 @@ public class RTCPReportBlock implements Feedback
     @Override
     public String toString()
     {
-        long printssrc = ssrc;
-        if (ssrc < 0)
-            printssrc = Signed.UnsignedInt(ssrc);
+        long printssrc = 0xFFFFFFFFL & ssrc;
+
         return "\t\tFor source " + printssrc
                 + "\n\t\t\tFraction of packets lost: " + fractionlost + " ("
                 + fractionlost / 256D + ")" + "\n\t\t\tPackets lost: "

@@ -68,19 +68,12 @@ public class RTCPSenderReport extends RTCPReport implements SenderReport
             throws IOException
     {
         super(data, offset, length);
-        senderInformation = new RTCPSenderInfo(data, offset + RTCPHeader.SIZE,
-                length - RTCPHeader.SIZE);
-        readFeedbackReports(data, offset + RTCPHeader.SIZE
-                + RTCPSenderInfo.SIZE, length - RTCPHeader.SIZE
-                - RTCPSenderInfo.SIZE);
 
-        // Read any source descriptions
-        offset += (header.getLength() + 1) * 4;
-        length -= (header.getLength() + 1) * 4;
-        readSourceDescription(data, offset, length);
-        offset += sdesBytes;
-        length -= sdesBytes;
-        readBye(data, offset, length);
+        senderInformation
+            = new RTCPSenderInfo(
+                    data,
+                    offset + RTCPHeader.SIZE,
+                    length - RTCPHeader.SIZE);
     }
 
     /**
@@ -164,5 +157,4 @@ public class RTCPSenderReport extends RTCPReport implements SenderReport
     {
         this.stream = stream;
     }
-
 }

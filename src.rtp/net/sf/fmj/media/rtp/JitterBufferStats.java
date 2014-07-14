@@ -4,8 +4,11 @@ import java.awt.*;
 
 import javax.media.*;
 import javax.media.control.*;
+import javax.media.protocol.*;
+import javax.media.rtp.*;
 
 import net.sf.fmj.media.*;
+import net.sf.fmj.media.protocol.rtp.DataSource;
 
 /**
  * Implements {@link PacketQueueControl} for {@link RTPSourceStream} and the
@@ -16,7 +19,7 @@ import net.sf.fmj.media.*;
  * @author Tom Denham
  */
 class JitterBufferStats
-    implements PacketQueueControl
+    implements JitterBufferControl
 {
     /**
      * The number of RTP packets that the associated queue has discarded because
@@ -92,6 +95,18 @@ class JitterBufferStats
     /**
      * {@inheritDoc}
      *
+     * Delegates to the <tt>JitterBufferBehaviour</tt> of the
+     * <tt>RTPSourceStream</tt>.
+     */
+    @Override
+    public int getAbsoluteMaximumDelay()
+    {
+        return stream.getBehaviour().getAbsoluteMaximumDelay();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * The <tt>Control</tt> implementation of <tt>JitterBufferStats</tt> does
      * not provide any user interface of its own and, consequently, always
      * returns <tt>null</tt>.
@@ -103,6 +118,12 @@ class JitterBufferStats
 
     /**
      * {@inheritDoc}
+     *
+     * <b>Warning</b>: The implementation of <tt>JitterBufferStats</tt> does not
+     * have a notion of packet duration and, consequently, it may be inaccurate.
+     * The method {@link #getNominalDelay()} delegates to
+     * <tt>JitterBufferBehaviour</tt> which is more likely to have a notion of
+     * packet duration and, consequently, it likely to be more accurate.
      */
     public int getCurrentDelayMs()
     {
@@ -193,6 +214,18 @@ class JitterBufferStats
 
     /**
      * {@inheritDoc}
+     *
+     * Delegates to the <tt>JitterBufferBehaviour</tt> of the
+     * <tt>RTPSourceStream</tt>.
+     */
+    @Override
+    public int getMaximumDelay()
+    {
+        return stream.getBehaviour().getMaximumDelay();
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public int getMaxSizeReached()
     {
@@ -202,6 +235,18 @@ class JitterBufferStats
     int getNbAdd()
     {
         return nbAdd;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Delegates to the <tt>JitterBufferBehaviour</tt> of the
+     * <tt>RTPSourceStream</tt>.
+     */
+    @Override
+    public int getNominalDelay()
+    {
+        return stream.getBehaviour().getNominalDelay();
     }
 
     /**
@@ -221,6 +266,7 @@ class JitterBufferStats
     void incrementDiscardedFull()
     {
         discardedFull++;
+        incrementRTPStatsPDUDrop();
     }
 
     /**
@@ -232,6 +278,7 @@ class JitterBufferStats
     void incrementDiscardedLate()
     {
         discardedLate++;
+        incrementRTPStatsPDUDrop();
     }
 
     /**
@@ -241,6 +288,7 @@ class JitterBufferStats
     void incrementDiscardedReset()
     {
         discardedReset++;
+        incrementRTPStatsPDUDrop();
     }
 
     /**
@@ -250,6 +298,7 @@ class JitterBufferStats
     void incrementDiscardedShrink()
     {
         discardedShrink++;
+        incrementRTPStatsPDUDrop();
     }
 
     /**
@@ -262,6 +311,7 @@ class JitterBufferStats
     void incrementDiscardedVeryLate()
     {
         discardedVeryLate++;
+        incrementRTPStatsPDUDrop();
     }
 
     void incrementNbAdd()
@@ -277,6 +327,69 @@ class JitterBufferStats
     void incrementNbReset()
     {
         nbReset++;
+    }
+
+    /**
+     * Updates the {@link RTPStats#PDUDROP} of the <tt>RTPStats</tt> associated
+     * with this <tt>JitterBufferStats</tt> because the two classes maintain
+     * discard-related statistics and <tt>RTPStats</tt> provides them to the
+     * public through the interface {@link ReceptionStats}.
+     */
+    private void incrementRTPStatsPDUDrop()
+    {
+        /*
+         * There is no direct chain of references from JitterBufferStats to
+         * RTPStats. Walk through an indirect chain of references then but be
+         * careful. Start by making sure that the RTPSourceStream associated
+         * with this JitterBufferStats is still associated with the DataSource
+         * which initialized it.
+         */
+        DataSource datasource = stream.datasource;
+
+        if (datasource != null)
+        {
+            PushBufferStream[] datasourceStreams = datasource.getStreams();
+
+            if (datasourceStreams != null)
+            {
+                for (PushBufferStream datasourceStream : datasourceStreams)
+                {
+                    if (datasourceStream == stream)
+                    {
+                        /*
+                         * The DataSource which initialized the RTPSourceStream
+                         * associated with this JitterBufferStats is still
+                         * associated with it. Continue by finding an SSRCInfo
+                         * which is associated with the
+                         * DataSource/RTPSourceStream i.e. this
+                         * JitterBufferStats.
+                         */
+                        RTPSessionMgr mgr = datasource.getMgr();
+
+                        if (mgr != null)
+                        {
+                            SSRCInfo ssrcinfo
+                                = mgr.getSSRCInfo(datasource.getSSRC());
+
+                            if ((ssrcinfo != null)
+                                    && (ssrcinfo.dsource == datasource)
+                                    && (ssrcinfo.dstream == stream))
+                            {
+                                /*
+                                 * We've located the RTPStats associated with
+                                 * this JitterBufferStats.
+                                 */
+                                RTPStats rtpstats = ssrcinfo.stats;
+
+                                if (rtpstats != null)
+                                    rtpstats.update(RTPStats.PDUDROP);
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
