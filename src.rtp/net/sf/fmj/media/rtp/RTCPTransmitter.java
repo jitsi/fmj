@@ -3,11 +3,15 @@ package net.sf.fmj.media.rtp;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.logging.*;
 
 import net.sf.fmj.media.rtp.util.*;
 
 public class RTCPTransmitter
 {
+    private static final Logger logger =
+            Logger.getLogger(RTCPTransmitter.class.getName());
+
     RTCPRawSender sender;
     OverallStats stats;
     public SSRCCache cache;
@@ -148,7 +152,16 @@ public class RTCPTransmitter
             RTCPReportBuilder reportBuilder)
     {
         this.reportBuilder = reportBuilder;
-        this.reportBuilder.setRTCPTransmitter(this);
+        if (this.reportBuilder != null)
+            try
+            {
+                this.reportBuilder.setRTCPTransmitter(this);
+            }
+            catch (Exception e)
+            {
+                logger.log(Level.SEVERE, "The report builder did not accept " +
+                        "the RTCPTransmitter", e);
+            }
     }
 
     private RTCPReportBuilder getReportBuilder()
