@@ -52,7 +52,16 @@ public class RTCPTransmitter
         cache.byestate = true;
 
         RTCPReportBuilder rb = getReportBuilder();
-        RTCPPacket reports[] = rb.makeReports();
+        RTCPPacket reports[];
+        try
+        {
+            reports = rb.makeReports();
+        }
+        catch (Exception e)
+        {
+            logger.log(Level.SEVERE, "makeReports() crashed", e);
+            reports = new RTCPPacket[0];
+        }
 
         RTCPPacket packets[];
         if (reports == null || reports.length == 0)
@@ -109,7 +118,17 @@ public class RTCPTransmitter
 
     public void report()
     {
-        RTCPPacket packets[] = getReportBuilder().makeReports();
+        RTCPPacket packets[];
+        try
+        {
+            packets = getReportBuilder().makeReports();
+        }
+        catch (Exception e)
+        {
+            logger.log(Level.SEVERE, "makeReports() crashed", e);
+            packets = new RTCPPacket[0];
+        }
+
         if (packets == null || packets.length == 0)
             return;
         RTCPCompoundPacket cp = new RTCPCompoundPacket(packets);
