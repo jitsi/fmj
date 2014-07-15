@@ -21,7 +21,24 @@ public class RTCPReportBlock implements Feedback
     long lsr;
     long dlsr;
 
-    long receiptTime;
+    public long receiptTime;
+
+    public RTCPReportBlock(int ssrc,
+            int fractionlost,
+            int packetslost,
+            long lastseq,
+            int jitter,
+            long lsr,
+            long dlsr)
+    {
+        this.ssrc = ssrc;
+        this.fractionlost = fractionlost;
+        this.packetslost = packetslost;
+        this.lastseq = lastseq;
+        this.jitter = jitter;
+        this.lsr = lsr;
+        this.dlsr = dlsr;
+    }
 
     public RTCPReportBlock()
     {
