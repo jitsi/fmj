@@ -2,7 +2,6 @@ package net.sf.fmj.media.rtp;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
 import javax.media.rtp.*;
 

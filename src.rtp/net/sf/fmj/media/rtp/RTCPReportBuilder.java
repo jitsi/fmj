@@ -1,7 +1,5 @@
 package net.sf.fmj.media.rtp;
 
-import java.util.*;
-
 /**
  * Created by gp on 6/12/14.
  */
