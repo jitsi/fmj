@@ -21,7 +21,7 @@ public class RTCPSDESPacket extends RTCPPacket
     }
 
     @Override
-    protected void assemble(DataOutputStream out) throws IOException
+    public void assemble(DataOutputStream out) throws IOException
     {
         out.writeByte(128 + sdes.length);
         out.writeByte(SDES);

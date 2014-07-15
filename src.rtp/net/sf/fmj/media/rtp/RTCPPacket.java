@@ -42,7 +42,7 @@ public abstract class RTCPPacket extends Packet
      * serialization/writing of the binary representation of this
      * <tt>RTCPPacket</tt>
      */
-    protected abstract void assemble(DataOutputStream dataoutputstream)
+    public abstract void assemble(DataOutputStream dataoutputstream)
         throws IOException;
 
     /**

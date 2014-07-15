@@ -23,7 +23,7 @@ public class RTCPCompoundPacket extends RTCPPacket
     }
 
     @Override
-    protected void assemble(DataOutputStream out) throws IOException
+    public void assemble(DataOutputStream out) throws IOException
     {
         throw new IllegalArgumentException("Recursive Compound Packet");
     }

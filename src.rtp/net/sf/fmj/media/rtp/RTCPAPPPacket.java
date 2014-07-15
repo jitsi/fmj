@@ -31,7 +31,7 @@ public class RTCPAPPPacket extends RTCPPacket
     }
 
     @Override
-    protected void assemble(DataOutputStream out) throws IOException
+    public void assemble(DataOutputStream out) throws IOException
     {
         out.writeByte(128 + subtype);
         out.writeByte(APP);
