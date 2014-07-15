@@ -7,7 +7,7 @@ import net.sf.fmj.utility.*;
 
 public class RTCPCompoundPacket extends RTCPPacket
 {
-    RTCPPacket packets[];
+    public RTCPPacket packets[];
 
     public RTCPCompoundPacket(Packet base)
     {

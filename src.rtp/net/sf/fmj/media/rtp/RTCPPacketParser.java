@@ -59,7 +59,7 @@ header |V=2|P|    NA   |      PT       |             length            |
 
                 // version must be 2.
                 if ((firstbyte & 0xc0) != 128)
-                    throw new BadFormatException();
+                    throw new BadVersionException("version must be 2");
 
                 int type = in.readUnsignedByte(); // 8 bits
 
@@ -136,7 +136,7 @@ block  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                         {
                             onMalformedSenderReport();
                             System.out.println("bad format.");
-                            throw new BadFormatException();
+                            throw new BadFormatException("inlength != 28 + 24 * firstbyte");
                         }
                         RTCPSRPacket srp = new RTCPSRPacket(base);
                         p = srp;
@@ -182,7 +182,7 @@ block  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                         if (inlength != 8 + 24 * firstbyte)
                         {
                             onMalformedReceiverReport();
-                            throw new BadFormatException();
+                            throw new BadFormatException("inlength != 8 + 24 * firstbyte");
                         }
                         RTCPRRPacket rrp = new RTCPRRPacket(base);
                         p = rrp;
@@ -227,7 +227,7 @@ chunk  |                          SSRC/CSRC_2                          |
                                 if (j < 1 || j > 8)
                                 {
                                     onMalformedSourceDescription();
-                                    throw new BadFormatException();
+                                    throw new BadFormatException("j < 1 || j > 8");
                                 }
                                 if (j == 1)
                                     gotcname = true;
@@ -242,7 +242,7 @@ chunk  |                          SSRC/CSRC_2                          |
                             if (!gotcname)
                             {
                                 onMalformedSourceDescription();
-                                throw new BadFormatException();
+                                throw new BadFormatException("!gotcname");
                             }
                             chunk.items = new RTCPSDESItem[items.size()];
                             items.copyInto(chunk.items);
@@ -256,7 +256,7 @@ chunk  |                          SSRC/CSRC_2                          |
                         if (inlength != sdesoff)
                         {
                             onMalformedSourceDescription();
-                            throw new BadFormatException();
+                            throw new BadFormatException("inlength != sdesoff");
                         }
                         break;
 
@@ -295,7 +295,7 @@ chunk  |                          SSRC/CSRC_2                          |
                         if (inlength != 4 + 4 * firstbyte + reasonlen)
                         {
                             onMalformedEndOfParticipation();
-                            throw new BadFormatException();
+                            throw new BadFormatException("inlength != 4 + 4 * firstbyte + reasonlen");
                         }
                         in.readFully(byep.reason);
                         in.skip(reasonlen - byep.reason.length);
@@ -316,7 +316,7 @@ chunk  |                          SSRC/CSRC_2                          |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  */
                         if (inlength < 12)
-                            throw new BadFormatException();
+                            throw new BadFormatException("inlength < 12");
                         RTCPAPPPacket appp = new RTCPAPPPacket(base);
                         p = appp;
                         appp.ssrc = in.readInt();
@@ -334,7 +334,7 @@ chunk  |                          SSRC/CSRC_2                          |
                         if (p == null)
                         {
                             onPayloadUknownType();
-                            throw new BadFormatException();
+                            throw new BadFormatException("p == null");
                         }
                         break;
                 }
@@ -366,7 +366,7 @@ chunk  |                          SSRC/CSRC_2                          |
             throws BadFormatException, IOException
     {
         onPayloadUknownType();
-        throw new BadFormatException();
+        throw new BadFormatException("Uknown payload type");
     }
 
 

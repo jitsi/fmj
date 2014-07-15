@@ -10,7 +10,7 @@ public class RTCPSRPacket extends RTCPPacket
     long rtptimestamp;
     long packetcount;
     long octetcount;
-    RTCPReportBlock reports[];
+    public RTCPReportBlock reports[];
 
     RTCPSRPacket(int ssrc, RTCPReportBlock reports[])
     {
