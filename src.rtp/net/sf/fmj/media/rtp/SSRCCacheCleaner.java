@@ -39,6 +39,8 @@ public class SSRCCacheCleaner implements Runnable
             return;
         double reportInterval
             = cache.calcReportInterval(cache.ourssrc.sender, true);
+        synchronized (cache.cache)
+        {
         for (Enumeration<SSRCInfo> elements = cache.cache.elements();
                 elements.hasMoreElements();)
         {
@@ -127,6 +129,7 @@ public class SSRCCacheCleaner implements Runnable
                     }
                 }
         }
+        } //synchronized
 
     }
 

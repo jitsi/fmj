@@ -90,11 +90,14 @@ public class SSRCCache
     int aliveCount()
     {
         int tot = 0;
+        synchronized (cache)
+        {
         for (Enumeration<SSRCInfo> e = cache.elements(); e.hasMoreElements();)
         {
             SSRCInfo s = e.nextElement();
             if (s.alive)
                 tot++;
+        }
         }
         return tot;
     }
