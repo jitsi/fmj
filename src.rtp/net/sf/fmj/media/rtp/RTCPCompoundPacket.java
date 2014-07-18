@@ -33,10 +33,12 @@ public class RTCPCompoundPacket extends RTCPPacket
         length = len;
         offset = 0;
 
-        if ((data == null) || (data.length < len))
-            data = new byte[len];
-
-        ByteBufferOutputStream bbos = new ByteBufferOutputStream(data, 0, len);
+        /*
+         * XXX We cannot reuse the data of super/this because it may be the same
+         * as the data of base at this time.
+         */
+        byte[] d = new byte[len];
+        ByteBufferOutputStream bbos = new ByteBufferOutputStream(d, 0, len);
         DataOutputStream dos = new DataOutputStream(bbos);
         int laststart;
         try
@@ -55,6 +57,7 @@ public class RTCPCompoundPacket extends RTCPPacket
             throw new NullPointerException("Impossible IO Exception");
         }
         int prelen = bbos.size();
+        super.data = d;
         if (prelen > len)
             throw new NullPointerException("RTCP Packet overflow");
         if (prelen < len)

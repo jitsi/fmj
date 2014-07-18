@@ -34,11 +34,14 @@ public class RTPPacket extends Packet
         length = len;
         offset = 0;
 
-        if ((data == null) || (data.length < len))
-            data = new byte[len];
-
-        ByteBufferOutputStream bbos = new ByteBufferOutputStream(data, 0, len);
+        /*
+         * XXX We cannot reuse the data of super/this because it may be the same
+         * as the data of base at this time.
+         */
+        byte[] d = new byte[len];
+        ByteBufferOutputStream bbos = new ByteBufferOutputStream(d, 0, len);
         DataOutputStream dos = new DataOutputStream(bbos);
+
         try
         {
             dos.writeByte(128);
@@ -50,6 +53,7 @@ public class RTPPacket extends Packet
             dos.writeInt((int) timestamp);
             dos.writeInt(ssrc);
             dos.write(base.data, payloadoffset, payloadlength);
+            super.data = d;
         }
         catch (IOException e)
         {
