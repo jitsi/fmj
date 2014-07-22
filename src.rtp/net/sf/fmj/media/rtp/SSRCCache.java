@@ -12,7 +12,7 @@ import net.sf.fmj.media.rtp.util.*;
 
 public class SSRCCache
 {
-    SSRCTable<SSRCInfo> cache;
+    public SSRCTable<SSRCInfo> cache;
     RTPSourceInfoCache sourceInfoCache;
     OverallStats stats;
     OverallTransStats transstats;
