@@ -27,6 +27,11 @@ public class DefaultRTCPReportBuilderImpl implements RTCPReportBuilder
         long time = System.currentTimeMillis();
         RTCPReportBlock reports[] = makeReceiverReports(time);
         RTCPReportBlock firstrep[] = reports;
+
+        // If the number of sources for which reception statistics are being
+        // reported exceeds 31, the number that will fit into one SR or RR
+        // packet, then additional RR packets SHOULD follow the initial report
+        // packet.
         if (reports.length > 31)
         {
             firstrep = new RTCPReportBlock[31];
@@ -67,6 +72,11 @@ public class DefaultRTCPReportBuilderImpl implements RTCPReportBuilder
         sp.sdes[0].ssrc = rtcpTransmitter.ssrcInfo.ssrc;
         Vector<RTCPSDESItem> itemvec = new Vector<RTCPSDESItem>();
         itemvec.addElement(new RTCPSDESItem(1, ourinfo.sourceInfo.getCNAME()));
+
+        // We send detailed SDES information every 3 report interval to avoid
+        // RTCP bandwidth overuse. See RFC3550, section 6.3.9 : Allocation of
+        // Source Description Bandwidth.
+
         if (sdescounter % 3 == 0)
         {
             if (ourinfo.name != null && ourinfo.name.getDescription() != null)
