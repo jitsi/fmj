@@ -5,11 +5,11 @@ import java.io.*;
 public class RTCPSRPacket extends RTCPPacket
 {
     public int ssrc;
-    long ntptimestampmsw;
-    long ntptimestamplsw;
-    long rtptimestamp;
-    long packetcount;
-    long octetcount;
+    public long ntptimestampmsw;
+    public long ntptimestamplsw;
+    public long rtptimestamp;
+    public long packetcount;
+    public long octetcount;
     public RTCPReportBlock reports[];
 
     public RTCPSRPacket(int ssrc, RTCPReportBlock reports[])
