@@ -156,7 +156,7 @@ public class Buffer
     /**
      * Indicates that the <tt>Buffer</tt> carries a time stamp that's in
      * relative time units. This means that individual time stamps are not
-     * measured against any indentifiable absolute origin--only the difference
+     * measured against any identifiable absolute origin--only the difference
      * between the time stamps of two consecutive buffers carries useful
      * information. (This is the time difference between the two packets.)
      */
@@ -191,7 +191,7 @@ public class Buffer
     /**
      * Indicates that some buffer queue in the data flow path from where this
      * buffer comes from is overflown. When such condition occurs, the
-     * processing element should attempt to speed up the procesing of this
+     * processing element should attempt to speed up the processing of this
      * buffer object to reduce the overflow.
      */
     public final static int FLAG_BUF_OVERFLOWN = (1 << 13);
@@ -199,7 +199,7 @@ public class Buffer
     /**
      * Indicates that some buffer queue in the data flow path from where this
      * buffer comes from is underflown. When such condition occurs, the
-     * processing element should attempt to speed up the procesing of this
+     * processing element should attempt to speed up the processing of this
      * buffer object to reduce the underflow.
      */
     public final static int FLAG_BUF_UNDERFLOWN = (1 << 14);
