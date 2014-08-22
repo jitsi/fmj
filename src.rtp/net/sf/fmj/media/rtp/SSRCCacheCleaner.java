@@ -7,16 +7,18 @@ import javax.media.rtp.event.*;
 
 import net.sf.fmj.media.rtp.util.*;
 
-public class SSRCCacheCleaner implements Runnable
+public class SSRCCacheCleaner
+    implements Runnable
 {
-    private SSRCCache cache;
-    private RTPMediaThread thread;
     private static final int DEATHTIME = 0x1b7740;
     private static final int TIMEOUT_MULTIPLIER = 5;
-    boolean timeToClean;
+
+    private SSRCCache cache;
     private boolean killed;
-    private StreamSynch streamSynch;
     private long lastCleaned;
+    private StreamSynch streamSynch;
+    private RTPMediaThread thread;
+    boolean timeToClean;
 
     public SSRCCacheCleaner(SSRCCache cache, StreamSynch streamSynch)
     {
@@ -34,13 +36,17 @@ public class SSRCCacheCleaner implements Runnable
     public synchronized void cleannow()
     {
         long time = System.currentTimeMillis();
+
         lastCleaned = time;
         if (cache.ourssrc == null)
             return;
+
         double reportInterval
             = cache.calcReportInterval(cache.ourssrc.sender, true);
+
         synchronized (cache.cache)
         {
+
         for (Enumeration<SSRCInfo> elements = cache.cache.elements();
                 elements.hasMoreElements();)
         {
@@ -112,25 +118,25 @@ public class SSRCCacheCleaner implements Runnable
                      */
                     else if (info.lastHeardFrom + (5 * 1000) <= time)
                     {
-                        TimeoutEvent evt = null;
                         cache.remove(info.ssrc);
-                        boolean byepart = false;
+
                         RTPSourceInfo sourceInfo = info.sourceInfo;
-                        if (sourceInfo != null
-                                && sourceInfo.getStreamCount() == 0)
-                            byepart = true;
-                        if (info instanceof ReceiveStream)
-                            evt = new TimeoutEvent(cache.sm, info.sourceInfo,
-                                    (ReceiveStream) info, byepart);
-                        else
-                            evt = new TimeoutEvent(cache.sm, info.sourceInfo,
-                                    null, byepart);
-                        cache.eventhandler.postEvent(evt);
+                        TimeoutEvent ev
+                            = new TimeoutEvent(
+                                    cache.sm,
+                                    sourceInfo,
+                                    (info instanceof ReceiveStream)
+                                        ? (ReceiveStream) info
+                                        : null,
+                                    (sourceInfo != null)
+                                        && (sourceInfo.getStreamCount() == 0));
+
+                        cache.eventhandler.postEvent(ev);
                     }
                 }
         }
-        } //synchronized
 
+        } // synchronized (cache.cache)
     }
 
     public synchronized void run()

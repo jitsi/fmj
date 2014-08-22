@@ -117,7 +117,8 @@ public class RTCPTransmitter
 
     public void report()
     {
-        RTCPPacket packets[];
+        RTCPPacket[] packets;
+
         try
         {
             packets = getReportBuilder().makeReports();
@@ -125,13 +126,14 @@ public class RTCPTransmitter
         catch (Exception e)
         {
             logger.log(Level.SEVERE, "makeReports() crashed", e);
-            packets = new RTCPPacket[0];
+            packets = null;
         }
 
-        if (packets == null || packets.length == 0)
-            return;
-        RTCPCompoundPacket cp = new RTCPCompoundPacket(packets);
-        transmit(cp);
+        if ((packets != null) && (packets.length != 0))
+        {
+            RTCPCompoundPacket compoundPacket = new RTCPCompoundPacket(packets);
+            transmit(compoundPacket);
+        }
     }
 
     public void setSender(RTCPRawSender s)
@@ -166,20 +168,23 @@ public class RTCPTransmitter
         }
     }
 
-    public void setReportBuilder(
-            RTCPReportBuilder reportBuilder)
+    public void setReportBuilder(RTCPReportBuilder reportBuilder)
     {
         this.reportBuilder = reportBuilder;
         if (this.reportBuilder != null)
+        {
             try
             {
                 this.reportBuilder.setRTCPTransmitter(this);
             }
             catch (Exception e)
             {
-                logger.log(Level.SEVERE, "The report builder did not accept " +
-                        "the RTCPTransmitter", e);
+                logger.log(
+                        Level.SEVERE,
+                        "The report builder did not accept the RTCPTransmitter",
+                        e);
             }
+        }
     }
 
     private RTCPReportBuilder getReportBuilder()
