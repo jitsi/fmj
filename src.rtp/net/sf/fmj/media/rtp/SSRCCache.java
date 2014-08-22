@@ -220,12 +220,14 @@ public class SSRCCache
             {
                 if (info.ours)
                 {
-                    SSRCInfo ssrcinfo1 = null;
-                    return ssrcinfo1;
+                    return null;
                 }
-                SSRCInfo newinfo = new RecvSSRCInfo(info);
-                info = newinfo;
-                cache.put(ssrc, info);
+                else
+                {
+                    SSRCInfo newinfo = new RecvSSRCInfo(info);
+                    info = newinfo;
+                    cache.put(ssrc, info);
+                }
             }
             if (info != null && mode == 2 && !(info instanceof PassiveSSRCInfo))
             {

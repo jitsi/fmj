@@ -11,13 +11,7 @@ import net.sf.fmj.media.rtp.util.*;
 
 public class RTCPReceiver implements PacketConsumer
 {
-    private static final int SR = 1;
-
-    private static final int RR = 2;
-
     private boolean rtcpstarted;
-
-    private boolean sentrecvstrmap;
 
     SSRCCache cache;
 
@@ -26,10 +20,10 @@ public class RTCPReceiver implements PacketConsumer
     public RTCPReceiver(SSRCCache ssrccache)
     {
         rtcpstarted = false;
-        sentrecvstrmap = false;
         type = 0;
         cache = ssrccache;
-        SSRCInfo ssrcinfo = ssrccache.lookup(ssrccache.ourssrc.ssrc);
+
+        ssrccache.lookup(ssrccache.ourssrc.ssrc);
     }
 
     public RTCPReceiver(SSRCCache ssrccache, DatagramSocket datagramsocket,
@@ -73,9 +67,12 @@ public class RTCPReceiver implements PacketConsumer
         SSRCInfo ssrcinfo = null;
         boolean flag = cache.sm.isUnicast();
         if (flag)
+        {
+            InetAddress remoteAddress
+                = ((UDPPacket) rtcppacket.base).remoteAddress;
             if (!rtcpstarted)
             {
-                cache.sm.startRTCPReports(((UDPPacket) rtcppacket.base).remoteAddress);
+                cache.sm.startRTCPReports(remoteAddress);
                 rtcpstarted = true;
                 byte abyte0[] = cache.sm.controladdress.getAddress();
                 int i = abyte0[3] & 0xff;
@@ -84,28 +81,30 @@ public class RTCPReceiver implements PacketConsumer
                     cache.sm.addUnicastAddr(cache.sm.controladdress);
                 } else
                 {
-                    InetAddress inetaddress = null;
-                    boolean flag1 = true;
+                    InetAddress inetaddress;
                     try
                     {
                         inetaddress = InetAddress.getLocalHost();
                     } catch (UnknownHostException unknownhostexception)
                     {
-                        flag1 = false;
+                        inetaddress = null;
                     }
-                    if (flag1)
+                    if (inetaddress != null)
                         cache.sm.addUnicastAddr(inetaddress);
                 }
-            } else if (!cache.sm
-                    .isSenderDefaultAddr(((UDPPacket) rtcppacket.base).remoteAddress))
-                cache.sm.addUnicastAddr(((UDPPacket) rtcppacket.base).remoteAddress);
+            } else if (!cache.sm.isSenderDefaultAddr(remoteAddress))
+            {
+                cache.sm.addUnicastAddr(remoteAddress);
+            }
+        }
         switch (rtcppacket.type)
         {
         default:
             break;
 
         case RTCPPacket.COMPOUND:
-            RTCPCompoundPacket rtcpcompoundpacket = (RTCPCompoundPacket) rtcppacket;
+            RTCPCompoundPacket rtcpcompoundpacket
+                = (RTCPCompoundPacket) rtcppacket;
             cache.updateavgrtcpsize(((Packet) (rtcpcompoundpacket)).length);
             for (int j = 0; j < rtcpcompoundpacket.packets.length; j++)
                 sendTo(rtcpcompoundpacket.packets[j]);
@@ -129,27 +128,26 @@ public class RTCPReceiver implements PacketConsumer
             ssrcinfo.lastSRntptimestamp = (rtcpsrpacket.ntptimestampmsw << 32)
                     + rtcpsrpacket.ntptimestamplsw;
             ssrcinfo.lastSRrtptimestamp = rtcpsrpacket.rtptimestamp;
-            ssrcinfo.lastSRreceiptTime = ((Packet) (rtcpsrpacket)).receiptTime;
-            ssrcinfo.lastRTCPreceiptTime = ((Packet) (rtcpsrpacket)).receiptTime;
-            ssrcinfo.lastHeardFrom = ((Packet) (rtcpsrpacket)).receiptTime;
+            ssrcinfo.lastSRreceiptTime = rtcpsrpacket.receiptTime;
+            ssrcinfo.lastRTCPreceiptTime = rtcpsrpacket.receiptTime;
+            ssrcinfo.lastHeardFrom = rtcpsrpacket.receiptTime;
             if (ssrcinfo.quiet)
             {
                 ssrcinfo.quiet = false;
-                ActiveReceiveStreamEvent activereceivestreamevent = null;
-                if (ssrcinfo instanceof ReceiveStream)
-                    activereceivestreamevent = new ActiveReceiveStreamEvent(
-                            cache.sm, ssrcinfo.sourceInfo,
-                            (ReceiveStream) ssrcinfo);
-                else
-                    activereceivestreamevent = new ActiveReceiveStreamEvent(
-                            cache.sm, ssrcinfo.sourceInfo, null);
+                ActiveReceiveStreamEvent activereceivestreamevent
+                    = new ActiveReceiveStreamEvent(
+                            cache.sm,
+                            ssrcinfo.sourceInfo,
+                            (ssrcinfo instanceof ReceiveStream)
+                                ? (ReceiveStream) ssrcinfo
+                                : null);
                 cache.eventhandler.postEvent(activereceivestreamevent);
             }
             ssrcinfo.lastSRpacketcount = rtcpsrpacket.packetcount;
             ssrcinfo.lastSRoctetcount = rtcpsrpacket.octetcount;
             for (int k = 0; k < rtcpsrpacket.reports.length; k++)
             {
-                rtcpsrpacket.reports[k].receiptTime = ((Packet) (rtcpsrpacket)).receiptTime;
+                rtcpsrpacket.reports[k].receiptTime = rtcpsrpacket.receiptTime;
                 int l = rtcpsrpacket.reports[k].ssrc;
                 RTCPReportBlock artcpreportblock[] = ssrcinfo.reports.get(l);
                 if (artcpreportblock == null)
@@ -168,20 +166,23 @@ public class RTCPReceiver implements PacketConsumer
                 break;
             if (!ssrcinfo.newpartsent && ssrcinfo.sourceInfo != null)
             {
-                NewParticipantEvent newparticipantevent = new NewParticipantEvent(
-                        cache.sm, ssrcinfo.sourceInfo);
+                NewParticipantEvent newparticipantevent
+                    = new NewParticipantEvent(cache.sm, ssrcinfo.sourceInfo);
                 cache.eventhandler.postEvent(newparticipantevent);
                 ssrcinfo.newpartsent = true;
             }
             if (!ssrcinfo.recvstrmap && ssrcinfo.sourceInfo != null)
             {
                 ssrcinfo.recvstrmap = true;
-                StreamMappedEvent streammappedevent = new StreamMappedEvent(
-                        cache.sm, (ReceiveStream) ssrcinfo, ssrcinfo.sourceInfo);
+                StreamMappedEvent streammappedevent
+                    = new StreamMappedEvent(
+                            cache.sm,
+                            (ReceiveStream) ssrcinfo,
+                            ssrcinfo.sourceInfo);
                 cache.eventhandler.postEvent(streammappedevent);
             }
-            SenderReportEvent senderreportevent = new SenderReportEvent(
-                    cache.sm, (SenderReport) ssrcinfo);
+            SenderReportEvent senderreportevent
+                = new SenderReportEvent(cache.sm, (SenderReport) ssrcinfo);
             cache.eventhandler.postEvent(senderreportevent);
             break;
 
@@ -197,8 +198,8 @@ public class RTCPReceiver implements PacketConsumer
             if (ssrcinfo == null)
                 break;
             ssrcinfo.setAlive(true);
-            ssrcinfo.lastRTCPreceiptTime = ((Packet) (rtcprrpacket)).receiptTime;
-            ssrcinfo.lastHeardFrom = ((Packet) (rtcprrpacket)).receiptTime;
+            ssrcinfo.lastRTCPreceiptTime = rtcprrpacket.receiptTime;
+            ssrcinfo.lastHeardFrom = rtcprrpacket.receiptTime;
             if (ssrcinfo.quiet)
             {
                 ssrcinfo.quiet = false;
@@ -214,7 +215,7 @@ public class RTCPReceiver implements PacketConsumer
             }
             for (int i1 = 0; i1 < rtcprrpacket.reports.length; i1++)
             {
-                rtcprrpacket.reports[i1].receiptTime = ((Packet) (rtcprrpacket)).receiptTime;
+                rtcprrpacket.reports[i1].receiptTime = rtcprrpacket.receiptTime;
                 int j1 = rtcprrpacket.reports[i1].ssrc;
                 RTCPReportBlock artcpreportblock1[] = ssrcinfo.reports.get(j1);
                 if (artcpreportblock1 == null)
@@ -231,13 +232,13 @@ public class RTCPReceiver implements PacketConsumer
 
             if (!ssrcinfo.newpartsent && ssrcinfo.sourceInfo != null)
             {
-                NewParticipantEvent newparticipantevent1 = new NewParticipantEvent(
-                        cache.sm, ssrcinfo.sourceInfo);
+                NewParticipantEvent newparticipantevent1
+                    = new NewParticipantEvent(cache.sm, ssrcinfo.sourceInfo);
                 cache.eventhandler.postEvent(newparticipantevent1);
                 ssrcinfo.newpartsent = true;
             }
-            ReceiverReportEvent receiverreportevent = new ReceiverReportEvent(
-                    cache.sm, (ReceiverReport) ssrcinfo);
+            ReceiverReportEvent receiverreportevent
+                = new ReceiverReportEvent(cache.sm, (ReceiverReport) ssrcinfo);
             cache.eventhandler.postEvent(receiverreportevent);
             break;
 
@@ -247,31 +248,35 @@ public class RTCPReceiver implements PacketConsumer
             {
                 RTCPSDES rtcpsdes = rtcpsdespacket.sdes[k1];
                 if (type == 1)
+                {
                     if (rtcppacket.base instanceof UDPPacket)
                         ssrcinfo = cache.get(rtcpsdes.ssrc,
                                 ((UDPPacket) rtcppacket.base).remoteAddress,
                                 ((UDPPacket) rtcppacket.base).remotePort, 1);
                     else
                         ssrcinfo = cache.get(rtcpsdes.ssrc, null, 0, 1);
-                if (type == 2)
+                }
+                else if (type == 2)
+                {
                     if (rtcppacket.base instanceof UDPPacket)
                         ssrcinfo = cache.get(rtcpsdes.ssrc,
                                 ((UDPPacket) rtcppacket.base).remoteAddress,
                                 ((UDPPacket) rtcppacket.base).remotePort, 2);
                     else
                         ssrcinfo = cache.get(rtcpsdes.ssrc, null, 0, 2);
+                }
                 if (ssrcinfo == null)
                     break;
                 ssrcinfo.setAlive(true);
-                ssrcinfo.lastHeardFrom = ((Packet) (rtcpsdespacket)).receiptTime;
+                ssrcinfo.lastHeardFrom = rtcpsdespacket.receiptTime;
                 ssrcinfo.addSDESInfo(rtcpsdes);
             }
 
             if (ssrcinfo != null && !ssrcinfo.newpartsent
                     && ssrcinfo.sourceInfo != null)
             {
-                NewParticipantEvent newparticipantevent2 = new NewParticipantEvent(
-                        cache.sm, ssrcinfo.sourceInfo);
+                NewParticipantEvent newparticipantevent2
+                    = new NewParticipantEvent(cache.sm, ssrcinfo.sourceInfo);
                 cache.eventhandler.postEvent(newparticipantevent2);
                 ssrcinfo.newpartsent = true;
             }
@@ -280,8 +285,11 @@ public class RTCPReceiver implements PacketConsumer
                     && (ssrcinfo instanceof RecvSSRCInfo))
             {
                 ssrcinfo.recvstrmap = true;
-                StreamMappedEvent streammappedevent1 = new StreamMappedEvent(
-                        cache.sm, (ReceiveStream) ssrcinfo, ssrcinfo.sourceInfo);
+                StreamMappedEvent streammappedevent1
+                    = new StreamMappedEvent(
+                            cache.sm,
+                            (ReceiveStream) ssrcinfo,
+                            ssrcinfo.sourceInfo);
                 cache.eventhandler.postEvent(streammappedevent1);
             }
             type = 0;
@@ -310,8 +318,8 @@ public class RTCPReceiver implements PacketConsumer
                 {
                     ssrcinfo1.setAlive(false);
                     ssrcinfo1.byeReceived = true;
-                    ssrcinfo1.byeTime = ((Packet) (rtcppacket)).receiptTime;
-                    ssrcinfo1.lastHeardFrom = ((Packet) (rtcpbyepacket)).receiptTime;
+                    ssrcinfo1.byeTime = rtcppacket.receiptTime;
+                    ssrcinfo1.lastHeardFrom = rtcpbyepacket.receiptTime;
                 }
             }
 
@@ -320,14 +328,13 @@ public class RTCPReceiver implements PacketConsumer
             if (ssrcinfo1.quiet)
             {
                 ssrcinfo1.quiet = false;
-                ActiveReceiveStreamEvent activereceivestreamevent2 = null;
-                if (ssrcinfo1 instanceof ReceiveStream)
-                    activereceivestreamevent2 = new ActiveReceiveStreamEvent(
-                            cache.sm, ssrcinfo1.sourceInfo,
-                            (ReceiveStream) ssrcinfo1);
-                else
-                    activereceivestreamevent2 = new ActiveReceiveStreamEvent(
-                            cache.sm, ssrcinfo1.sourceInfo, null);
+                ActiveReceiveStreamEvent activereceivestreamevent2
+                    = new ActiveReceiveStreamEvent(
+                            cache.sm,
+                            ssrcinfo1.sourceInfo,
+                            (ssrcinfo1 instanceof ReceiveStream)
+                                ? (ReceiveStream) ssrcinfo1
+                                : null);
                 cache.eventhandler.postEvent(activereceivestreamevent2);
             }
             ssrcinfo1.byereason = new String(rtcpbyepacket.reason);
@@ -366,29 +373,29 @@ public class RTCPReceiver implements PacketConsumer
                 ssrcinfo2 = cache.get(rtcpapppacket.ssrc, null, 0);
             if (ssrcinfo2 == null)
                 break;
-            ssrcinfo2.lastHeardFrom = ((Packet) (rtcpapppacket)).receiptTime;
+            ssrcinfo2.lastHeardFrom = rtcpapppacket.receiptTime;
             if (ssrcinfo2.quiet)
             {
                 ssrcinfo2.quiet = false;
-                ActiveReceiveStreamEvent activereceivestreamevent3 = null;
-                if (ssrcinfo2 instanceof ReceiveStream)
-                    activereceivestreamevent3 = new ActiveReceiveStreamEvent(
-                            cache.sm, ssrcinfo2.sourceInfo,
-                            (ReceiveStream) ssrcinfo2);
-                else
-                    activereceivestreamevent3 = new ActiveReceiveStreamEvent(
-                            cache.sm, ssrcinfo2.sourceInfo, null);
+                ActiveReceiveStreamEvent activereceivestreamevent3
+                    = new ActiveReceiveStreamEvent(
+                            cache.sm,
+                            ssrcinfo2.sourceInfo,
+                            (ssrcinfo2 instanceof ReceiveStream)
+                                ? (ReceiveStream) ssrcinfo2
+                                : null);
                 cache.eventhandler.postEvent(activereceivestreamevent3);
             }
-            ApplicationEvent applicationevent = null;
-            if (ssrcinfo2 instanceof RecvSSRCInfo)
-                applicationevent = new ApplicationEvent(cache.sm,
-                        ssrcinfo2.sourceInfo, (ReceiveStream) ssrcinfo2,
-                        rtcpapppacket.subtype, null, rtcpapppacket.data);
-            if (ssrcinfo2 instanceof PassiveSSRCInfo)
-                applicationevent = new ApplicationEvent(cache.sm,
-                        ssrcinfo2.sourceInfo, null, rtcpapppacket.subtype,
-                        null, rtcpapppacket.data);
+            ApplicationEvent applicationevent
+                = new ApplicationEvent(
+                        cache.sm,
+                        ssrcinfo2.sourceInfo,
+                        (ssrcinfo2 instanceof ReceiveStream)
+                            ? (ReceiveStream) ssrcinfo2
+                            : null,
+                        rtcpapppacket.subtype,
+                        null,
+                        rtcpapppacket.data);
             cache.eventhandler.postEvent(applicationevent);
             break;
         }
