@@ -21,8 +21,8 @@ import net.sf.fmj.media.rtp.util.*;
  */
 public class RTPSessionMgr extends RTPManager implements SessionManager
 {
-    private static final Logger logger = Logger.getLogger(RTPSessionMgr.class
-            .getName());
+    private static final Logger logger
+        = Logger.getLogger(RTPSessionMgr.class.getName());
 
     private static final String SOURCE_DESC_EMAIL
         = "fmj-devel@lists.sourceforge.net";
@@ -1382,63 +1382,60 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     {
         rtpConnector = rtpconnector;
         newRtpInterface = true;
-        String s = SourceDescription.generateCNAME();
+        String cname = SourceDescription.generateCNAME();
         SourceDescription asourcedescription[] = {
                 new SourceDescription(3, SOURCE_DESC_EMAIL, 1, false),
-                new SourceDescription(1, s, 1, false),
+                new SourceDescription(1, cname, 1, false),
                 new SourceDescription(6, SOURCE_DESC_TOOL, 1, false) };
         int ssrc = (int) generateSSRC(GenerateSSRCCause.INITIALIZE);
         ttl = 1;
-        participating = (rtpConnector.getRTCPBandwidthFraction() != 0.0D);
+        double rtcpBandwidthFraction = rtpConnector.getRTCPBandwidthFraction();
+        participating = (rtcpBandwidthFraction != 0.0D);
         cache = new SSRCCache(this);
         cache.sessionbandwidth = 0x5dc00;
         formatinfo.setCache(cache);
-        if (rtpConnector.getRTCPBandwidthFraction() > 0.0D)
+        if (rtcpBandwidthFraction <= 0.0D)
         {
-            cache.rtcp_bw_fraction = rtpConnector.getRTCPBandwidthFraction();
-        } else
-        {
-            cache.rtcp_bw_fraction = 0.050000000000000003D;
+            rtcpBandwidthFraction = 0.050000000000000003D;
         }
-        if (rtpConnector.getRTCPSenderBandwidthFraction() > 0.0D)
+        cache.rtcp_bw_fraction = rtcpBandwidthFraction;
+        double rtcpSenderBandwidthFraction
+            = rtpConnector.getRTCPSenderBandwidthFraction();
+        if (rtcpSenderBandwidthFraction <= 0.0D)
         {
-            cache.rtcp_sender_bw_fraction = rtpConnector
-                    .getRTCPSenderBandwidthFraction();
-        } else
-        {
-            cache.rtcp_sender_bw_fraction = 0.25D;
+            rtcpSenderBandwidthFraction = 0.25D;
         }
+        cache.rtcp_sender_bw_fraction = rtcpSenderBandwidthFraction;
         cache.ourssrc = cache.get(ssrc, null, 0, 2);
         cache.ourssrc.setAlive(true);
         if (!isCNAME(asourcedescription))
         {
-            SourceDescription asourcedescription1[] = setCNAME(asourcedescription);
-            cache.ourssrc.setSourceDescription(asourcedescription1);
-        } else
-        {
-            cache.ourssrc.setSourceDescription(asourcedescription);
+            asourcedescription = setCNAME(asourcedescription);
         }
+        cache.ourssrc.setSourceDescription(asourcedescription);
         cache.ourssrc.ssrc = ssrc;
         cache.ourssrc.setOurs(true);
         initialized = true;
         rtpRawReceiver = new RTPRawReceiver(rtpConnector, defaultstats);
-        rtcpRawReceiver = new RTCPRawReceiver(rtpConnector, defaultstats,
-                streamSynch);
-        rtpDemultiplexer = new RTPDemultiplexer(cache, rtpRawReceiver,
-                streamSynch);
-        rtpForwarder = new PacketForwarder(rtpRawReceiver, new RTPReceiver(
-                cache, rtpDemultiplexer));
+        rtcpRawReceiver
+            = new RTCPRawReceiver(rtpConnector, defaultstats, streamSynch);
+        rtpDemultiplexer
+            = new RTPDemultiplexer(cache, rtpRawReceiver, streamSynch);
+        rtpForwarder
+            = new PacketForwarder(
+                    rtpRawReceiver,
+                    new RTPReceiver(cache, rtpDemultiplexer));
         if (rtpForwarder != null)
             rtpForwarder.startPF("RTP Forwarder: " + rtpConnector);
-        rtcpForwarder = new PacketForwarder(rtcpRawReceiver, new RTCPReceiver(
-                cache));
+        rtcpForwarder
+            = new PacketForwarder(rtcpRawReceiver, new RTCPReceiver(cache));
         if (rtcpForwarder != null)
             rtcpForwarder.startPF("RTCP Forwarder: " + rtpConnector);
         cleaner = new SSRCCacheCleaner(cache, streamSynch);
         if (participating && cache.ourssrc != null)
         {
-            cache.ourssrc.reporter = startParticipating(rtpConnector,
-                    cache.ourssrc);
+            cache.ourssrc.reporter
+                = startParticipating(rtpConnector, cache.ourssrc);
         }
     }
 

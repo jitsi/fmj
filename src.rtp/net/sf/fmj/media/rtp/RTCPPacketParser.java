@@ -10,25 +10,96 @@ import java.util.*;
  */
 public class RTCPPacketParser
 {
-    private List<RTCPPacketParserListener> listeners = new ArrayList<RTCPPacketParserListener>();
+    private final List<RTCPPacketParserListener> listeners
+        = new ArrayList<RTCPPacketParserListener>();
 
     public void addRTCPPacketParserListener(RTCPPacketParserListener listener)
     {
+        if (listener == null)
+            throw new NullPointerException("listener");
+
         synchronized (listeners)
         {
             if (!listeners.contains(listener))
+                listeners.add(listener);
+        }
+    }
+
+    private void onEnterSenderReport()
+    {
+        synchronized (listeners)
+        {
+            for (RTCPPacketParserListener l : listeners)
             {
-                this.listeners.add(listener);
+                l.enterSenderReport();
             }
         }
     }
 
-    public void removeRTCPPacketParserListener(RTCPPacketParserListener listener)
+    private void onMalformedEndOfParticipation()
     {
         synchronized (listeners)
         {
-            if (listeners.contains(listener))
-                this.listeners.remove(listener);
+            for (RTCPPacketParserListener l : listeners)
+            {
+                l.malformedEndOfParticipation();
+            }
+        }
+    }
+
+    private void onMalformedReceiverReport()
+    {
+        synchronized (listeners)
+        {
+            for (RTCPPacketParserListener l : listeners)
+            {
+                l.malformedReceiverReport();
+            }
+        }
+    }
+
+
+    private void onMalformedSenderReport()
+    {
+        synchronized (listeners)
+        {
+            for (RTCPPacketParserListener l : listeners)
+            {
+                l.malformedSenderReport();
+            }
+        }
+    }
+
+    private void onMalformedSourceDescription()
+    {
+        synchronized (listeners)
+        {
+            for (RTCPPacketParserListener l : listeners)
+            {
+                l.malformedSourceDescription();
+            }
+        }
+    }
+
+    private void onPayloadUknownType()
+    {
+        synchronized (listeners)
+        {
+            for (RTCPPacketParserListener l : listeners)
+            {
+                l.uknownPayloadType();
+            }
+        }
+    }
+
+    private void onVisitSenderReport(RTCPSRPacket rtcpSRPacket)
+    {
+        synchronized (listeners)
+        {
+            for (RTCPPacketParserListener l : listeners)
+            {
+                l.visitSendeReport(rtcpSRPacket);
+            }
         }
     }
 
@@ -37,10 +108,11 @@ public class RTCPPacketParser
         RTCPCompoundPacket base = new RTCPCompoundPacket(packet);
         Vector<RTCPPacket> subpackets = new Vector<RTCPPacket>(2);
         DataInputStream in 
-            = new DataInputStream(new ByteArrayInputStream(
-                base.data, 
-                base.offset,
-                base.length));
+            = new DataInputStream(
+                    new ByteArrayInputStream(
+                            base.data,
+                            base.offset,
+                            base.length));
         try
         {
             int length;
@@ -59,7 +131,14 @@ header |V=2|P|    NA   |      PT       |             length            |
 
                 // version must be 2.
                 if ((firstbyte & 0xc0) != 128)
-                    throw new BadVersionException("version must be 2");
+                {
+                    throw new BadVersionException(
+                            "version must be 2. (base.length " + base.length
+                                + ", base.offset " + base.offset
+                                + ", firstbyte 0x"
+                                + Integer.toHexString(firstbyte) + ", offset "
+                                + offset + ")");
+                }
 
                 int type = in.readUnsignedByte(); // 8 bits
 
@@ -70,7 +149,10 @@ header |V=2|P|    NA   |      PT       |             length            |
                 length = length + 1 << 2;
 
                 if (offset + length > base.length)
-                    throw new BadFormatException("Packet length less than actual packet length");
+                {
+                    throw new BadFormatException(
+                            "Packet length less than actual packet length");
+                }
 
                 // find padding length, if any.
                 int padlen = 0;
@@ -79,7 +161,8 @@ header |V=2|P|    NA   |      PT       |             length            |
                     if ((firstbyte & 0x20) != 0)
                     {
                         // packet has padding.
-                        padlen = ((Packet) (base)).data[(((Packet) (base)).offset + ((Packet) (base)).length) - 1] & 0xff;
+                        padlen
+                            = base.data[base.offset + base.length - 1] & 0xff;
                         if (padlen == 0)
                             throw new BadFormatException();
                     }
@@ -136,7 +219,8 @@ block  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                         {
                             onMalformedSenderReport();
                             System.out.println("bad format.");
-                            throw new BadFormatException("inlength != 28 + 24 * firstbyte");
+                            throw new BadFormatException(
+                                    "inlength != 28 + 24 * firstbyte");
                         }
                         RTCPSRPacket srp = new RTCPSRPacket(base);
                         p = srp;
@@ -182,7 +266,8 @@ block  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                         if (inlength != 8 + 24 * firstbyte)
                         {
                             onMalformedReceiverReport();
-                            throw new BadFormatException("inlength != 8 + 24 * firstbyte");
+                            throw new BadFormatException(
+                                    "inlength != 8 + 24 * firstbyte");
                         }
                         RTCPRRPacket rrp = new RTCPRRPacket(base);
                         p = rrp;
@@ -219,7 +304,8 @@ chunk  |                          SSRC/CSRC_2                          |
                             sdesp.sdes[i] = chunk;
                             chunk.ssrc = in.readInt();
                             sdesoff += 5;
-                            Vector<RTCPSDESItem> items = new Vector<RTCPSDESItem>();
+                            Vector<RTCPSDESItem> items
+                                = new Vector<RTCPSDESItem>();
                             boolean gotcname = false;
                             int j;
                             while ((j = in.readUnsignedByte()) != 0)
@@ -227,7 +313,8 @@ chunk  |                          SSRC/CSRC_2                          |
                                 if (j < 1 || j > 8)
                                 {
                                     onMalformedSourceDescription();
-                                    throw new BadFormatException("j < 1 || j > 8");
+                                    throw new BadFormatException(
+                                            "j < 1 || j > 8");
                                 }
                                 if (j == 1)
                                     gotcname = true;
@@ -295,7 +382,8 @@ chunk  |                          SSRC/CSRC_2                          |
                         if (inlength != 4 + 4 * firstbyte + reasonlen)
                         {
                             onMalformedEndOfParticipation();
-                            throw new BadFormatException("inlength != 4 + 4 * firstbyte + reasonlen");
+                            throw new BadFormatException(
+                                    "inlength != 4 + 4 * firstbyte + reasonlen");
                         }
                         in.readFully(byep.reason);
                         in.skip(reasonlen - byep.reason.length);
@@ -369,8 +457,10 @@ chunk  |                          SSRC/CSRC_2                          |
         throw new BadFormatException("Uknown payload type");
     }
 
-
-    private void readRTCPReportBlock(DataInputStream in, RTCPReportBlock[] reports) throws IOException
+    private void readRTCPReportBlock(
+            DataInputStream in,
+            RTCPReportBlock[] reports)
+        throws IOException
     {
         for (int i = 0; i < reports.length; i++)
         {
@@ -388,79 +478,14 @@ chunk  |                          SSRC/CSRC_2                          |
         }
     }
 
-    private void onVisitSenderReport(RTCPSRPacket rtcpSRPacket)
+    public void removeRTCPPacketParserListener(
+            RTCPPacketParserListener listener)
     {
-        synchronized (listeners)
+        if (listener != null)
         {
-            for (RTCPPacketParserListener l : listeners)
+            synchronized (listeners)
             {
-                l.visitSendeReport(rtcpSRPacket);
-            }
-        }
-    }
-
-    private void onPayloadUknownType()
-    {
-        synchronized (listeners)
-        {
-            for (RTCPPacketParserListener l : listeners)
-            {
-                l.uknownPayloadType();
-            }
-        }
-    }
-
-    private void onMalformedEndOfParticipation()
-    {
-        synchronized (listeners)
-        {
-            for (RTCPPacketParserListener l : listeners)
-            {
-                l.malformedEndOfParticipation();
-            }
-        }
-    }
-
-    private void onMalformedSourceDescription()
-    {
-        synchronized (listeners)
-        {
-            for (RTCPPacketParserListener l : listeners)
-            {
-                l.malformedSourceDescription();
-            }
-        }
-    }
-
-    private void onMalformedReceiverReport()
-    {
-        synchronized (listeners)
-        {
-            for (RTCPPacketParserListener l : listeners)
-            {
-                l.malformedReceiverReport();
-            }
-        }
-    }
-
-    private void onMalformedSenderReport()
-    {
-        synchronized (listeners)
-        {
-            for (RTCPPacketParserListener l : listeners)
-            {
-                l.malformedSenderReport();
-            }
-        }
-    }
-
-    private void onEnterSenderReport()
-    {
-        synchronized (listeners)
-        {
-            for (RTCPPacketParserListener l : listeners)
-            {
-                l.enterSenderReport();
+                listeners.remove(listener);
             }
         }
     }
