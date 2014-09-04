@@ -1,5 +1,7 @@
 package net.sf.fmj.media.rtp;
 
+import java.lang.ref.*;
+
 import javax.media.*;
 import javax.media.control.*;
 import javax.media.format.*;
@@ -20,9 +22,15 @@ import net.sf.fmj.media.rtp.util.*;
  */
 public class RTPSourceStream
     extends BasicSourceStream
-    implements PushBufferStream, Runnable
+    implements PushBufferStream
 {
-    private BufferControlImpl bc = null;
+    /**
+     * The timeout in milliseconds to be used by the invocations of
+     * {@link Object#wait(long)}.
+     */
+    private static final long WAIT_TIMEOUT = 100L;
+
+    private BufferControlImpl bc;
 
     /**
      * The jitter buffer associated with this instance in terms of behaviour,
@@ -34,6 +42,17 @@ public class RTPSourceStream
     private boolean bufferWhenStopped = true;
 
     /**
+     * The indicator which determines whether {@link #close()} has been invoked
+     * without an intervening invocation of {@link #connect()}.
+     */
+    private boolean closed = false;
+
+    /**
+     * The indicator which determines whether {@link #close()} is executing.
+     */
+    private boolean closing = false;
+
+    /**
      * The <tt>DataSource</tt> which has initialized and has this instance as
      * its <tt>sourceStream</tt>.
      */
@@ -43,7 +62,6 @@ public class RTPSourceStream
 
     private boolean hasRead = false;
 
-    private boolean killed = false;
     /**
      * The sequence number of the last <tt>Buffer</tt> added to this instance.
      */
@@ -71,7 +89,7 @@ public class RTPSourceStream
      */
     final JitterBufferStats stats;
 
-    private RTPMediaThread thread;
+    private Thread thread;
 
     private BufferTransferHandler transferHandler;
 
@@ -91,7 +109,7 @@ public class RTPSourceStream
          */
         setBehaviour(null);
 
-        createThread();
+        startThread();
     }
 
     /**
@@ -203,37 +221,48 @@ public class RTPSourceStream
 
     public void close()
     {
-        if (killed)
-            return;
-        stats.printStats();
-        stop();
-        killed = true;
         synchronized (startSyncRoot)
         {
+            if (closing)
+                return;
+            else
+                closing = true;
             startSyncRoot.notifyAll();
         }
-        synchronized (q)
+        try
         {
-            q.notifyAll();
+            thread = null;
+            if (!closed)
+            {
+                closed = true;
+
+                stats.printStats();
+                stop();
+                synchronized (q)
+                {
+                    q.notifyAll();
+                }
+                if (bc != null)
+                    bc.removeSourceStream(this);
+            }
         }
-        thread = null;
-        if (bc != null)
-            bc.removeSourceStream(this);
+        finally
+        {
+            synchronized (startSyncRoot)
+            {
+                closing = false;
+                startSyncRoot.notifyAll();
+            }
+        }
     }
 
     public void connect()
     {
-        killed = false;
-        createThread();
-    }
-
-    private void createThread()
-    {
-        if (thread == null)
+        synchronized (startSyncRoot)
         {
-            thread = new RTPMediaThread(this, "RTPStream");
-            thread.useControlPriority();
-            thread.start();
+            waitWhileClosing();
+            closed = false;
+            startThread();
         }
     }
 
@@ -294,6 +323,7 @@ public class RTPSourceStream
         return thisControls;
     }
 
+    @Override
     public Format getFormat()
     {
         return format;
@@ -323,6 +353,7 @@ public class RTPSourceStream
      * @param buffer The <tt>Buffer</tt> object to copy an element of the queue
      * to.
      */
+    @Override
     public void read(Buffer buffer)
     {
         /*
@@ -381,42 +412,64 @@ public class RTPSourceStream
         }
     }
 
-    public void run()
+    /**
+     * Runs in {@link #thread}.
+     *
+     * @return <tt>true</tt> if the current thread is to continue invoking the
+     * method; otherwise, <tt>false</tt>
+     */
+    private boolean runInThread()
     {
-        do
+        synchronized (startSyncRoot)
         {
-            try
+            // Is this RTPSourceStream still utilizing the current thread?
+            if (!Thread.currentThread().equals(thread)
+                    || closing
+                    || closed)
             {
-                synchronized (startSyncRoot)
-                {
-                    if (!killed && !started)
-                    {
-                        startSyncRoot.wait();
-                        continue;
-                    }
-                }
-                synchronized (q)
-                {
-                    if (!killed && !hasRead && behaviour.willReadBlock())
-                    {
-                        q.wait();
-                        continue;
-                    }
-
-                    hasRead = false;
-                }
-
-                BufferTransferHandler transferHandler = this.transferHandler;
-
-                if (transferHandler != null)
-                    transferHandler.transferData(this);
+                return false;
             }
-            catch (InterruptedException ie)
+            // Has this RTPSourceStream been started?
+            if (!started)
             {
-                Log.error("Thread " + ie.getMessage());
+                try
+                {
+                    startSyncRoot.wait(WAIT_TIMEOUT);
+                }
+                catch (InterruptedException ie)
+                {
+                }
+                return true;
             }
         }
-        while (!killed);
+
+        // This RTPSourceStream has been started and may or may not have been
+        // stopped and/or closed afterwards.
+        synchronized (q)
+        {
+            if (!hasRead && behaviour.willReadBlock())
+            {
+                try
+                {
+                    q.wait(WAIT_TIMEOUT);
+                }
+                catch (InterruptedException ie)
+                {
+                }
+                return true;
+            }
+            else
+            {
+                hasRead = false;
+            }
+        }
+
+        BufferTransferHandler transferHandler = this.transferHandler;
+
+        if (transferHandler != null)
+            transferHandler.transferData(this);
+
+        return true;
     }
 
     /**
@@ -470,7 +523,7 @@ public class RTPSourceStream
 
     void setContentDescriptor(String s)
     {
-        super.contentDescriptor = new ContentDescriptor(s);
+        contentDescriptor = new ContentDescriptor(s);
     }
 
     protected void setFormat(Format format)
@@ -495,6 +548,7 @@ public class RTPSourceStream
         }
     }
 
+    @Override
     public void setTransferHandler(BufferTransferHandler transferHandler)
     {
         this.transferHandler = transferHandler;
@@ -514,18 +568,75 @@ public class RTPSourceStream
         }
     }
 
+    /**
+     * Initializes and starts {@link #thread} if it has not been initialized and
+     * started yet.
+     */
+    private void startThread()
+    {
+        synchronized (startSyncRoot)
+        {
+            waitWhileClosing();
+            if ((this.thread == null) && !closed)
+            {
+                RTPMediaThread thread
+                    = new RTPMediaThread(
+                            new TransferDataRunnable(this),
+                            RTPSourceStream.class.getName());
+
+                thread.setDaemon(true);
+                thread.useControlPriority();
+
+                boolean started = false;
+
+                this.thread = thread;
+                try
+                {
+                    thread.start();
+                    started = true;
+                }
+                finally
+                {
+                    if (!started && thread.equals(this.thread))
+                        this.thread = null;
+                }
+            }
+
+            startSyncRoot.notifyAll();
+        }
+    }
+
     public void stop()
     {
         Log.info("Stopping RTPSourceStream.");
         synchronized (startSyncRoot)
         {
             started = false;
+            startSyncRoot.notifyAll();
             if (!bufferWhenStopped)
                 reset();
         }
         synchronized (q)
         {
             q.notifyAll();
+        }
+    }
+
+    /**
+     * Notifies this <tt>RTPSourceStream</tt> that its {@link #thread} may have
+     * exited.
+     */
+    private void threadExited()
+    {
+        // The current thread cannot be utilized by this RTPSourceStream any
+        // longer.
+        synchronized (startSyncRoot)
+        {
+            if (Thread.currentThread().equals(thread))
+            {
+                thread = null;
+                startSyncRoot.notifyAll();
+            }
         }
     }
 
@@ -537,5 +648,115 @@ public class RTPSourceStream
     public long updateThreshold(long l)
     {
         return l;
+    }
+
+    /**
+     * Wait on {@link #startSyncRoot} while {@link #closing} equals
+     * <tt>true</tt> i.e. wait on <tt>startSyncRoot</tt> until <tt>false</tt> is
+     * set on <tt>closing</tt>.
+     */
+    private void waitWhileClosing()
+    {
+        boolean interrupted = false;
+
+        while (closing)
+        {
+            try
+            {
+                startSyncRoot.wait();
+            }
+            catch (InterruptedException ie)
+            {
+                interrupted = true;
+            }
+        }
+        if (interrupted)
+            Thread.currentThread().interrupt();
+    }
+
+    /**
+     * Implements <tt>Runnable</tt> which is to run in
+     * {@link RTPSourceStream#thread} in order to transfer data out of the
+     * <tt>RTPSourceStream</tt> while, optionally, keeping a
+     * <tt>WeakReference</tt> to the <tt>RTPSourceStream</tt>.
+     *
+     * @author Lyubomir Marinov
+     */
+    private static class TransferDataRunnable
+        implements Runnable
+    {
+        /**
+         * The indicator which determines whether <tt>TransferDataRunnable</tt>
+         * keeps a <tt>WeakReference</tt> to the associated
+         * <tt>RTPSourceStream</tt>.
+         */
+        private static final boolean WEAK_REFERENCE = false;
+
+        /**
+         * The <tt>RTPSourceStream</tt> which has initialized and owns this
+         * instance.
+         */
+        private final RTPSourceStream owner;
+
+        /**
+         * A <tt>WeakReference</tt> to {@link #owner}.
+         */
+        private final WeakReference<RTPSourceStream> weakReference;
+
+        /**
+         * Initializes a new <tt>TransferDataRunnable</tt> instance which is to
+         * transfer data out of a specific <tt>RTPSourceStream</tt>.
+         *
+         * @param owner the <tt>RTPSourceStream</tt> which is initializing the
+         * new instance
+         */
+        public TransferDataRunnable(RTPSourceStream owner)
+        {
+            if (WEAK_REFERENCE)
+            {
+                this.owner = null;
+                this.weakReference = new WeakReference<RTPSourceStream>(owner);
+            }
+            else
+            {
+                this.owner = owner;
+                this.weakReference = null;
+            }
+        }
+
+        /**
+         * Gets the <tt>RTPSourceStream</tt> which has initialized and owns this
+         * instance.
+         *
+         * @return the <tt>RTPSourceStream</tt> which has initialized and owns
+         * this instance
+         */
+        private RTPSourceStream getOwner()
+        {
+            return WEAK_REFERENCE ? weakReference.get() : owner;
+        }
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                do
+                {
+                    RTPSourceStream owner = getOwner();
+
+                    if ((owner == null) || !owner.runInThread())
+                        break;
+                }
+                while (true);
+            }
+            finally
+            {
+                RTPSourceStream owner = getOwner();
+
+                if (owner != null)
+                    owner.threadExited();
+            }
+        }
     }
 }

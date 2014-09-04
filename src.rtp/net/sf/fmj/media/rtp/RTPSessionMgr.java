@@ -84,7 +84,9 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     protected Vector sendstreamlistener = null;
     private static final int GET_ALL_PARTICIPANTS = -1;
     boolean encryption = false;
-    SSRCTable<DataSource> dslist = null;
+
+    final SSRCTable<DataSource> dslist = new SSRCTable<DataSource>();
+
     StreamSynch streamSynch = null;
     FormatInfo formatinfo = null;
     DataSource defaultsource = null;
@@ -152,7 +154,6 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         streamlistener = new Vector();
         sendstreamlistener = new Vector();
         encryption = false;
-        dslist = new SSRCTable<DataSource>();
         formatinfo = null;
         defaultsource = null;
         defaultstream = null;
@@ -205,7 +206,6 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         streamlistener = new Vector();
         sendstreamlistener = new Vector();
         encryption = false;
-        dslist = new SSRCTable<DataSource>();
         formatinfo = null;
         defaultsource = null;
         defaultstream = null;
@@ -295,7 +295,6 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         streamlistener = new Vector();
         sendstreamlistener = new Vector();
         encryption = false;
-        dslist = new SSRCTable<DataSource>();
         formatinfo = null;
         defaultsource = null;
         defaultstream = null;
@@ -1917,6 +1916,25 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
             bds = false;
         }
         dslist.removeObj(datasource);
+
+        // XXX The specified datasource was removed from this RTPSessionMgr and,
+        // consequently, it is to be made available for garbage collection.
+        if (datasource != null)
+        {
+            try
+            {
+                datasource.disconnect();
+            }
+            catch (Throwable t)
+            {
+                // We tried to make the specified datasource available for
+                // garbage collection and we may or may not have succeeded.
+                if (t instanceof InterruptedException)
+                    Thread.currentThread().interrupt();
+                else if (t instanceof ThreadDeath)
+                    throw (ThreadDeath) t;
+            }
+        }
     }
 
     public void removePeer(SessionAddress sessionaddress)
