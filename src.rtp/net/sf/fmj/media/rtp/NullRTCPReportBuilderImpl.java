@@ -22,4 +22,10 @@ public class NullRTCPReportBuilderImpl implements RTCPReportBuilder
     {
         // Nothing to do here.
     }
+
+    @Override
+    public RTCPTransmitter getRTCPTransmitter()
+    {
+        return null;
+    }
 }

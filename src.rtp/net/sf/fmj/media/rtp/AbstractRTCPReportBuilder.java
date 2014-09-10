@@ -10,7 +10,8 @@ public abstract class AbstractRTCPReportBuilder
 {
     private RTCPTransmitter rtcpTransmitter;
 
-    protected RTCPTransmitter getRTCPTransmitter()
+    @Override
+    public RTCPTransmitter getRTCPTransmitter()
     {
         return rtcpTransmitter;
     }

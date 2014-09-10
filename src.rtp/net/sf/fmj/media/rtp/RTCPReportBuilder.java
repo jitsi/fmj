@@ -25,4 +25,10 @@ public interface RTCPReportBuilder
      * <tt>RTCPReportBuilder</tt> takes statistics from.
      */
     void setRTCPTransmitter(RTCPTransmitter rtcpTransmitter);
+
+    /**
+     * Gets the associated <tt>RTCPTransmitter</tt> that this
+     * <tt>RTCPReportBuilder</tt> takes statistics from.
+     */
+    RTCPTransmitter getRTCPTransmitter();
 }
