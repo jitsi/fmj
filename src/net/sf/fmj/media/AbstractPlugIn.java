@@ -10,11 +10,8 @@ import javax.media.*;
  */
 public abstract class AbstractPlugIn extends AbstractControls implements PlugIn
 {
-    private boolean opened = false;
-
     public void close()
     {
-        opened = false;
     }
 
     public String getName()
@@ -24,11 +21,9 @@ public abstract class AbstractPlugIn extends AbstractControls implements PlugIn
 
     public void open() throws ResourceUnavailableException
     {
-        opened = true;
     }
 
     public void reset()
     { // TODO
     }
-
 }

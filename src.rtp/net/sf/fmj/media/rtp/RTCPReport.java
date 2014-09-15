@@ -54,7 +54,7 @@ public abstract class RTCPReport implements Report
     private String cName = null;
 
     // The vector of feedback reports in this report
-    protected Vector feedbackReports = new Vector();
+    protected Vector<RTCPFeedback> feedbackReports = new Vector<RTCPFeedback>();
 
     // The header of the report
     protected RTCPHeader header;
@@ -69,7 +69,8 @@ public abstract class RTCPReport implements Report
     protected int sdesBytes = 0;
 
     // The source descriptions in the report
-    protected Vector sourceDescriptions = new Vector();
+    protected Vector<SourceDescription> sourceDescriptions
+        = new Vector<SourceDescription>();
 
     // The ssrc of the report
     private long ssrc = 0;
@@ -155,7 +156,7 @@ public abstract class RTCPReport implements Report
      *
      * @return the feedback reports for this RTCP report
      */
-    public Vector getFeedbackReports()
+    public Vector<RTCPFeedback> getFeedbackReports()
     {
         return feedbackReports;
     }
@@ -176,7 +177,7 @@ public abstract class RTCPReport implements Report
      *
      * @return the sources descriptions (SDES) in this RTCP report
      */
-    public Vector getSourceDescription()
+    public Vector<SourceDescription> getSourceDescription()
     {
         return sourceDescriptions;
     }

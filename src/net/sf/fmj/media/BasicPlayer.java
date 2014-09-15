@@ -32,7 +32,7 @@ public abstract class BasicPlayer extends BasicController implements Player,
     private Vector realizeEventList = new Vector();
     private Vector prefetchEventList = new Vector();
     private Vector stopEventList = new Vector();
-    private ControllerEvent CachingControlEvent = null;
+
     private Controller restartFrom = null;
     private Vector eomEventsReceivedFrom = new Vector();
     private Vector stopAtTimeReceivedFrom = new Vector();

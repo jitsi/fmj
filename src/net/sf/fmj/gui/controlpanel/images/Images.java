@@ -1,11 +1,8 @@
 package net.sf.fmj.gui.controlpanel.images;
 
 import java.util.*;
-import java.util.logging.*;
 
 import javax.swing.*;
-
-import net.sf.fmj.utility.*;
 
 /**
  *
@@ -14,8 +11,6 @@ import net.sf.fmj.utility.*;
  */
 public final class Images
 {
-    private static final Logger logger = LoggerSingleton.logger;
-
     public static final String SLIDER_THUMB_HORIZ = "slider_thumb_horiz.png";
     public static final String SLIDER_THUMB_VERT = "slider_thumb_vert.png";
 
@@ -49,7 +44,8 @@ public final class Images
         System.out.println("" + basePath);
     }
 
-    private HashMap images = new HashMap();
+    private final Map<String,ImageIcon> images
+        = new HashMap<String,ImageIcon>();
 
     private void doFlush()
     {
@@ -62,19 +58,9 @@ public final class Images
         if (icon == null)
         {
             icon = new ImageIcon(getClass().getResource(basePath + imageName));
-            if (icon != null)
-            {
-                images.put(imageName, icon);
-            } else
-            {
-                logger.warning("Unable to load icon: " + basePath + imageName); // can
-                                                                                // this
-                                                                                // actually
-                                                                                // happen?
-            }
+            images.put(imageName, icon);
         }
 
         return icon;
     }
-
 }

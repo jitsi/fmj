@@ -1,11 +1,7 @@
 package javax.media.bean.playerbean;
 
-import java.applet.*;
 import java.awt.*;
-import java.beans.*;
 import java.io.*;
-import java.net.*;
-import java.util.*;
 import java.util.logging.*;
 
 import javax.media.*;
@@ -20,23 +16,23 @@ public class MediaPlayer extends java.awt.Container implements Player,
 
     // created the same vars that Sun's has, we aren't using many of them yet
     // (or may might not ever)
-    private PropertyChangeSupport changes;
+//    private PropertyChangeSupport changes;
 
-    private String urlString;
+//    private String urlString;
 
-    private MediaLocator mrl;
+//    private MediaLocator mrl;
 
-    private URL url;
+//    private URL url;
 
-    private AppletContext mpAppletContext;
+//    private AppletContext mpAppletContext;
 
     private boolean panelVisible;
 
     private boolean cachingVisible;
 
-    private boolean fixedAspectRatio;
+//    private boolean fixedAspectRatio;
 
-    // private boolean fitVideo;
+//    private boolean fitVideo;
 
     private boolean looping;
 
@@ -57,17 +53,17 @@ public class MediaPlayer extends java.awt.Container implements Player,
 
     private transient int urlFieldHeight;
 
-    private int preferredHeight;
+//    private int preferredHeight;
 
-    private int preferredWidth;
+//    private int preferredWidth;
 
-    private int state;
+//    private int state;
 
-    private Vector controlListeners;
+//    private Vector controlListeners;
 
-    private PopupMenu zoomMenu;
+//    private PopupMenu zoomMenu;
 
-    private URL mpCodeBase;
+//    private URL mpCodeBase;
 
     protected transient GainControl gainControl;
 
@@ -83,13 +79,13 @@ public class MediaPlayer extends java.awt.Container implements Player,
 
     // selfListener
 
-    private long contentLength;
+//    private long contentLength;
 
     // private boolean fixtedFirstTime;
 
     private boolean displayURL;
 
-    private boolean isPopupActive;
+//    private boolean isPopupActive;
 
     // urlName
 
@@ -392,7 +388,7 @@ public class MediaPlayer extends java.awt.Container implements Player,
 
     public void setCodeBase(java.net.URL cb)
     {
-        mpCodeBase = cb;
+//        mpCodeBase = cb;
     }
 
     public void setControlPanelVisible(boolean isVisible)
@@ -463,7 +459,7 @@ public class MediaPlayer extends java.awt.Container implements Player,
 
     public void setPopupActive(boolean isActive)
     {
-        isPopupActive = isActive;
+//        isPopupActive = isActive;
     }
 
     public float setRate(float factor)
@@ -544,5 +540,4 @@ public class MediaPlayer extends java.awt.Container implements Player,
     {
         throw new UnsupportedOperationException(); // TODO
     }
-
 }

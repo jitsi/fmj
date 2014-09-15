@@ -18,7 +18,7 @@ public class Encoder extends AbstractCodec
     private static final int PCM_BYTES = 320;
     private static final int GSM_BYTES = 33;
     private int innerDataLength = 0;
-    private int inputDataLength = 0;
+
     byte[] innerContent;
 
     // TODO: move to base class?
@@ -100,7 +100,6 @@ public class Encoder extends AbstractCodec
         innerBuffer.setData(mergedContent);
         innerBuffer.setLength(mergedContent.length);
         innerDataLength = innerBuffer.getLength();
-        inputDataLength = inputBuffer.getLength();
 
         if (TRACE)
             dump("input ", inputBuffer);

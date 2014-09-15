@@ -62,8 +62,6 @@ public class NanoHTTPD
     {
         private Socket mySocket;
 
-        private BufferedReader myIn;
-
         public HTTPSession(Socket s)
         {
             mySocket = s;
@@ -426,7 +424,8 @@ public class NanoHTTPD
     /**
      * Hashtable mapping (String)FILENAME_EXTENSION -> (String)MIME_TYPE
      */
-    private static Hashtable theMimeTypes = new Hashtable();
+    private static Hashtable<String,String> theMimeTypes
+        = new Hashtable<String,String>();
 
     static
     {
@@ -496,21 +495,46 @@ public class NanoHTTPD
         myTcpPort = port;
 
         final ServerSocket ss = new ServerSocket(myTcpPort);
-        Thread t = new Thread(new Runnable()
+        boolean started = false;
+
+        try
         {
-            public void run()
-            {
-                try
-                {
-                    while (true)
-                        new HTTPSession(ss.accept());
-                } catch (IOException ioe)
-                {
-                }
-            }
-        });
-        t.setDaemon(true);
-        t.start();
+            Thread t
+                = new Thread(
+                        new Runnable()
+                        {
+                            public void run()
+                            {
+                                try
+                                {
+                                    while (true)
+                                        new HTTPSession(ss.accept());
+                                }
+                                catch (IOException ioe)
+                                {
+                                }
+                                finally
+                                {
+                                    try
+                                    {
+                                        ss.close();
+                                    }
+                                    catch (IOException ioe)
+                                    {
+                                    }
+                                }
+                            }
+                        });
+
+            t.setDaemon(true);
+            t.start();
+            started = true;
+        }
+        finally
+        {
+            if (!started)
+                ss.close();
+        }
     }
 
     /**
@@ -694,8 +718,7 @@ public class NanoHTTPD
         String mime = null;
         int dot = uri.lastIndexOf('.');
         if (dot >= 0)
-            mime = (String) theMimeTypes.get(uri.substring(dot + 1)
-                    .toLowerCase());
+            mime = theMimeTypes.get(uri.substring(dot + 1).toLowerCase());
         if (mime == null)
             mime = MIME_DEFAULT_BINARY;
 

@@ -1,9 +1,6 @@
 package net.sf.fmj.ui.wizards;
 
-import java.util.logging.*;
-
 import net.sf.fmj.ui.wizard.*;
-import net.sf.fmj.utility.*;
 
 /**
  *
@@ -12,8 +9,6 @@ import net.sf.fmj.utility.*;
  */
 public class ChooseSourcePanelDescriptor extends WizardPanelDescriptor
 {
-    private static final Logger logger = LoggerSingleton.logger;
-
     public static final String IDENTIFIER = ChooseSourcePanelDescriptor.class
             .getName();
 
@@ -86,5 +81,4 @@ public class ChooseSourcePanelDescriptor extends WizardPanelDescriptor
     {
         return ContentAndTrackFormatPanelDescriptor.IDENTIFIER;
     }
-
 }

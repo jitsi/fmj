@@ -10,7 +10,6 @@
 package net.sf.fmj.ui.wizards;
 
 import java.io.*;
-import java.util.logging.*;
 
 import net.sf.fmj.ui.wizard.*;
 import net.sf.fmj.utility.*;
@@ -21,8 +20,6 @@ import net.sf.fmj.utility.*;
  */
 public class FileDestPanelDescriptor extends WizardPanelDescriptor
 {
-    private static final Logger logger = LoggerSingleton.logger;
-
     public static final String IDENTIFIER = FileDestPanelDescriptor.class
             .getName();
 

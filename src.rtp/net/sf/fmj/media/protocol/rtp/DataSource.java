@@ -34,7 +34,7 @@ public class DataSource extends BasicPushBufferDataSource implements
 
     static int SSRC_UNDEFINED = 0; // RTPMediaLocator.SSRC_UNDEFINED
     private final RTPSourceStream[] srcStreams;
-    private boolean stopped = true;
+
     Player streamplayer = null;
     RTPSessionMgr mgr = null;
     RTPControl rtpcontrol = null;

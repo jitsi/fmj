@@ -9,15 +9,17 @@ public class MessageDrivenThread extends CloseableThread
 {
     private MessageDrivenThreadListener listener;
 
-    private ProducerConsumerQueue q = new ProducerConsumerQueue();
+    private final ProducerConsumerQueue<Object> q
+        = new ProducerConsumerQueue<Object>();
 
-    public MessageDrivenThread(final ThreadGroup group, final String threadName)
+    public MessageDrivenThread(ThreadGroup group, String threadName)
     {
         super(group, threadName);
     }
 
-    public MessageDrivenThread(final ThreadGroup group,
-            final String threadName, MessageDrivenThreadListener listener)
+    public MessageDrivenThread(
+            ThreadGroup group, String threadName,
+            MessageDrivenThreadListener listener)
     {
         super(group, threadName);
         this.listener = listener;

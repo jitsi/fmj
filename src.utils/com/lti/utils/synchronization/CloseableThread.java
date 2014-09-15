@@ -24,7 +24,7 @@ public abstract class CloseableThread extends Thread
 
     /** @deprecated */
     @Deprecated
-    public CloseableThread(final ThreadGroup group, final String threadName)
+    public CloseableThread(ThreadGroup group, String threadName)
     {
         super(group, threadName);
     }

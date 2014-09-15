@@ -13,7 +13,6 @@ public abstract class AbstractTrack implements Track
     private boolean enabled = true; // default to enabled. JMF won't play the
                                     // track if it is not enabled. TODO: FMJ
                                     // should do the same.
-    private TrackListener trackListener;
 
     public Time getDuration()
     {
@@ -51,7 +50,7 @@ public abstract class AbstractTrack implements Track
 
     public void setTrackListener(TrackListener listener)
     {
-        this.trackListener = listener;
+        // TODO Auto-generated method stub
     }
 
 }
