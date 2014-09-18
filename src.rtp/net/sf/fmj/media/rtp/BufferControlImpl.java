@@ -121,7 +121,7 @@ public class BufferControlImpl implements BufferControl
             } else
             {
                 s = btext.getText();
-                b = (new Long(s)).longValue();
+                b = Long.parseLong(s);
             }
             b = setBufferLength(b);
             updateBuffer(b);
@@ -139,7 +139,7 @@ public class BufferControlImpl implements BufferControl
             } else
             {
                 s = ttext.getText();
-                t = (new Long(s)).longValue();
+                t = Long.parseLong(s);
             }
             t = setMinimumThreshold(t);
             updateThreshold(t);
@@ -148,13 +148,13 @@ public class BufferControlImpl implements BufferControl
         public void updateBuffer(long b)
         {
             if (b != 0x7fffffffL && b != -2L && b != -1L)
-                bsize.setText((new Long(b)).toString());
+                bsize.setText(Long.toString(b));
         }
 
         public void updateThreshold(long d)
         {
             if (d != 0x7fffffffL && d != -2L && d != -1L)
-                tsize.setText((new Long(d)).toString());
+                tsize.setText(Long.toString(d));
         }
     }
 

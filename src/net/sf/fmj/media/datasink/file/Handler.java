@@ -55,7 +55,7 @@ public class Handler extends BasicDataSink implements SourceTransferHandler,
     protected int buffer2Length;
     protected long nextLocation = 0;
     protected Thread writeThread = null;
-    private Integer bufferLock = new Integer(0);
+    private Integer bufferLock = Integer.valueOf(0);
     private boolean receivedEOS = false;
 
     public int WRITE_CHUNK_SIZE = 16384;
@@ -137,13 +137,7 @@ public class Handler extends BasicDataSink implements SourceTransferHandler,
             {
                 // Delete the temp file if no errors creating streamable file.
                 // If errors creating streamable file, delete streamable file.
-                if (!errorCreatingStreamingFile)
-                {
-                    boolean status = deleteFile(tempFile);
-                } else
-                {
-                    boolean status = deleteFile(file);
-                }
+                deleteFile(errorCreatingStreamingFile ? file : tempFile);
             }
             // fileClosed = true;
             // sendEndofStreamEvent();

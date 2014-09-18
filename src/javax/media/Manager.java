@@ -130,10 +130,10 @@ public final class Manager
 
     static
     {
-        hints.put(new Integer(MAX_SECURITY), Boolean.FALSE);
-        hints.put(new Integer(CACHING), Boolean.TRUE);
-        hints.put(new Integer(LIGHTWEIGHT_RENDERER), Boolean.FALSE);
-        hints.put(new Integer(PLUGIN_PLAYER), Boolean.FALSE);
+        hints.put(Integer.valueOf(MAX_SECURITY), Boolean.FALSE);
+        hints.put(Integer.valueOf(CACHING), Boolean.TRUE);
+        hints.put(Integer.valueOf(LIGHTWEIGHT_RENDERER), Boolean.FALSE);
+        hints.put(Integer.valueOf(PLUGIN_PLAYER), Boolean.FALSE);
 
     }
 
