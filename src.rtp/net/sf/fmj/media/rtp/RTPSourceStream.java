@@ -1,6 +1,8 @@
 package net.sf.fmj.media.rtp;
 
 import java.lang.ref.*;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.*;
 
 import javax.media.*;
 import javax.media.control.*;
@@ -78,6 +80,20 @@ public class RTPSourceStream
      */
     final JitterBuffer q;
 
+    /**
+     * The <tt>Condition</tt> which is used for synchronization purposes instead
+     * of synchronizing a block on {@link #q} because the latter is not flexible
+     * enough for the thread complexity of <tt>JitterBuffer</tt>.
+     */
+    private final Condition qCondition;
+
+    /**
+     * The <tt>Lock</tt> which is used for synchronization purposes instead of
+     * synchronizing a block on {@link #q} because the latter is not flexible
+     * enough for the thread complexity of <tt>JitterBuffer</tt>.
+     */
+    private final Lock qLock;
+
     private boolean started = false;
 
     private final Object startSyncRoot = new Object();
@@ -99,6 +115,10 @@ public class RTPSourceStream
         this.datasource = datasource;
 
         q = new JitterBuffer(4);
+
+        qCondition = q.condition;
+        qLock = q.lock;
+
         stats = new JitterBufferStats(this);
 
         /*
@@ -130,13 +150,12 @@ public class RTPSourceStream
 
         long bufferSN = buffer.getSequenceNumber();
 
-        /*
-         * The access to lastSeqSent is synchronized because it is concurrently
-         * modified by multiple threads. The access to started and
-         * bufferWhenStopped above is usually synchronized on startReq so they
-         * are left out to avoid synchronization on multiple monitors.
-         */
-        synchronized (q)
+        // The access to lastSeqSent is synchronized because it is concurrently
+        // modified by multiple threads. The access to started and
+        // bufferWhenStopped above is usually synchronized on startReq so they
+        // are left out to avoid synchronization on multiple monitors.
+        qLock.lock();
+        try
         {
 
         if (lastSeqRecv - bufferSN > 256L)
@@ -158,10 +177,8 @@ public class RTPSourceStream
 
         if (q.noMoreFree())
         {
-            /*
-             * The queue cannot accommodate the current packet so we have to
-             * drop a packet.
-             */
+            // The queue cannot accommodate the current packet so we have to
+            // drop a packet.
             stats.incrementDiscardedFull();
             long l = q.getFirstSeq();
             if (l != Buffer.SEQUENCE_UNKNOWN && bufferSN < l)
@@ -214,9 +231,13 @@ public class RTPSourceStream
         }
 
         if (!behaviour.willReadBlock())
-            q.notifyAll();
+            qCondition.signalAll();
 
-        } /* synchronized (q) */
+        }
+        finally
+        {
+            qLock.unlock();
+        }
     }
 
     public void close()
@@ -238,10 +259,25 @@ public class RTPSourceStream
 
                 stats.printStats();
                 stop();
-                synchronized (q)
+
+                // A deadlock was observed in the implementation using
+                // synchronized blocks on q and Object.notifyAll(). In order to
+                // fix the deadlock, the implementation was changed to use Lock
+                // and Condition instead. If the Lock is not free, it should not
+                // matter much that no signaling on the Condition will be
+                // performed because the waiting threads will time out anyway.
+                if (qLock.tryLock())
                 {
-                    q.notifyAll();
+                    try
+                    {
+                        qCondition.signalAll();
+                    }
+                    finally
+                    {
+                        qLock.unlock();
+                    }
                 }
+
                 if (bc != null)
                     bc.removeSourceStream(this);
             }
@@ -356,11 +392,10 @@ public class RTPSourceStream
     @Override
     public void read(Buffer buffer)
     {
-        /*
-         * The access to lastSeqSent is synchronized because it is concurrently
-         * modified by multiple threads.
-         */
-        synchronized (q)
+        // The access to lastSeqSent is synchronized because it is concurrently
+        // modified by multiple threads.
+        qLock.lock();
+        try
         {
             try
             {
@@ -374,9 +409,13 @@ public class RTPSourceStream
                 if (!buffer.isDiscard())
                 {
                     hasRead = true;
-                    q.notifyAll();
+                    qCondition.notifyAll();
                 }
             }
+        }
+        finally
+        {
+            qLock.unlock();
         }
     }
 
@@ -385,16 +424,19 @@ public class RTPSourceStream
      */
     public void reset()
     {
-        /*
-         * The access to lastSeqSent is synchronized because it is concurrently
-         * modified by multiple threads.
-         */
-        synchronized (q)
+        // The access to lastSeqSent is synchronized because it is concurrently
+        // modified by multiple threads.
+        qLock.lock();
+        try
         {
             stats.incrementNbReset();
             resetQ();
             behaviour.reset();
             lastSeqSent = Buffer.SEQUENCE_UNKNOWN;
+        }
+        finally
+        {
+            qLock.unlock();
         }
     }
 
@@ -404,11 +446,16 @@ public class RTPSourceStream
     public void resetQ()
     {
         Log.comment("Resetting the RTP packet queue");
-        synchronized (q)
+        qLock.lock();
+        try
         {
             for (; q.fillNotEmpty(); behaviour.dropPkt())
                 stats.incrementDiscardedReset();
-            q.notifyAll();
+            qCondition.signalAll();
+        }
+        finally
+        {
+            qLock.unlock();
         }
     }
 
@@ -445,13 +492,14 @@ public class RTPSourceStream
 
         // This RTPSourceStream has been started and may or may not have been
         // stopped and/or closed afterwards.
-        synchronized (q)
+        qLock.lock();
+        try
         {
             if (!hasRead && behaviour.willReadBlock())
             {
                 try
                 {
-                    q.wait(WAIT_TIMEOUT);
+                    qCondition.await(WAIT_TIMEOUT, TimeUnit.MILLISECONDS);
                 }
                 catch (InterruptedException ie)
                 {
@@ -462,6 +510,10 @@ public class RTPSourceStream
             {
                 hasRead = false;
             }
+        }
+        finally
+        {
+            qLock.unlock();
         }
 
         BufferTransferHandler transferHandler = this.transferHandler;
@@ -562,9 +614,23 @@ public class RTPSourceStream
             started = true;
             startSyncRoot.notifyAll();
         }
-        synchronized (q)
+
+        // A deadlock was observed in the implementation using synchronized
+        // blocks on q and Object.notifyAll(). In order to fix the deadlock, the
+        // implementation was changed to use Lock and Condition instead. If the
+        // Lock is not free, it should not matter much that no signaling on the
+        // Condition will be performed because the waiting threads will time out
+        // anyway.
+        if (qLock.tryLock())
         {
-            q.notifyAll();
+            try
+            {
+                qCondition.signalAll();
+            }
+            finally
+            {
+                qLock.unlock();
+            }
         }
     }
 
@@ -616,9 +682,23 @@ public class RTPSourceStream
             if (!bufferWhenStopped)
                 reset();
         }
-        synchronized (q)
+
+        // A deadlock was observed in the implementation using synchronized
+        // blocks on q and Object.notifyAll(). In order to fix the deadlock, the
+        // implementation was changed to use Lock and Condition instead. If the
+        // Lock is not free, it should not matter much that no signaling on the
+        // Condition will be performed because the waiting threads will time out
+        // anyway.
+        if (qLock.tryLock())
         {
-            q.notifyAll();
+            try
+            {
+                qCondition.signalAll();
+            }
+            finally
+            {
+                qLock.unlock();
+            }
         }
     }
 

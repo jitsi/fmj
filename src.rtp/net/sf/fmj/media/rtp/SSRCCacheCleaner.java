@@ -10,34 +10,35 @@ import net.sf.fmj.media.rtp.util.*;
 public class SSRCCacheCleaner
     implements Runnable
 {
-    private static final int DEATHTIME = 0x1b7740;
+    /**
+     * The maximum interval in milliseconds between consecutive invocations of
+     * {@link #cleannow()}.
+     */
+    private static final long RUN_INTERVAL = 5000;
+
     private static final int TIMEOUT_MULTIPLIER = 5;
 
-    private SSRCCache cache;
+    private final SSRCCache cache;
     private boolean killed;
     private long lastCleaned;
-    private StreamSynch streamSynch;
-    private RTPMediaThread thread;
-    boolean timeToClean;
+    private final StreamSynch streamSynch;
+    private final RTPMediaThread thread;
 
     public SSRCCacheCleaner(SSRCCache cache, StreamSynch streamSynch)
     {
-        timeToClean = false;
-        killed = false;
-        lastCleaned = -1;
         this.cache = cache;
         this.streamSynch = streamSynch;
+
+        killed = false;
+        lastCleaned = -1L;
         thread = new RTPMediaThread(this, "SSRC Cache Cleaner");
         thread.useControlPriority();
         thread.setDaemon(true);
         thread.start();
     }
 
-    public synchronized void cleannow()
+    private void cleannow(long time)
     {
-        long time = System.currentTimeMillis();
-
-        lastCleaned = time;
         if (cache.ourssrc == null)
             return;
 
@@ -51,120 +52,171 @@ public class SSRCCacheCleaner
                 elements.hasMoreElements();)
         {
             SSRCInfo info = elements.nextElement();
-            if (!info.ours)
-                if (info.byeReceived)
-                {
-                    if (time - info.byeTime < 1000L)
-                    {
-                        try
-                        {
-                            Thread.sleep((1000L - time) + info.byeTime);
-                        }
-                        catch (InterruptedException e)
-                        {
-                        }
-                        time = System.currentTimeMillis();
-                    }
-                    info.byeTime = 0L;
-                    info.byeReceived = false;
-                    cache.remove(info.ssrc);
-                    streamSynch.remove(info.ssrc);
-                    boolean byepart = false;
-                    RTPSourceInfo sourceInfo = info.sourceInfo;
-                    if (sourceInfo != null && sourceInfo.getStreamCount() == 0)
-                        byepart = true;
-                    ByeEvent evtbye = null;
-                    if (info instanceof RecvSSRCInfo)
-                        evtbye = new ByeEvent(cache.sm, info.sourceInfo,
-                                (ReceiveStream) info, info.byereason, byepart);
-                    if (info instanceof PassiveSSRCInfo)
-                        evtbye = new ByeEvent(cache.sm, info.sourceInfo, null,
-                                info.byereason, byepart);
-                    cache.eventhandler.postEvent(evtbye);
-                }
-                else if (info.lastHeardFrom + reportInterval <= time)
-                {
-                    InactiveReceiveStreamEvent event = null;
-                    if (!info.inactivesent)
-                    {
-                        boolean laststream = false;
-                        RTPSourceInfo si = info.sourceInfo;
-                        if (si != null && si.getStreamCount() == 1)
-                            laststream = true;
-                        if (info instanceof ReceiveStream)
-                        {
-                            event = new InactiveReceiveStreamEvent(cache.sm,
-                                    info.sourceInfo, (ReceiveStream) info,
-                                    laststream);
-                        } else
-                        {
-                            if (info.lastHeardFrom + reportInterval * 5 <= time)
-                                event = new InactiveReceiveStreamEvent(
-                                        cache.sm, info.sourceInfo, null,
-                                        laststream);
-                        }
-                        if (event != null)
-                        {
-                            cache.eventhandler.postEvent(event);
-                            info.quiet = true;
-                            info.inactivesent = true;
-                            info.setAlive(false);
-                        }
-                    }
-                    /*
-                     * 30 minutes without hearing from an SSRC sounded like an
-                     * awful lot so it was reduced to what was considered a more
-                     * reasonable value in practical situations.
-                     */
-                    else if (info.lastHeardFrom + (5 * 1000) <= time)
-                    {
-                        cache.remove(info.ssrc);
 
-                        RTPSourceInfo sourceInfo = info.sourceInfo;
-                        TimeoutEvent ev
-                            = new TimeoutEvent(
+            if (info.ours)
+                continue;
+
+            if (info.byeReceived)
+            {
+                if (time - info.byeTime < 1000L)
+                {
+                    try
+                    {
+                        Thread.sleep((1000L - time) + info.byeTime);
+                    }
+                    catch (InterruptedException e)
+                    {
+                    }
+                    time = System.currentTimeMillis();
+                }
+                info.byeTime = 0L;
+                info.byeReceived = false;
+                cache.remove(info.ssrc);
+                streamSynch.remove(info.ssrc);
+
+                RTPSourceInfo sourceInfo = info.sourceInfo;
+                ReceiveStream receiveStream;
+
+                if (info instanceof RecvSSRCInfo)
+                    receiveStream = (ReceiveStream) info;
+                else if (info instanceof PassiveSSRCInfo)
+                    receiveStream = null;
+                else
+                    continue;
+
+                ByeEvent ev
+                    = new ByeEvent(
+                            cache.sm,
+                            sourceInfo,
+                            receiveStream,
+                            info.byereason,
+                            sourceInfo != null
+                                && sourceInfo.getStreamCount() == 0);
+
+                cache.eventhandler.postEvent(ev);
+            }
+            else if (info.lastHeardFrom + reportInterval <= time)
+            {
+                if (!info.inactivesent)
+                {
+                    InactiveReceiveStreamEvent ev = null;
+                    RTPSourceInfo sourceInfo = info.sourceInfo;
+                    boolean laststream
+                        = (sourceInfo != null
+                            && sourceInfo.getStreamCount() == 1);
+
+                    if (info instanceof ReceiveStream)
+                    {
+                        ev
+                            = new InactiveReceiveStreamEvent(
                                     cache.sm,
                                     sourceInfo,
-                                    (info instanceof ReceiveStream)
-                                        ? (ReceiveStream) info
-                                        : null,
-                                    (sourceInfo != null)
-                                        && (sourceInfo.getStreamCount() == 0));
-
+                                    (ReceiveStream) info,
+                                    laststream);
+                    }
+                    else if (info.lastHeardFrom
+                                + reportInterval * TIMEOUT_MULTIPLIER
+                            <= time)
+                    {
+                        ev
+                            = new InactiveReceiveStreamEvent(
+                                    cache.sm,
+                                    sourceInfo,
+                                    null,
+                                    laststream);
+                    }
+                    if (ev != null)
+                    {
                         cache.eventhandler.postEvent(ev);
+                        info.quiet = true;
+                        info.inactivesent = true;
+                        info.setAlive(false);
                     }
                 }
+                // 30 minutes without hearing from an SSRC sounded like an awful
+                // lot so it was reduced to what was considered a more
+                // reasonable value in practical situations.
+                else if (info.lastHeardFrom + (5 * 1000) <= time)
+                {
+                    cache.remove(info.ssrc);
+
+                    RTPSourceInfo sourceInfo = info.sourceInfo;
+                    TimeoutEvent ev
+                        = new TimeoutEvent(
+                                cache.sm,
+                                sourceInfo,
+                                (info instanceof ReceiveStream)
+                                    ? (ReceiveStream) info
+                                    : null,
+                                (sourceInfo != null)
+                                    && (sourceInfo.getStreamCount() == 0));
+
+                    cache.eventhandler.postEvent(ev);
+                }
+            }
         }
 
         } // synchronized (cache.cache)
     }
 
-    public synchronized void run()
+    @Override
+    public void run()
     {
-        try
+        do
         {
-            do
+            long now;
+            long timeout;
+
+            synchronized (this)
             {
-                if (!timeToClean && !killed)
-                    wait(5000);
                 if (killed)
-                    return;
-                if (!timeToClean
-                      && lastCleaned + 5000 <= System.currentTimeMillis())
-                    timeToClean = true;
-                if (timeToClean)
-                    cleannow();
-                timeToClean = false;
-            } while (true);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+                {
+                    break;
+                }
+                else
+                {
+                    now = System.currentTimeMillis();
+                    timeout
+                        =  (lastCleaned == -1L)
+                            ? 0L
+                            : (lastCleaned + RUN_INTERVAL - now);
+                    if (timeout <= 0)
+                    {
+                        // We are going to invoke cleannow(long) immediately, we
+                        // merely want to leave the synchronized block.
+                        lastCleaned = now;
+                    }
+                }
+            }
+            if (timeout > 0)
+            {
+                try
+                {
+                    wait(timeout);
+                }
+                catch (InterruptedException iex)
+                {
+                }
+                continue;
+            }
+            else
+            {
+                try
+                {
+                    cleannow(now);
+                }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
         }
+        while (true);
     }
 
     public synchronized void setClean()
     {
-        timeToClean = true;
+        lastCleaned = -1L;
         notifyAll();
     }
 

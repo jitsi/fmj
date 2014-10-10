@@ -99,12 +99,16 @@ public class DataSource extends BasicPushBufferDataSource implements
             for (int i = 0; i < srcStreams.length; i++)
                 srcStreams[i].close();
         }
-        /*
-         * if (mgr != null){ // close the RTPSourceStream
-         * mgr.removeDataSource(this); mgr.closeSession(); mgr = null; // to fix
-         * bug 4174773, multiple stream problem 9/18/98 started = false;
-         * connected = false; return; }
-         */
+        
+//        if (mgr != null)
+//        {
+//            // close the RTPSourceStream
+//            mgr.removeDataSource(this);
+//            mgr.closeSession();
+//            mgr = null; // to fix bug 4174773, multiple stream problem 9/18/98
+//            started = false;
+//            connected = false;
+//        }
     }
 
     /**

@@ -1,5 +1,7 @@
 package net.sf.fmj.media.rtp;
 
+import java.util.concurrent.locks.*;
+
 import javax.media.*;
 
 /**
@@ -19,6 +21,13 @@ class JitterBuffer
     private int capacity;
 
     /**
+     * The <tt>Condition</tt> which is used for synchronization purposes instead
+     * of synchronizing a block on this instance because the latter is not
+     * flexible enough for the thread complexity of <tt>JitterBuffer</tt>.
+     */
+    final Condition condition;
+
+    /**
      * The <tt>Buffer</tt>s of this <tt>JitterBuffer</tt> which may contain
      * valid media data to be read out of this instance (referred to as
      * &quot;fill&quot;) or may represent preallocated <tt>Buffer</tt> instances
@@ -33,6 +42,13 @@ class JitterBuffer
      * The number of &quot;fill&quot; <tt>Buffer</tt>s in {@link #elements}.
      */
     private int length;
+
+    /**
+     * The <tt>Lock</tt> which is used for synchronization purposes instead of
+     * synchronizing a block on this instance because the latter is not flexible
+     * enough for the thread complexity of <tt>JitterBuffer</tt>.
+     */
+    final Lock lock;
 
     /**
      * The index in {@link #elements} of the <tt>Buffer</tt>, if any, which has
@@ -63,9 +79,13 @@ class JitterBuffer
             elements[i] = new Buffer();
 
         this.capacity = capacity;
+
         length = 0;
         locked = -1;
         offset = 0;
+
+        lock = new ReentrantLock();
+        condition = lock.newCondition();
     }
 
     /**
@@ -235,8 +255,19 @@ class JitterBuffer
      *
      * @return the capacity in (RTP) packets of this queue/jitter buffer
      */
-    public synchronized int getCapacity()
+    public int getCapacity()
     {
+        int capacity;
+
+        lock.lock();
+        try
+        {
+            capacity = this.capacity;
+        }
+        finally
+        {
+            lock.unlock();
+        }
         return capacity;
     }
 
@@ -275,8 +306,19 @@ class JitterBuffer
      *
      * @return the number of &quot;fill&quot; <tt>Buffer</tt>s in this queue
      */
-    public synchronized int getFillCount()
+    public int getFillCount()
     {
+        int length;
+
+        lock.lock();
+        try
+        {
+            length = this.length;
+        }
+        finally
+        {
+            lock.unlock();
+        }
         return length;
     }
 
