@@ -151,21 +151,28 @@ public class RTCPTransmitter
         try
         {
             sender.sendTo(p);
-            if (ssrcInfo instanceof SendSSRCInfo)
-            {
-                ((SendSSRCInfo) ssrcInfo).stats.total_rtcp++;
-                cache.sm.transstats.rtcp_sent++;
-            }
-            cache.updateavgrtcpsize(((Packet) (p)).length);
-            if (cache.initial)
-                cache.initial = false;
-            if (!cache.rtcpsent)
-                cache.rtcpsent = true;
         } catch (IOException e)
         {
             stats.update(OverallStats.TRANSMITFAILED, 1);
             cache.sm.transstats.transmit_failed++;
+            return;
         }
+
+        this.onRTCPCompoundPacketSent(p);
+    }
+
+    public void onRTCPCompoundPacketSent(RTCPCompoundPacket p)
+    {
+        if (ssrcInfo instanceof SendSSRCInfo)
+        {
+            ((SendSSRCInfo) ssrcInfo).stats.total_rtcp++;
+            cache.sm.transstats.rtcp_sent++;
+        }
+        cache.updateavgrtcpsize(((Packet) (p)).length);
+        if (cache.initial)
+            cache.initial = false;
+        if (!cache.rtcpsent)
+            cache.rtcpsent = true;
     }
 
     public void setReportBuilder(RTCPReportBuilder reportBuilder)
