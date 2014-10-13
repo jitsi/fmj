@@ -28,22 +28,7 @@ public class DefaultRTCPReportBuilderImpl extends AbstractRTCPReportBuilder
             SSRCInfo info = elements.nextElement();
             if (!info.ours && info.sender)
             {
-                RTCPReportBlock receiverReport = new RTCPReportBlock();
-                receiverReport.ssrc = info.ssrc;
-                receiverReport.lastseq = info.maxseq + info.cycles;
-                receiverReport.jitter = (int) info.jitter;
-                receiverReport.lsr = (int) ((info.lastSRntptimestamp & 0x0000ffffffff0000L) >> 16);
-                receiverReport.dlsr = (int) ((time - info.lastSRreceiptTime) * 65.536000000000001D);
-                receiverReport.packetslost = (int) (((receiverReport.lastseq - info.baseseq) + 1L) - info.received);
-                if (receiverReport.packetslost < 0)
-                    receiverReport.packetslost = 0;
-                double frac = (double) (receiverReport.packetslost - info.prevlost)
-                        / (double) (receiverReport.lastseq - info.prevmaxseq);
-                if (frac < 0.0D)
-                    frac = 0.0D;
-                receiverReport.fractionlost = (int) (frac * 256D);
-                info.prevmaxseq = (int) receiverReport.lastseq;
-                info.prevlost = receiverReport.packetslost;
+                RTCPReportBlock receiverReport = info.makeReceiverReport(time);
                 reports.addElement(receiverReport);
             }
         }

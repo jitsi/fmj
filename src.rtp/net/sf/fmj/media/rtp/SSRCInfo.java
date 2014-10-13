@@ -603,4 +603,37 @@ public abstract class SSRCInfo implements Report
 
         return maxseq + cycles - baseseq + 1;
     }
+
+    /**
+     * Makes a reception report for this synchronization source from which this
+     * receiver has received RTP data packets since the last report as per
+     * RFC3550. It provides statistics about the data received from this
+     * particular source.
+     *
+     * @param time
+     * @return
+     */
+    public RTCPReportBlock makeReceiverReport(long time)
+    {
+        // TODO(gp) we probably need a mutexes here.
+        RTCPReportBlock receiverReport = new RTCPReportBlock();
+
+        receiverReport.ssrc = this.ssrc;
+        receiverReport.lastseq = this.maxseq + this.cycles;
+        receiverReport.jitter = (int) this.jitter;
+        receiverReport.lsr = (int) ((this.lastSRntptimestamp & 0x0000ffffffff0000L) >> 16);
+        receiverReport.dlsr = (int) ((time - this.lastSRreceiptTime) * 65.536000000000001D);
+        receiverReport.packetslost = (int) (((receiverReport.lastseq - this.baseseq) + 1L) - this.received);
+        if (receiverReport.packetslost < 0)
+            receiverReport.packetslost = 0;
+        double frac = (double) (receiverReport.packetslost - this.prevlost)
+                / (double) (receiverReport.lastseq - this.prevmaxseq);
+        if (frac < 0.0D)
+            frac = 0.0D;
+        receiverReport.fractionlost = (int) (frac * 256D);
+        this.prevmaxseq = (int) receiverReport.lastseq;
+        this.prevlost = receiverReport.packetslost;
+
+        return receiverReport;
+    }
 }
