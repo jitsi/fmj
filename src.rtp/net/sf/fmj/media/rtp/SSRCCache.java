@@ -102,48 +102,98 @@ public class SSRCCache
         return tot;
     }
 
+    public boolean audio = true;
+
     double calcReportInterval(boolean sender, boolean recvfromothers)
     {
-        rtcp_min_time = 5000;
-        double rtcp_bw = rtcp_bw_fraction;
-        if (initial)
-            rtcp_min_time = rtcp_min_time / 2;
-        int n = aliveCount();
-        if (sendercount > 0 && sendercount < n * rtcp_sender_bw_fraction)
-            if (sender)
-            {
-                rtcp_bw *= rtcp_sender_bw_fraction;
-                n = sendercount;
-            } else
-            {
-                rtcp_bw *= 1.0D - rtcp_sender_bw_fraction;
-                n -= sendercount;
-            }
-        if (recvfromothers && rtcp_bw == 0.0D)
+        if (audio)
         {
-            rtcp_bw = 0.050000000000000003D;
-            if (sendercount > 0 && sendercount < n * 0.25D)
+            /*
+             * Minimum average time between RTCP packets from this site (in
+             * milliseconds). This time prevents the reports from `clumping'
+             * when sessions are small and the law of large numbers isn't
+             * helping to smooth out the traffic.  It also keeps the report
+             * interval from becoming ridiculously small during transient
+             * outages like a network partition.
+             */
+            rtcp_min_time = 5000;
+            double rtcp_bw = rtcp_bw_fraction;
+
+            /*
+             * Very first call at application start-up uses half the min delay
+             * for quicker notification while still allowing some time before
+             * reporting for randomization and to learn about other sources so
+             * the report interval will converge to the correct interval more
+             * quickly.
+             */
+            if (initial)
+                rtcp_min_time = rtcp_min_time / 2;
+
+            /*
+             * Dedicate a fraction of the RTCP bandwidth to senders unless the
+             * number of senders is large enough that their share is more than
+             * that fraction.
+             */
+            int n = aliveCount(); /* no. of members for computation */
+            if (sendercount > 0 && sendercount < n * rtcp_sender_bw_fraction)
                 if (sender)
                 {
-                    rtcp_bw *= 0.25D;
+                    rtcp_bw *= rtcp_sender_bw_fraction;
                     n = sendercount;
                 } else
                 {
-                    rtcp_bw *= 0.75D;
+                    rtcp_bw *= 1.0D - rtcp_sender_bw_fraction;
                     n -= sendercount;
                 }
+            if (recvfromothers && rtcp_bw == 0.0D)
+            {
+                rtcp_bw = 0.050000000000000003D;
+                if (sendercount > 0 && sendercount < n * 0.25D)
+                    if (sender)
+                    {
+                        rtcp_bw *= 0.25D;
+                        n = sendercount;
+                    } else
+                    {
+                        rtcp_bw *= 0.75D;
+                        n -= sendercount;
+                    }
+            }
+            double time = 0.0D; /* interval */
+            if (rtcp_bw != 0.0D)
+            {
+                /*
+                 * The effective number of sites times the average packet size
+                 * is the total number of octets sent when each site sends a
+                 * report. Dividing this by the effective bandwidth gives the
+                 * time interval over which those packets must be sent in order
+                 * to meet the bandwidth target, with a minimum enforced. In
+                 * that time interval we send one report so this time is also
+                 * our average time between reports.
+                 */
+                time = (avgrtcpsize * n) / rtcp_bw;
+                if (time < rtcp_min_time)
+                    time = rtcp_min_time;
+            }
+            if (recvfromothers)
+                return time;
+            else
+            {
+                 /*
+                  * To avoid traffic bursts from unintended synchronization with
+                  * other sites, we then pick our actual next report interval as
+                  * a random number uniformly distributed between 0.5*time and
+                  * 1.5*time.
+                  */
+                return time * (Math.random() + 0.5D);
+            }
         }
-        double time = 0.0D;
-        if (rtcp_bw != 0.0D)
-        {
-            time = (avgrtcpsize * n) / rtcp_bw;
-            if (time < rtcp_min_time)
-                time = rtcp_min_time;
-        }
-        if (recvfromothers)
-            return time;
         else
-            return time * (Math.random() + 0.5D);
+        {
+            // TODO(gp) adapt the above algorithm so that it yields values close
+            // to 1s for video.
+            return 1000;
+        }
     }
 
     private void changessrc(SSRCInfo info)
