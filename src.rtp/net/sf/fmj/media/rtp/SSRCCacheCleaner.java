@@ -186,29 +186,27 @@ public class SSRCCacheCleaner
                         // merely want to leave the synchronized block.
                         lastCleaned = now;
                     }
+                    else
+                    {
+                        try
+                        {
+                            wait(timeout);
+                        }
+                        catch (InterruptedException iex)
+                        {
+                        }
+                        continue;
+                    }
                 }
             }
-            if (timeout > 0)
+
+            try
             {
-                try
-                {
-                    wait(timeout);
-                }
-                catch (InterruptedException iex)
-                {
-                }
-                continue;
+                cleannow(now);
             }
-            else
+            catch (Exception ex)
             {
-                try
-                {
-                    cleannow(now);
-                }
-                catch (Exception ex)
-                {
-                    ex.printStackTrace();
-                }
+                ex.printStackTrace();
             }
         }
         while (true);

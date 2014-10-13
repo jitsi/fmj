@@ -409,7 +409,7 @@ public class RTPSourceStream
                 if (!buffer.isDiscard())
                 {
                     hasRead = true;
-                    qCondition.notifyAll();
+                    qCondition.signalAll();
                 }
             }
         }
