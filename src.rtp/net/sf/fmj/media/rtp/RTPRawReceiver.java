@@ -213,7 +213,7 @@ public class RTPRawReceiver extends PacketFilter
                 offset += l + 4;
             }
             rtppacket.payloadlength = ((Packet) (rtppacket)).length - (offset + paddingLength);
-            if (rtppacket.payloadlength < 1)
+            if (rtppacket.payloadlength < 0)
                 throw new BadFormatException();
             rtppacket.payloadoffset = offset + ((Packet) (rtppacket)).offset;
         } catch (EOFException eofexception)
