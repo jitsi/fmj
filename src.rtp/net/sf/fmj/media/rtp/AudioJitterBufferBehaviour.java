@@ -390,13 +390,10 @@ class AudioJitterBufferBehaviour
             int aprxBufferLengthInPkts
                 = (int) (bc.getBufferLength() / ms);
 
-            /*
-             * If the adaptive jitter buffer mode is enabled, we let
-             * this queue manage its size, ignoring bc. Otherwise, we
-             * adapt to the value of bc (which was the behavior before
-             * resizing based on the history of late packets was
-             * introduced here).
-             */
+            // If the adaptive jitter buffer mode is enabled, we let this queue
+            // manage its size, ignoring bc. Otherwise, we adapt to the value of
+            // bc (which was the behavior before resizing based on the history
+            // of late packets was introduced here).
             if (!AJB_ENABLED && (aprxBufferLengthInPkts > q.getCapacity()))
             {
                 grow(aprxBufferLengthInPkts);

@@ -121,12 +121,10 @@ public class RTPSourceStream
 
         stats = new JitterBufferStats(this);
 
-        /*
-         * RTPSourceStream and its related classes assume that there is always
-         * a JitterBufferBehaviour instance (in order to avoid null checks and
-         * for the sake of simplicity). Make sure a default behaviour is
-         * initialized until a specific Format is set on this instance.
-         */
+        // RTPSourceStream and its related classes assume that there is always a
+        // JitterBufferBehaviour instance (in order to avoid null checks and for
+        // the sake of simplicity). Make sure a default behaviour is initialized
+        // until a specific Format is set on this instance.
         setBehaviour(null);
 
         startThread();
@@ -197,11 +195,14 @@ public class RTPSourceStream
 
         try
         {
-            byte bufferData[] = (byte[]) buffer.getData();
-            byte qBufferData[] = (byte[]) qBuffer.getData();
+            byte[] bufferData = (byte[]) buffer.getData();
+            byte[] qBufferData = (byte[]) qBuffer.getData();
             if ((qBufferData == null)
                     || (qBufferData.length < bufferData.length))
+            {
                 qBufferData = new byte[bufferData.length];
+            }
+
             System.arraycopy(
                     bufferData, buffer.getOffset(),
                     qBufferData, buffer.getOffset(),
@@ -379,7 +380,6 @@ public class RTPSourceStream
 
     public void prebuffer()
     {
-        // TODO Auto-generated method stub
     }
 
     /**
@@ -536,11 +536,9 @@ public class RTPSourceStream
      */
     private void setBehaviour(JitterBufferBehaviour behaviour)
     {
-        /*
-         * In order to avoid null checks, RTPSourceStream and its related
-         * classes assume that there is always a JitterBufferBehaviour instance.
-         * Default to BasicJitterBufferBehaviour.
-         */
+        // In order to avoid null checks, RTPSourceStream and its related
+        // classes assume that there is always a JitterBufferBehaviour instance.
+        // Default to BasicJitterBufferBehaviour.
         if (behaviour == null)
         {
             if (this.behaviour instanceof BasicJitterBufferBehaviour)
@@ -549,11 +547,7 @@ public class RTPSourceStream
                 behaviour = new BasicJitterBufferBehaviour(this);
         }
 
-        if (this.behaviour != behaviour)
-        {
-            // TODO Auto-generated method stub
-            this.behaviour = behaviour;
-        }
+        this.behaviour = behaviour;
     }
 
     public void setBufferControl(BufferControl buffercontrol)
@@ -565,7 +559,6 @@ public class RTPSourceStream
 
     public void setBufferListener(BufferListener bufferlistener)
     {
-        // TODO Auto-generated method stub
     }
 
     public void setBufferWhenStopped(boolean flag)
@@ -584,10 +577,8 @@ public class RTPSourceStream
         {
             this.format = format;
 
-            /*
-             * The jitter buffer/RTP packet queue associated with
-             * RTPSourceStream behaves in accord with the Format of the media.
-             */
+            // The jitter buffer/RTP packet queue associated with
+            // RTPSourceStream behaves in accord with the Format of the media.
             JitterBufferBehaviour behaviour;
 
             if (this.format instanceof AudioFormat)
