@@ -19,24 +19,21 @@ public class DefaultRTCPReportBuilderImpl extends AbstractRTCPReportBuilder
             RTCPTransmitter rtcpTransmitter,
             long time)
     {
-        Vector<RTCPReportBlock> reports = new Vector<RTCPReportBlock>();
+        List<RTCPReportBlock> reports = new ArrayList<RTCPReportBlock>();
 
         // Make receiver reports for all known SSRCs.
-        for (Enumeration<SSRCInfo> elements = rtcpTransmitter.cache.cache.elements();
-             elements.hasMoreElements();)
+        for (Enumeration<SSRCInfo> elements
+                    = rtcpTransmitter.cache.cache.elements();
+                elements.hasMoreElements();)
         {
             SSRCInfo info = elements.nextElement();
+
             if (!info.ours && info.sender)
-            {
-                RTCPReportBlock receiverReport = info.makeReceiverReport(time);
-                reports.addElement(receiverReport);
-            }
+                reports.add(info.makeReceiverReport(time));
         }
 
         // Copy into an array and return.
-        RTCPReportBlock res[] = new RTCPReportBlock[reports.size()];
-        reports.copyInto(res);
-        return res;
+        return reports.toArray(new RTCPReportBlock[reports.size()]);
     }
 
     @Override
@@ -62,11 +59,15 @@ public class DefaultRTCPReportBuilderImpl extends AbstractRTCPReportBuilder
         if (senderreport)
         {
             RTCPSRPacket srp = new RTCPSRPacket(ourinfo.ssrc, firstrep);
+
             packets.add(srp);
-            long systime = ourinfo.systime == 0L ? System.currentTimeMillis()
+            long systime
+                = ourinfo.systime == 0L
+                    ? System.currentTimeMillis()
                     : ourinfo.systime;
             long secs = systime / 1000L;
             double msecs = (systime - secs * 1000L) / 1000D;
+
             srp.ntptimestamplsw = (int) (msecs * 4294967296D);
             srp.ntptimestampmsw = secs;
             srp.rtptimestamp = (int) ourinfo.rtptime;

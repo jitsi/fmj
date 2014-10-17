@@ -1,49 +1,62 @@
 package net.sf.fmj.media.rtp.util;
 
+import java.lang.reflect.*;
 import java.util.*;
 
+/**
+ *
+ * @author Lyubomir Marinov
+ */
 public class SSRCTable<T>
 {
     static final int INCR = 16;
-    int[] ssrcList;
+
     Object[] objList;
+    int[] ssrcList;
     int total;
 
     public SSRCTable()
     {
         ssrcList = new int[16];
-        objList = new Object[16];
+        objList = new Object[ssrcList.length];
         total = 0;
     }
 
-    public synchronized Enumeration<T> elements()
+    public Enumeration<T> elements()
     {
-        return new Enumeration<T>()
-        {
-            private int next = 0;
-
-            @Override
-            public boolean hasMoreElements()
+        // The method does not access any state of this instance. Consequently,
+        // it does not need to be synchronized. The synchronized keyword was
+        // removed because the method was seen to participate in a deadlock and
+        // because the presence or absence of the synchronized keyword will not
+        // make a difference if this SSRCTable is modified while iterating over
+        // the returned Enumeration anyway.
+        return
+            new Enumeration<T>()
             {
-                return next < total;
-            }
+                private int next = 0;
 
-            @Override
-            public T nextElement()
-            {
-                synchronized (SSRCTable.this)
+                @Override
+                public boolean hasMoreElements()
                 {
-                    if (next < total)
-                    {
-                        @SuppressWarnings("unchecked")
-                        T t = (T) objList[next++];
-
-                        return t;
-                    }
+                    return next < total;
                 }
-                throw new NoSuchElementException("SSRCTable Enumeration");
-            }
-        };
+
+                @Override
+                public T nextElement()
+                {
+                    synchronized (SSRCTable.this)
+                    {
+                        if (next < total)
+                        {
+                            @SuppressWarnings("unchecked")
+                            T t = (T) objList[next++];
+    
+                            return t;
+                        }
+                    }
+                    throw new NoSuchElementException("SSRCTable Enumeration");
+                }
+            };
     }
 
     public synchronized T get(int ssrc)
@@ -66,9 +79,10 @@ public class SSRCTable<T>
     public synchronized int getSSRC(T obj)
     {
         for (int i = 0; i < total; i++)
+        {
             if (objList[i] == obj)
                 return ssrcList[i];
-
+        }
         return 0;
     }
 
@@ -103,7 +117,37 @@ public class SSRCTable<T>
 
     public boolean isEmpty()
     {
-        return total == 0;
+        return size() == 0;
+    }
+
+    /**
+     * Gets the synchronization source identifiers (SSRCs) which are the keys
+     * associated with values in this <tt>SSRCTable</tt>.
+     * <p>
+     * The method name is inspired by {@link Map#keys()} and
+     * {@link Collection#toArray(Object[])}.
+     * </p>
+     *
+     * @param array the array into which the SSRCs associated with
+     * <tt>Object</tt>s in this <tt>SSRCTable</tt> are to be returned if the
+     * <tt>length</tt> of <tt>array</tt> is greater than or equal to the number
+     * of the SSRCs in question
+     * @return the SSRCs associated with <tt>Object</tt>s in this
+     * <tt>SSRCTable</tt>. If the number of SSRCs is less than or equal to the
+     * <tt>length</tt> of <tt>array</tt>, the SSRCs are written into
+     * <tt>array</tt> and <tt>array</tt> is returned. Otherwise, a new array is
+     * allocated.
+     */
+    public synchronized int[] keysToArray(int[] array)
+    {
+        int length = size();
+
+        if (array == null || array.length < length)
+            array = new int[length];
+        System.arraycopy(ssrcList, 0, array, 0, length);
+        if (length < array.length)
+            Arrays.fill(array, length, array.length, 0);
+        return array;
     }
 
     public synchronized void put(int ssrc, T obj)
@@ -130,8 +174,8 @@ public class SSRCTable<T>
 
         if (total == ssrcList.length)
         {
-            int[] sl = new int[ssrcList.length + 16];
-            Object[] ol = new Object[objList.length + 16];
+            int[] sl = new int[ssrcList.length + INCR];
+            Object[] ol = new Object[objList.length + INCR];
             if (i > 0)
             {
                 System.arraycopy(ssrcList, 0, sl, 0, total);
@@ -208,5 +252,43 @@ public class SSRCTable<T>
     public int size()
     {
         return total;
+    }
+
+    /**
+     * Gets the <tt>Object</tt>s which are the values associated with
+     * synchronization source identifiers (SSRCs) in this <tt>SSRCTable</tt>.
+     * <p>
+     * The method name is inspired by {@link Map#values()} and
+     * {@link Collection#toArray(Object[])}.
+     * </p>
+     *
+     * @param array the array into which the <tt>Object</tt>s associated with
+     * SSRCs in this <tt>SSRCTable</tt> are to be returned if the <tt>length</tt>
+     * of <tt>array</tt> is greater than or equal to the number of the
+     * <tt>Object</tt>s in question
+     * @return the <tt>Object</tt>s associated with SSRCs in this
+     * <tt>SSRCTable</tt>. If the number of <tt>Object</tt>s is less than or
+     * equal to the <tt>length</tt> of <tt>array</tt>, the <tt>Object</tt>s are
+     * written into <tt>array</tt> and <tt>array</tt> is returned. Otherwise, a
+     * new array is allocated.
+     */
+    @SuppressWarnings("unchecked")
+    public synchronized T[] valuesToArray(T[] array)
+    {
+        Class<?> componentType;
+        int length = size();
+
+        if (array == null)
+            componentType = Object.class;
+        else if (array.length < length)
+            componentType = array.getClass().getComponentType();
+        else
+            componentType = null;
+        if (componentType != null)
+            array = (T[]) Array.newInstance(componentType, length);
+        System.arraycopy(objList, 0, array, 0, length);
+        if (length < array.length)
+            Arrays.fill(array, length, array.length, null);
+        return array;
     }
 }

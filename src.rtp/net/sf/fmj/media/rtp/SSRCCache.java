@@ -230,7 +230,7 @@ public class SSRCCache
 
     SSRCInfo get(int ssrc, InetAddress address, int port, int mode)
     {
-        SSRCInfo info = null;
+        SSRCInfo info;
         boolean localcollision = false;
         synchronized (this)
         {
@@ -243,6 +243,7 @@ public class SSRCCache
             }
             info = lookup(ssrc);
             if (info != null)
+            {
                 synchronized (info)
                 {
                     if (info.address == null || !info.alive)
@@ -262,38 +263,29 @@ public class SSRCCache
                             RemoteCollisionEvent evt = new RemoteCollisionEvent(
                                     sm, info.ssrc);
                             eventhandler.postEvent(evt);
-                            SSRCInfo ssrcinfo5 = null;
-                            return ssrcinfo5;
+                            return null;
                         }
                 }
-            if (info != null && mode == 1 && !(info instanceof RecvSSRCInfo))
-            {
+
                 if (info.ours)
                 {
                     return null;
                 }
-                else
+                else if (mode == 1)
                 {
-                    SSRCInfo newinfo = new RecvSSRCInfo(info);
-                    info = newinfo;
-                    cache.put(ssrc, info);
+                    if (!(info instanceof RecvSSRCInfo))
+                        cache.put(ssrc, info = new RecvSSRCInfo(info));
                 }
-            }
-            if (info != null && mode == 2 && !(info instanceof PassiveSSRCInfo))
-            {
-                if (info.ours)
+                else if (mode == 2)
                 {
-                    SSRCInfo ssrcinfo2 = null;
-                    return ssrcinfo2;
+                    if (!(info instanceof PassiveSSRCInfo))
+                    {
+                        Log.info(
+                                "Changing to PassiveSSRCInfo for SSRC "
+                                    + (0xFFFFFFFFL & ssrc));
+                        cache.put(ssrc, info = new PassiveSSRCInfo(info));
+                    }
                 }
-                //System.out.println("changing to Passive");
-                //System.out.println("existing one " + info);
-                SSRCInfo newinfo = new PassiveSSRCInfo(info);
-                Log.info("Changing to PassiveSSRCInfo for SSRC="
-                                 + (0xffffffffL & newinfo.getSSRC()));
-
-                info = newinfo;
-                cache.put(ssrc, info);
             }
             if (info == null)
             {

@@ -93,14 +93,18 @@ public abstract class RTPSourceInfo implements Participant
     {
         if (ssrcinfo.dsource != null)
             sic.ssrccache.sm.removeDataSource(ssrcinfo.dsource);
+
         for (int i = 0; i < ssrc.length; i++)
         {
-            if (ssrc[i] != ssrcinfo)
-                continue;
-            ssrc[i] = ssrc[ssrc.length - 1];
-            System.arraycopy(ssrc, 0, ssrc = new SSRCInfo[ssrc.length - 1], 0,
-                    ssrc.length);
-            break;
+            if (ssrc[i] == ssrcinfo)
+            {
+                ssrc[i] = ssrc[ssrc.length - 1];
+                System.arraycopy(
+                        ssrc, 0,
+                        ssrc = new SSRCInfo[ssrc.length - 1], 0,
+                        ssrc.length);
+                break;
+            }
         }
 
         if (ssrc.length == 0)

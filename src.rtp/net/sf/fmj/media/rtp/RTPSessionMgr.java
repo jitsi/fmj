@@ -354,8 +354,9 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         }
     }
 
-    public void addPeer(SessionAddress sessionaddress) throws IOException,
-            InvalidSessionAddressException
+    public void addPeer(SessionAddress sessionaddress)
+        throws IOException,
+               InvalidSessionAddressException
     {
         RTCPRawReceiver rtcprawreceiver;
         RTPRawReceiver rtprawreceiver;
@@ -364,16 +365,14 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         int j;
         int k;
         InetAddress inetaddress2;
-        Object aobj[];
-        Object aobj1[];
+
         for (int i = 0; i < peerlist.size(); i++)
         {
-            SessionAddress sessionaddress1 = (SessionAddress) peerlist
-                    .elementAt(i);
+            SessionAddress sessionaddress1
+                = (SessionAddress) peerlist.elementAt(i);
+
             if (sessionaddress1.equals(sessionaddress))
-            {
                 return;
-            }
         }
 
         peerlist.addElement(sessionaddress);
@@ -479,13 +478,11 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                 cache.ourssrc.reporter = startParticipating(k,
                         inetaddress.getHostAddress(), cache.ourssrc);
             }
-            if (((PacketFilter) (cache.ourssrc.reporter.transmit.sender)).peerlist == null)
-            {
+            if (cache.ourssrc.reporter.transmit.sender.peerlist == null)
                 cache.ourssrc.reporter.transmit.sender.peerlist = new Vector();
-            }
         }
-        ((PacketFilter) (cache.ourssrc.reporter.transmit.sender)).peerlist
-                .addElement(sessionaddress);
+        cache.ourssrc.reporter.transmit.sender.peerlist.addElement(
+                sessionaddress);
         if (cache != null)
         {
             for (Enumeration<SSRCInfo> elements = cache.cache.elements();
@@ -495,25 +492,26 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                 if (ssrcinfo instanceof SendSSRCInfo)
                 {
                     ssrcinfo.reporter.transmit.sender.control = true;
-                    if (((PacketFilter) (ssrcinfo.reporter.transmit.sender)).peerlist == null)
+                    if (ssrcinfo.reporter.transmit.sender.peerlist == null)
                     {
-                        ssrcinfo.reporter.transmit.sender.peerlist = new Vector();
-                        ((PacketFilter) (ssrcinfo.reporter.transmit.sender)).peerlist
-                                .addElement(sessionaddress);
+                        ssrcinfo.reporter.transmit.sender.peerlist
+                            = new Vector();
+                        ssrcinfo.reporter.transmit.sender.peerlist.addElement(
+                                sessionaddress);
                     }
                 }
             }
-
         }
         for (int l = 0; l < sendstreamlist.size(); l++)
         {
             SendSSRCInfo sendssrcinfo = (SendSSRCInfo) sendstreamlist
                     .elementAt(l);
-            if (((PacketFilter) (((SSRCInfo) (sendssrcinfo)).sinkstream.transmitter.sender)).peerlist == null)
+            if (sendssrcinfo.sinkstream.transmitter.sender.peerlist == null)
             {
-                ((SSRCInfo) (sendssrcinfo)).sinkstream.transmitter.sender.peerlist = new Vector();
-                ((PacketFilter) (((SSRCInfo) (sendssrcinfo)).sinkstream.transmitter.sender)).peerlist
-                        .addElement(sessionaddress);
+                sendssrcinfo.sinkstream.transmitter.sender.peerlist
+                    = new Vector();
+                sendssrcinfo.sinkstream.transmitter.sender.peerlist.addElement(
+                        sessionaddress);
             }
         }
 
@@ -881,12 +879,12 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
             {
                 SessionAddress sessionaddress1 = (SessionAddress) peerlist
                         .elementAt(i1);
-                if (((PacketFilter) (((SSRCInfo) (obj)).sinkstream.transmitter.sender)).peerlist == null)
+                if (obj.sinkstream.transmitter.sender.peerlist == null)
                 {
-                    ((SSRCInfo) (obj)).sinkstream.transmitter.sender.peerlist = new Vector();
+                    obj.sinkstream.transmitter.sender.peerlist = new Vector();
                 }
-                ((PacketFilter) (((SSRCInfo) (obj)).sinkstream.transmitter.sender)).peerlist
-                        .addElement(sessionaddress1);
+                obj.sinkstream.transmitter.sender.peerlist.addElement(
+                        sessionaddress1);
                 if (cache != null)
                 {
                     for (Enumeration<SSRCInfo> elements = cache.cache.elements();
@@ -896,10 +894,14 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                         if (ssrcinfo1 instanceof SendSSRCInfo)
                         {
                             ssrcinfo1.reporter.transmit.sender.control = true;
-                            if (((PacketFilter) (ssrcinfo1.reporter.transmit.sender)).peerlist == null)
-                                ssrcinfo1.reporter.transmit.sender.peerlist = new Vector();
-                            ((PacketFilter) (ssrcinfo1.reporter.transmit.sender)).peerlist
-                                    .addElement(sessionaddress1);
+                            if (ssrcinfo1.reporter.transmit.sender.peerlist
+                                    == null)
+                            {
+                                ssrcinfo1.reporter.transmit.sender.peerlist
+                                    = new Vector();
+                            }
+                            ssrcinfo1.reporter.transmit.sender.peerlist
+                                .addElement(sessionaddress1);
                         }
                     }
 
