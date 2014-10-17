@@ -267,17 +267,17 @@ public class SSRCCache
                         }
                 }
 
-                if (info.ours)
+                if (mode == 1)
                 {
-                    return null;
-                }
-                else if (mode == 1)
-                {
+                    if (info.ours)
+                        return null;
                     if (!(info instanceof RecvSSRCInfo))
                         cache.put(ssrc, info = new RecvSSRCInfo(info));
                 }
                 else if (mode == 2)
                 {
+                    if (info.ours)
+                        return null;
                     if (!(info instanceof PassiveSSRCInfo))
                     {
                         Log.info(
