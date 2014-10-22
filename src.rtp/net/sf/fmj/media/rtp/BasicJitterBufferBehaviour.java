@@ -200,21 +200,18 @@ class BasicJitterBufferBehaviour
     public void read(Buffer buffer)
     {
         if (q.getFillCount() == 0)
+        {
             buffer.setDiscard(true);
+        }
         else
         {
             Buffer bufferFromQueue = q.getFill();
 
-            /*
-             * Whatever follows, it sounds safer to return the
-             * bufferFromQueue into the free pool eventually.
-             */
+            // Whatever follows, it sounds safer to return the bufferFromQueue
+            // into the free pool eventually.
             try
             {
-                /*
-                 * Copy the bufferFromQueue into the specified (output)
-                 * buffer.
-                 */
+                // Copy the bufferFromQueue into the specified (output) buffer.
                 Object bufferData = buffer.getData();
                 Object bufferHeader = buffer.getHeader();
 
@@ -242,15 +239,13 @@ class BasicJitterBufferBehaviour
     {
         int sizePerPkt = stats.getSizePerPacket();
 
-        /*
-         * There was no comment and the variables did not use meaningful names
-         * at the time the following code was initially written. Consequently,
-         * it is not immediately obvious why it is necessary at all and it may
-         * be hard to understand. A possible explanation may be that, since the
-         * threshold value will force a delay with a specific duration/byte
-         * size, we should better be able to hold on to that much in the socket
-         * so that it does not throw the delayed data away.
-         */
+        // There was no comment and the variables did not use meaningful names
+        // at the time the following code was initially written. Consequently,
+        // it is not immediately obvious why it is necessary at all and it may
+        // be hard to understand. A possible explanation may be that, since the
+        // threshold value will force a delay with a specific duration/byte
+        // size, we should better be able to hold on to that much in the socket
+        // so that it does not throw the delayed data away.
         int aprxThresholdInBytes
             = (aprxBufferLengthInPkts * sizePerPkt) / 2;
 

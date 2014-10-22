@@ -150,10 +150,8 @@ class AudioJitterBufferBehaviour
     {
         super(stream);
 
-        /*
-         * Assign the adaptive jitter buffer-related properties of this
-         * instance values from the Registry or default values.
-         */
+        // Assign the adaptive jitter buffer-related properties of this instance
+        // values from the Registry or default values.
         AJB_ENABLED
             = com.sun.media.util.Registry.getBoolean(
                     "adaptive_jitter_buffer_ENABLE",
@@ -204,12 +202,10 @@ class AudioJitterBufferBehaviour
     {
         super.dropPkt();
 
-        /*
-         * We've deliberately dropped a packet since we're full. If FEC is
-         * extracted from the next packet, we are likely to be in the same
-         * situation again very soon. So avoid FEC being decoded from the next
-         * packet read.
-         */
+        // We've deliberately dropped a packet since we're full. If FEC is
+        // extracted from the next packet, we are likely to be in the same
+        // situation again very soon. So avoid FEC being decoded from the next
+        // packet read.
         skipFec = true;
         if (q.getFillCount() < AJB_SHRINK_THRESHOLD)
             shrinkCount = 0;
@@ -334,10 +330,8 @@ class AudioJitterBufferBehaviour
             }
 
             shrinkCount++;
-            /*
-             * The queue will not be shrunk if it will be unable to
-             * accommodate the specified buffer afterwards.
-             */
+            // The queue will not be shrunk if it will be unable to accommodate
+            // the specified buffer afterwards.
             if ((shrinkCount >= AJB_SHRINK_INTERVAL)
                     && (size > AJB_MIN_SIZE)
                     && q.freeNotEmpty())
@@ -418,13 +412,11 @@ class AudioJitterBufferBehaviour
         if ((lastSeqSent != Buffer.SEQUENCE_UNKNOWN)
                 && ((bufferSN = buffer.getSequenceNumber()) < lastSeqSent))
         {
-            /*
-             * A packet which is subsequent to the specified buffer has already
-             * been read. It should be added to the history so that the queue
-             * may be resized if necessary. But if it is late by more than
-             * AJB_MAX_SIZE, it is too late to take it into account and,
-             * consequently, is ignored.
-             */
+            // A packet which is subsequent to the specified buffer has already
+            // been read. It should be added to the history so that the queue
+            // may be resized if necessary. But if it is late by more than
+            // AJB_MAX_SIZE, it is too late to take it into account and,
+            // consequently, is ignored.
             if(lastSeqSent - bufferSN < AJB_MAX_SIZE)
             {
                 recordInHistory(true);
@@ -440,16 +432,14 @@ class AudioJitterBufferBehaviour
         if (!super.preAdd(buffer, rtprawreceiver))
             return false;
 
-        /*
-         * If the queue is full and it hasn't reached it's maximum size, grow
-         * it. This is to adapt to groups of packets arriving in a short period
-         * of time.
-         *
-         * During the first few seconds after a stream is started, the queue is
-         * often observed to be full. But this is likely not due to bursts of
-         * packets from the network, so we shouldn't try to adapt. Hence the
-         * INITIAL_PACKETS check.
-         */
+        // If the queue is full and it hasn't reached it's maximum size, grow
+        // it. This is to adapt to groups of packets arriving in a short period
+        // of time.
+
+        // During the first few seconds after a stream is started, the queue is
+        // often observed to be full. But this is likely not due to bursts of
+        // packets from the network, so we shouldn't try to adapt. Hence the
+        // INITIAL_PACKETS check.
         if (AJB_ENABLED
                 && q.noMoreFree()
                 && (stats.getNbAdd() > INITIAL_PACKETS))
@@ -457,20 +447,16 @@ class AudioJitterBufferBehaviour
             int size = q.getCapacity();
             if (size < AJB_MAX_SIZE)
             {
-                /*
-                 * There is still room for the queue to grow and to not drop
-                 * packets.
-                 */
+                // There is still room for the queue to grow and to not drop
+                // packets.
                 grow(Math.min(size * 2, AJB_MAX_SIZE));
             }
             else
             {
-                /*
-                 * The queue cannot grow any further so at least one packet has
-                 * to be dropped. However, dropping a single packet will very
-                 * likely be insufficient. In order to maximize the chances of
-                 * bettering the situation, re-center.
-                 */
+                // The queue cannot grow any further so at least one packet has
+                // to be dropped. However, dropping a single packet will very
+                // likely be insufficient. In order to maximize the chances of
+                // bettering the situation, re-center.
                 while (q.getFillCount() >= (size / 2))
                 {
                     stats.incrementDiscardedFull();
@@ -571,11 +557,9 @@ class AudioJitterBufferBehaviour
         }
         q.setCapacity(capacity);
 
-        /*
-         * The shrinking as it is implemented at the time of this writing is
-         * attempted in order to drop at least AJB_SHRINK_DECREMENT packets from
-         * the queue.
-         */
+        // The shrinking as it is implemented at the time of this writing is
+        // attempted in order to drop at least AJB_SHRINK_DECREMENT packets from
+        // the queue.
         while ((dropped < AJB_SHRINK_DECREMENT) && q.fillNotEmpty())
         {
             dropPkt();
