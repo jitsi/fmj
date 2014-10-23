@@ -495,7 +495,7 @@ public class RTPSourceStream
         qLock.lock();
         try
         {
-            if (!hasRead || behaviour.willReadBlock())
+            if (!hasRead && behaviour.willReadBlock())
             {
                 try
                 {
