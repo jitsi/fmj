@@ -62,8 +62,6 @@ public class RTPSourceStream
 
     private Format format;
 
-    private boolean hasRead = false;
-
     /**
      * The sequence number of the last <tt>Buffer</tt> added to this instance.
      */
@@ -106,6 +104,15 @@ public class RTPSourceStream
     final JitterBufferStats stats;
 
     private Thread thread;
+
+    /**
+     * The (unique) reason for invoking
+     * {@link BufferTransferHandler#transferData(PushBufferStream)} on
+     * {@link #transferHandler}. Introduced in order to prevent busy waits when
+     * there are enough packets to be read without blocking but no read is
+     * actually performed.
+     */
+    private long transferDataReason;
 
     private BufferTransferHandler transferHandler;
 
@@ -231,6 +238,10 @@ public class RTPSourceStream
                 q.returnFree(qBuffer);
         }
 
+        // A packet was added to this PushBufferStream so transferData.
+        ++transferDataReason;
+        // Well, do not transferData as soon as possible if the read will block
+        // but rather transferData as soon as the read will not block.
         if (!behaviour.willReadBlock())
             qCondition.signalAll();
 
@@ -406,9 +417,11 @@ public class RTPSourceStream
             }
             finally
             {
+                // If a packet was read, schedule a transferData as soon as
+                // possible in case there are more packets to be read.
                 if (!buffer.isDiscard())
                 {
-                    hasRead = true;
+                    ++transferDataReason;
                     qCondition.signalAll();
                 }
             }
@@ -449,8 +462,13 @@ public class RTPSourceStream
         qLock.lock();
         try
         {
-            for (; q.fillNotEmpty(); behaviour.dropPkt())
+            while (q.fillNotEmpty())
+            {
+                behaviour.dropPkt();
                 stats.incrementDiscardedReset();
+            }
+            // All packets which could be read were dropped so there is hardly
+            // any reason to transferData (as soon as possible).
             qCondition.signalAll();
         }
         finally
@@ -462,17 +480,17 @@ public class RTPSourceStream
     /**
      * Runs in {@link #thread}.
      *
+     * @param runnable the <tt>TransferDataRunnable</tt> which is running in
+     * the current thread
      * @return <tt>true</tt> if the current thread is to continue invoking the
      * method; otherwise, <tt>false</tt>
      */
-    private boolean runInThread()
+    private boolean runInThread(TransferDataRunnable runnable)
     {
         synchronized (startSyncRoot)
         {
             // Is this RTPSourceStream still utilizing the current thread?
-            if (!Thread.currentThread().equals(thread)
-                    || closing
-                    || closed)
+            if (!Thread.currentThread().equals(thread) || closing || closed)
             {
                 return false;
             }
@@ -492,10 +510,42 @@ public class RTPSourceStream
 
         // This RTPSourceStream has been started and may or may not have been
         // stopped and/or closed afterwards.
+        BufferTransferHandler transferHandler = null;
+
         qLock.lock();
         try
         {
-            if (!hasRead && behaviour.willReadBlock())
+            boolean wait;
+
+            if (behaviour.willReadBlock())
+            {
+                // Obviously, do not transferData because the read will block.
+                wait = true;
+            }
+            else if (runnable.transferDataReason == transferDataReason)
+            {
+                // There was an invocation of transferData for that particular
+                // reason.
+                wait = true;
+            }
+            else
+            {
+                transferHandler = this.transferHandler;
+                if (transferHandler == null)
+                {
+                    // It is impossible to transferData because there is no
+                    // object on which to invoke it.
+                    wait = true;
+                }
+                else
+                {
+                    // There is going to be an invocation of transferData bellow
+                    // and it is going to be for that particular reason.
+                    wait = false;
+                    runnable.transferDataReason = transferDataReason;
+                }
+            }
+            if (wait)
             {
                 try
                 {
@@ -506,17 +556,11 @@ public class RTPSourceStream
                 }
                 return true;
             }
-            else
-            {
-                hasRead = false;
-            }
         }
         finally
         {
             qLock.unlock();
         }
-
-        BufferTransferHandler transferHandler = this.transferHandler;
 
         if (transferHandler != null)
             transferHandler.transferData(this);
@@ -696,8 +740,10 @@ public class RTPSourceStream
     /**
      * Notifies this <tt>RTPSourceStream</tt> that its {@link #thread} may have
      * exited.
+     *
+     * @param runnable the <tt>TransferDataRunnable</tt> which has exited
      */
-    private void threadExited()
+    private void threadExited(TransferDataRunnable runnable)
     {
         // The current thread cannot be utilized by this RTPSourceStream any
         // longer.
@@ -770,6 +816,15 @@ public class RTPSourceStream
         private final RTPSourceStream owner;
 
         /**
+         * The (unique) reason for invoking
+         * {@link BufferTransferHandler#transferData(PushBufferStream)} on
+         * {@link #owner}. Introduced in order to prevent busy waits when there
+         * are enough packets to be read without blocking but no read is
+         * actually performed.
+         */
+        private long transferDataReason;
+
+        /**
          * A <tt>WeakReference</tt> to {@link #owner}.
          */
         private final WeakReference<RTPSourceStream> weakReference;
@@ -816,7 +871,7 @@ public class RTPSourceStream
                 {
                     RTPSourceStream owner = getOwner();
 
-                    if ((owner == null) || !owner.runInThread())
+                    if ((owner == null) || !owner.runInThread(this))
                         break;
                 }
                 while (true);
@@ -826,7 +881,7 @@ public class RTPSourceStream
                 RTPSourceStream owner = getOwner();
 
                 if (owner != null)
-                    owner.threadExited();
+                    owner.threadExited(this);
             }
         }
     }
