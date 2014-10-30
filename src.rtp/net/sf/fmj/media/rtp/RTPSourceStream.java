@@ -133,8 +133,6 @@ public class RTPSourceStream
         // the sake of simplicity). Make sure a default behaviour is initialized
         // until a specific Format is set on this instance.
         setBehaviour(null);
-
-        startThread();
     }
 
     /**
@@ -257,14 +255,18 @@ public class RTPSourceStream
         synchronized (startSyncRoot)
         {
             if (closing)
+            {
                 return;
+            }
             else
+            {
                 closing = true;
+                thread = null;
+            }
             startSyncRoot.notifyAll();
         }
         try
         {
-            thread = null;
             if (!closed)
             {
                 closed = true;
@@ -310,7 +312,6 @@ public class RTPSourceStream
         {
             waitWhileClosing();
             closed = false;
-            startThread();
         }
     }
 
@@ -647,6 +648,7 @@ public class RTPSourceStream
         synchronized (startSyncRoot)
         {
             started = true;
+            startThread();
             startSyncRoot.notifyAll();
         }
 
