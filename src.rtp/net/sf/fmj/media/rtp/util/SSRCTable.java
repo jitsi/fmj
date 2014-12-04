@@ -172,23 +172,28 @@ public class SSRCTable<T>
             break;
         }
 
+        int[] sl = ssrcList;
+        Object[] ol = objList;
         if (total == ssrcList.length)
         {
-            int[] sl = new int[ssrcList.length + INCR];
-            Object[] ol = new Object[objList.length + INCR];
-            if (i > 0)
-            {
-                System.arraycopy(ssrcList, 0, sl, 0, total);
-                System.arraycopy(objList, 0, ol, 0, total);
-            }
-            ssrcList = sl;
-            objList = ol;
+            sl = new int[ssrcList.length + INCR];
+            ol = new Object[objList.length + INCR];
         }
-        for (int x = total - 1; x >= i; x--)
+
+        if (ssrcList != sl && i > 0)
         {
-            ssrcList[x + 1] = ssrcList[x];
-            objList[x + 1] = objList[x];
+            System.arraycopy(ssrcList, 0, sl, 0, i);
+            System.arraycopy(objList, 0, ol, 0, i);
         }
+
+        if (i < total)
+        {
+            System.arraycopy(ssrcList, i, sl, i+1, total-i);
+            System.arraycopy(objList, i, ol, i+1, total-i);
+        }
+
+        ssrcList = sl;
+        objList = ol;
 
         ssrcList[i] = ssrc;
         objList[i] = obj;
