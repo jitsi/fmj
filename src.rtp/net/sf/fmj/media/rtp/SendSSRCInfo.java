@@ -11,15 +11,13 @@ import javax.media.rtp.rtcp.*;
 
 public class SendSSRCInfo extends SSRCInfo implements SenderReport, SendStream
 {
-    boolean inited;
-    private static final int PACKET_SIZE = 4000;
-    protected int packetsize;
+    private boolean inited = false;
+    protected int packetsize = 0;
     protected Format myformat;
-    protected long totalSamples;
-    protected long lastSeq;
-    protected long lastBufSeq;
+    private long totalSamples = 0;
+    private long lastSeq = -1;
+    private long lastBufSeq = -1;
     protected RTPTransStats stats;
-    protected RTCPReporter rtcprep;
     static AudioFormat dviAudio = new AudioFormat("dvi/rtp");
     static AudioFormat gsmAudio = new AudioFormat("gsm/rtp");
     static AudioFormat g723Audio = new AudioFormat("g723/rtp");
@@ -30,34 +28,17 @@ public class SendSSRCInfo extends SSRCInfo implements SenderReport, SendStream
     public SendSSRCInfo(SSRCCache cache, int ssrc)
     {
         super(cache, ssrc);
-        inited = false;
-        packetsize = 0;
-        myformat = null;
-        totalSamples = 0L;
-        lastSeq = -1L;
-        lastBufSeq = -1L;
-        stats = null;
-        rtcprep = null;
-        super.baseseq = TrueRandom.nextInt();
-        super.maxseq = super.baseseq;
-        super.lasttimestamp = TrueRandom.nextLong();
-        super.sender = true;
-        super.wassender = true;
-        super.sinkstream = new RTPSinkStream();
-        stats = new RTPTransStats();
+        init();
     }
 
     public SendSSRCInfo(SSRCInfo info)
     {
         super(info);
-        inited = false;
-        packetsize = 0;
-        myformat = null;
-        totalSamples = 0L;
-        lastSeq = -1L;
-        lastBufSeq = -1L;
-        stats = null;
-        rtcprep = null;
+        init();
+    }
+
+    private void init()
+    {
         super.baseseq = TrueRandom.nextInt();
         super.maxseq = super.baseseq;
         super.lasttimestamp = TrueRandom.nextLong();
@@ -93,10 +74,6 @@ public class SendSSRCInfo extends SSRCInfo implements SenderReport, SendStream
         }
         SSRCCache cache = getSSRCCache();
         cache.sm.removeSendStream(this);
-    }
-
-    protected void createDS()
-    {
     }
 
     public DataSource getDataSource()
@@ -233,11 +210,20 @@ public class SendSSRCInfo extends SSRCInfo implements SenderReport, SendStream
 
     public long getTimeStamp(Buffer b)
     {
-        if (b.getFormat() instanceof AudioFormat)
-            if (mpegAudio.matches(b.getFormat()))
+        long bTimestamp = b.getTimeStamp();
+        Format bFormat = b.getFormat();
+
+        if ((b.getFlags() & Buffer.FLAG_RTP_TIME) != 0)
+        {
+            if (bTimestamp != -1)
+                return bTimestamp;
+        }
+
+        if (bFormat instanceof AudioFormat)
+            if (mpegAudio.matches(bFormat))
             {
-                if (b.getTimeStamp() >= 0L)
-                    return (b.getTimeStamp() * 90L) / 0xf4240L;
+                if (bTimestamp >= 0L)
+                    return (bTimestamp * 90L) / (1000 * 1000L);
                 else
                     return System.currentTimeMillis() * 90L;
             } else
@@ -245,15 +231,15 @@ public class SendSSRCInfo extends SSRCInfo implements SenderReport, SendStream
                 totalSamples += calculateSampleCount(b);
                 return totalSamples;
             }
-        if (b.getFormat() instanceof VideoFormat)
+        if (bFormat instanceof VideoFormat)
         {
-            if (b.getTimeStamp() >= 0L)
-                return (b.getTimeStamp() * 90L) / 0xf4240L;
+            if (bTimestamp >= 0L)
+                return (bTimestamp * 90L) / (1000 * 1000L);
             else
                 return System.currentTimeMillis() * 90L;
         } else
         {
-            return b.getTimeStamp();
+            return bTimestamp;
         }
     }
 
