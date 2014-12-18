@@ -12,47 +12,32 @@ import net.sf.fmj.media.rtp.util.*;
 
 public class SSRCCache
 {
-    public SSRCTable<SSRCInfo> cache;
+    public final SSRCTable<SSRCInfo> cache = new SSRCTable<SSRCInfo>();
     RTPSourceInfoCache sourceInfoCache;
-    OverallStats stats;
-    OverallTransStats transstats;
+    private OverallStats stats;
+    private OverallTransStats transstats;
     RTPEventHandler eventhandler;
-    int clockrate[];
+    int clockrate[] = new int[128];
     static final int DATA = 1;
     static final int CONTROL = 2;
     static final int SRCDATA = 3;
     static final int RTCP_MIN_TIME = 5000;
     static final int BYE_THRESHOLD = 50;
     int sendercount;
-    double rtcp_bw_fraction;
-    double rtcp_sender_bw_fraction;
-    int rtcp_min_time;
+    double rtcp_bw_fraction = 0D;
+    double rtcp_sender_bw_fraction = 0D;
+    private int rtcp_min_time = 5000;
     private static final int NOTIFYPERIOD = 500;
-    int sessionbandwidth;
-    boolean initial;
-    boolean byestate;
-    boolean rtcpsent;
-    int avgrtcpsize;
-    Hashtable conflicttable;
+    int sessionbandwidth = 0;
+    boolean initial = true;
+    boolean byestate = false;
+    boolean rtcpsent = false;
+    private int avgrtcpsize = 128;
     SSRCInfo ourssrc;
     public final RTPSessionMgr sm;
 
     SSRCCache(RTPSessionMgr sm)
     {
-        cache = new SSRCTable<SSRCInfo>();
-        stats = null;
-        transstats = null;
-        clockrate = new int[128];
-        sendercount = 0;
-        rtcp_bw_fraction = 0.0D;
-        rtcp_sender_bw_fraction = 0.0D;
-        rtcp_min_time = 5000;
-        sessionbandwidth = 0;
-        initial = true;
-        byestate = false;
-        rtcpsent = false;
-        avgrtcpsize = 128;
-        conflicttable = new Hashtable(5);
         stats = sm.defaultstats;
         transstats = sm.transstats;
         sourceInfoCache = new RTPSourceInfoCache();
@@ -65,20 +50,6 @@ public class SSRCCache
 
     SSRCCache(RTPSessionMgr sm, RTPSourceInfoCache sic)
     {
-        cache = new SSRCTable<SSRCInfo>();
-        stats = null;
-        transstats = null;
-        clockrate = new int[128];
-        sendercount = 0;
-        rtcp_bw_fraction = 0.0D;
-        rtcp_sender_bw_fraction = 0.0D;
-        rtcp_min_time = 5000;
-        sessionbandwidth = 0;
-        initial = true;
-        byestate = false;
-        rtcpsent = false;
-        avgrtcpsize = 128;
-        conflicttable = new Hashtable(5);
         stats = sm.defaultstats;
         transstats = sm.transstats;
         sourceInfoCache = sic;
@@ -219,13 +190,10 @@ public class SSRCCache
 
     SSRCInfo get(int ssrc, InetAddress address, int port)
     {
-        SSRCInfo ssrcinfo;
         synchronized (this)
         {
-            SSRCInfo info = lookup(ssrc);
-            ssrcinfo = info;
+            return lookup(ssrc);
         }
-        return ssrcinfo;
     }
 
     SSRCInfo get(int ssrc, InetAddress address, int port, int mode)
@@ -239,7 +207,7 @@ public class SSRCCache
                     && !ourssrc.address.equals(address))
             {
                 localcollision = true;
-                LocalCollision(ssrc);
+                localCollision(ssrc);
             }
             info = lookup(ssrc);
             if (info != null)
@@ -278,13 +246,25 @@ public class SSRCCache
                 {
                     if (info.ours)
                         return null;
-                    if (!(info instanceof PassiveSSRCInfo))
-                    {
-                        Log.info(
-                                "Changing to PassiveSSRCInfo for SSRC "
-                                    + (0xFFFFFFFFL & ssrc));
-                        cache.put(ssrc, info = new PassiveSSRCInfo(info));
-                    }
+
+
+                    // This code executes when we already have a RecvSSRCInfo
+                    // (with its associated resources for an incoming stream)
+                    // and we receive an RTCP Receiver Report. Receiving an RR
+                    // does not necessarily mean that the other side has stopped
+                    // sending RTP, thus changing to PassiveSSRCInfo (which
+                    // stops and removes the RecvSSRCInfo/ReceiveStream) is
+                    // not desired.
+                    // The task of freeing the ReceiveStream resources is left
+                    // to SSRCCacheCleaner.
+
+                    //if (!(info instanceof PassiveSSRCInfo))
+                    //{
+                    //    Log.info(
+                    //            "Changing to PassiveSSRCInfo for SSRC "
+                    //                + (0xFFFFFFFFL & ssrc));
+                    //    cache.put(ssrc, info = new PassiveSSRCInfo(info));
+                    //}
                 }
             }
             if (info == null)
@@ -293,8 +273,7 @@ public class SSRCCache
                 {
                     if (ourssrc != null && ourssrc.ssrc == ssrc)
                     {
-                        SSRCInfo ssrcinfo3 = ourssrc;
-                        return ssrcinfo3;
+                        return ourssrc;
                     }
                     info = new SendSSRCInfo(this, ssrc);
                     info.initsource(TrueRandom.nextInt());
@@ -305,8 +284,7 @@ public class SSRCCache
                     info = new PassiveSSRCInfo(this, ssrc);
                 if (info == null)
                 {
-                    SSRCInfo ssrcinfo4 = null;
-                    return ssrcinfo4;
+                    return null;
                 }
                 info.address = address;
                 info.port = port;
@@ -349,7 +327,7 @@ public class SSRCCache
             return sessionbandwidth;
     }
 
-    private void LocalCollision(int ssrc)
+    private void localCollision(int ssrc)
     {
         int newSSRC = 0;
         do

@@ -105,7 +105,7 @@ public class RTCPReceiver implements PacketConsumer
         case RTCPPacket.COMPOUND:
             RTCPCompoundPacket rtcpcompoundpacket
                 = (RTCPCompoundPacket) rtcppacket;
-            cache.updateavgrtcpsize(((Packet) (rtcpcompoundpacket)).length);
+            cache.updateavgrtcpsize(rtcpcompoundpacket.length);
             for (int j = 0; j < rtcpcompoundpacket.packets.length; j++)
                 sendTo(rtcpcompoundpacket.packets[j]);
 
@@ -119,9 +119,9 @@ public class RTCPReceiver implements PacketConsumer
             if (rtcppacket.base instanceof UDPPacket)
                 ssrcinfo = cache.get(rtcpsrpacket.ssrc,
                         ((UDPPacket) rtcppacket.base).remoteAddress,
-                        ((UDPPacket) rtcppacket.base).remotePort, 1);
+                        ((UDPPacket) rtcppacket.base).remotePort, type);
             else
-                ssrcinfo = cache.get(rtcpsrpacket.ssrc, null, 0, 1);
+                ssrcinfo = cache.get(rtcpsrpacket.ssrc, null, 0, type);
             if (ssrcinfo == null)
                 break;
             ssrcinfo.setAlive(true);
@@ -192,9 +192,9 @@ public class RTCPReceiver implements PacketConsumer
             if (rtcppacket.base instanceof UDPPacket)
                 ssrcinfo = cache.get(rtcprrpacket.ssrc,
                         ((UDPPacket) rtcppacket.base).remoteAddress,
-                        ((UDPPacket) rtcppacket.base).remotePort, 2);
+                        ((UDPPacket) rtcppacket.base).remotePort, type);
             else
-                ssrcinfo = cache.get(rtcprrpacket.ssrc, null, 0, 2);
+                ssrcinfo = cache.get(rtcprrpacket.ssrc, null, 0, type);
             if (ssrcinfo == null)
                 break;
             ssrcinfo.setAlive(true);
@@ -247,23 +247,16 @@ public class RTCPReceiver implements PacketConsumer
             for (int k1 = 0; k1 < rtcpsdespacket.sdes.length; k1++)
             {
                 RTCPSDES rtcpsdes = rtcpsdespacket.sdes[k1];
-                if (type == 1)
+                if (type == 1 || type == 2)
                 {
                     if (rtcppacket.base instanceof UDPPacket)
-                        ssrcinfo = cache.get(rtcpsdes.ssrc,
+                        ssrcinfo = cache.get(
+                                rtcpsdes.ssrc,
                                 ((UDPPacket) rtcppacket.base).remoteAddress,
-                                ((UDPPacket) rtcppacket.base).remotePort, 1);
+                                ((UDPPacket) rtcppacket.base).remotePort,
+                                type);
                     else
-                        ssrcinfo = cache.get(rtcpsdes.ssrc, null, 0, 1);
-                }
-                else if (type == 2)
-                {
-                    if (rtcppacket.base instanceof UDPPacket)
-                        ssrcinfo = cache.get(rtcpsdes.ssrc,
-                                ((UDPPacket) rtcppacket.base).remoteAddress,
-                                ((UDPPacket) rtcppacket.base).remotePort, 2);
-                    else
-                        ssrcinfo = cache.get(rtcpsdes.ssrc, null, 0, 2);
+                        ssrcinfo = cache.get(rtcpsdes.ssrc, null, 0, type);
                 }
                 if (ssrcinfo == null)
                     break;

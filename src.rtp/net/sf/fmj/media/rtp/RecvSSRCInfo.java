@@ -7,7 +7,7 @@ import javax.media.rtp.*;
 import javax.media.rtp.rtcp.*;
 
 public class RecvSSRCInfo extends SSRCInfo implements ReceiveStream,
-        SenderReport
+        SenderReport, ReceiverReport
 {
     RecvSSRCInfo(SSRCCache cache, int ssrc)
     {
