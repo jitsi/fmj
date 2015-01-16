@@ -57,7 +57,7 @@ public class RTPTransmitter
         p.length = b.getLength();
         p.received = false;
         RTPPacket rtp = new RTPPacket(p);
-        if ((b.getFlags() & 0x800) != 0)
+        if ((b.getFlags() & Buffer.FLAG_RTP_MARKER) != 0)
             rtp.marker = 1;
         else
             rtp.marker = 0;
@@ -71,6 +71,12 @@ public class RTPTransmitter
         info.bytesreceived += b.getLength();
         info.maxseq++;
         info.lasttimestamp = rtp.timestamp;
+
+        Buffer.RTPHeaderExtension headerExtension = b.getHeaderExtension();
+        if (headerExtension != null)
+        {
+            rtp.headerExtension = headerExtension;
+        }
         return rtp;
     }
 
@@ -93,10 +99,13 @@ public class RTPTransmitter
     public void TransmitPacket(Buffer b, SendSSRCInfo info)
     {
         info.rtptime = info.getTimeStamp(b);
-        if (b.getHeader() instanceof Long)
-            info.systime = ((Long) b.getHeader()).longValue();
+
+        Object header = b.getHeader();
+        if (header != null && header instanceof Long)
+            info.systime = (Long) header;
         else
             info.systime = System.currentTimeMillis();
+
         RTPPacket p = MakeRTPPacket(b, info);
         if (p == null)
         {

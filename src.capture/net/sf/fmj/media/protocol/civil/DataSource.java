@@ -349,6 +349,7 @@ public class DataSource extends PushBufferDataSource implements CaptureDevice,
                 buffer.setFormat(aBuffer.getFormat());
                 buffer.setSequenceNumber(aBuffer.getSequenceNumber());
                 buffer.setRtpTimeStamp(aBuffer.getRtpTimeStamp());
+                buffer.setHeaderExtension(aBuffer.getHeaderExtension());
                 buffer.setTimeStamp(aBuffer.getTimeStamp());
             } catch (InterruptedException ex)
             {

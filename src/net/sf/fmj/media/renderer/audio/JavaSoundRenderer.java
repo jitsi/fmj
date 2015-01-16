@@ -460,6 +460,7 @@ public class JavaSoundRenderer implements Renderer
                 return BUFFER_PROCESSED_OK;
 
             codecBuffer.setRtpTimeStamp(buffer.getRtpTimeStamp());
+            codecBuffer.setHeaderExtension(buffer.getHeaderExtension());
             codecBuffer.setTimeStamp(buffer.getTimeStamp());
             codecBuffer.setFlags(buffer.getFlags());
             codecBuffer.setSequenceNumber(buffer.getSequenceNumber());

@@ -99,6 +99,12 @@ public class Buffer
     protected long sequenceNumber = SEQUENCE_UNKNOWN;
 
     /**
+     * The <tt>RTPHeaderExtension</tt> for this <tt>Buffer</tt>. Currently only
+     * a single instance per <tt>Buffer</tt> is allowed.
+     */
+    private RTPHeaderExtension headerExtension = null;
+
+    /**
      * Indicates that this <tt>Buffer</tt> marks the end of media for the data
      * stream. The Buffer might or might not contain valid data to be processed.
      * The length and data attributes need to be examined to determine whether
@@ -262,6 +268,7 @@ public class Buffer
         buf.offset = offset;
         buf.timeStamp = timeStamp;
         buf.rtpTimeStamp = rtpTimeStamp;
+        buf.headerExtension = headerExtension;
         buf.duration = duration;
         buf.sequenceNumber = sequenceNumber;
         buf.flags = flags;
@@ -308,6 +315,7 @@ public class Buffer
         offset = buffer.offset;
         timeStamp = buffer.timeStamp;
         rtpTimeStamp = buffer.rtpTimeStamp;
+        headerExtension = buffer.headerExtension;
         duration = buffer.duration;
         sequenceNumber = buffer.sequenceNumber;
         flags = buffer.flags;
@@ -649,5 +657,55 @@ public class Buffer
     public void setTimeStamp(long timeStamp)
     {
         this.timeStamp = timeStamp;
+    }
+
+    /**
+     * Gets the <tt>RTPHeaderExtension</tt> of this <tt>Buffer</tt>.
+     * @return the <tt>RTPHeaderExtension</tt> of this <tt>Buffer</tt>.
+     */
+    public RTPHeaderExtension getHeaderExtension()
+    {
+        return headerExtension;
+    }
+
+    /**
+     * Sets the <tt>RTPHeaderExtension</tt> of this <tt>Buffer</tt>.
+     * @param headerExtension the <tt>RTPHeaderExtension</tt> to set.
+     */
+    public void setHeaderExtension(RTPHeaderExtension headerExtension)
+    {
+        this.headerExtension = headerExtension;
+    }
+
+    /**
+     * A simple structure that represents an RTP header extension. Defined here
+     * for ease of use as a <tt>Buffer</tt>'s header.
+     */
+    public static class RTPHeaderExtension
+    {
+        /**
+         * The RTP header extension ID. Only 4 bits are used, so it should be
+         * in [0,15].
+         */
+        public byte id;
+
+        /**
+         * The data of the extension.
+         */
+        public byte[] value;
+
+        /**
+         * Initializes a new <tt>RTPHeaderExtension</tt> with the given ID and
+         * value.
+         * @param id the ID of the extension.
+         * @param value the value of the extension.
+         */
+        public RTPHeaderExtension(byte id, byte[] value)
+        {
+            if (value == null)
+                throw new NullPointerException("value");
+            this.id = id;
+            this.value = value;
+        }
     }
 }

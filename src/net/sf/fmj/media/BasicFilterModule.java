@@ -228,6 +228,7 @@ public class BasicFilterModule extends BasicModule
             // Copy from input to output.
             outputBuffer.setTimeStamp(inputBuffer.getTimeStamp());
             outputBuffer.setRtpTimeStamp(inputBuffer.getRtpTimeStamp());
+            outputBuffer.setHeaderExtension(inputBuffer.getHeaderExtension());
             outputBuffer.setDuration(inputBuffer.getDuration());
             outputBuffer.setSequenceNumber(inputBuffer.getSequenceNumber());
             outputBuffer.setFlags(inputBuffer.getFlags());

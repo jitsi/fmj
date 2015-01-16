@@ -4,6 +4,8 @@ import java.io.*;
 
 import net.sf.fmj.utility.*;
 
+import javax.media.*;
+
 public class RTPPacket extends Packet
 {
     public Packet base;
@@ -18,6 +20,7 @@ public class RTPPacket extends Packet
     public byte extension[];
     public int payloadoffset;
     public int payloadlength;
+    public Buffer.RTPHeaderExtension headerExtension;
 
     public RTPPacket()
     {
@@ -44,7 +47,11 @@ public class RTPPacket extends Packet
 
         try
         {
-            dos.writeByte(128);
+            byte b1 = (byte) 0x80;
+            if (headerExtension != null)
+                b1 |= 0x10;
+
+            dos.writeByte(b1);
             int mp = payloadType;
             if (marker == 1)
                 mp = payloadType | 0x80;
@@ -52,6 +59,29 @@ public class RTPPacket extends Packet
             dos.writeShort(seqnum);
             dos.writeInt((int) timestamp);
             dos.writeInt(ssrc);
+            if (headerExtension != null)
+            {
+                int extensionLengthInWords
+                    = (headerExtension.value.length + 3) / 4;
+                if (extensionLengthInWords > 0)
+                {
+                    // "Defined by profile" field, see RFC5285
+                    dos.writeShort(0xbede);
+                    dos.writeShort(extensionLengthInWords);
+
+                    dos.writeByte( (headerExtension.id << 4)
+                                 | (headerExtension.value.length - 1));
+                    dos.write(headerExtension.value,
+                              0,
+                              headerExtension.value.length);
+
+                    // Pad the word with zeroes.
+                    int i = (headerExtension.value.length + 1) % 4;
+                    if (i != 0)
+                        for ( ; i < 4; i++)
+                            dos.writeByte(0);
+                }
+            }
             dos.write(base.data, payloadoffset, payloadlength);
             super.data = d;
         }
@@ -67,7 +97,19 @@ public class RTPPacket extends Packet
 
     public int calcLength()
     {
-        return payloadlength + 12;
+        int headerExtensionsLengthInBytes = 0;
+        if (headerExtension != null)
+        {
+            int headerExtensionsLengthInWords
+                = (headerExtension.value.length + 3) / 4;
+
+            // An extra word for "defined by profile" plus "length".
+            headerExtensionsLengthInBytes
+                = (headerExtensionsLengthInWords + 1 ) * 4;
+        }
+        return 12 /* RTP fixed header */ +
+               headerExtensionsLengthInBytes +
+               payloadlength;
     }
 
     @Override
@@ -85,6 +127,7 @@ public class RTPPacket extends Packet
         p.extension = extension;
         p.payloadoffset = payloadoffset;
         p.payloadlength = payloadlength;
+        p.headerExtension = headerExtension;
         return p;
     }
 

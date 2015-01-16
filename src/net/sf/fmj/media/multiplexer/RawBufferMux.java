@@ -207,6 +207,7 @@ public class RawBufferMux extends BasicPlugIn implements Multiplexer, Clock
             buffer.setEOM(filled.isEOM());
             buffer.setFlags(filled.getFlags());
             buffer.setRtpTimeStamp(filled.getRtpTimeStamp());
+            buffer.setHeaderExtension(filled.getHeaderExtension());
             buffer.setTimeStamp(filled.getTimeStamp());
             buffer.setFormat(filled.getFormat());
             buffer.setOffset(filled.getOffset());

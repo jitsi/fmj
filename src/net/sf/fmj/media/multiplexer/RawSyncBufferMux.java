@@ -191,7 +191,7 @@ public class RawSyncBufferMux extends RawBufferMux
         if (buffer.isEOM() && trackID == masterTrackID)
             masterTrackEnded = true;
 
-        buffer.setHeader(new Long(System.currentTimeMillis()));
+        buffer.setHeader(System.currentTimeMillis());
 
         return streams[trackID].process(buffer);
     }
