@@ -235,13 +235,14 @@ public abstract class RTCPReport implements Report
             if (sdesHeader.getPacketType() == RTCPPacket.BYE)
             {
                 isBye = true;
-                if (((length + 1) * 4) > RTCPHeader.SIZE)
+                if (((sdesHeader.getLength() + 1) * 4) > RTCPHeader.SIZE)
                 {
-                    int len = data[offset + RTCPHeader.SIZE] & 0xFF;
-                    if ((len < (length - RTCPHeader.SIZE)) && (len > 0))
+                    int reasonLen = data[offset + RTCPHeader.SIZE] & 0xFF;
+                    if ((reasonLen < (length - RTCPHeader.SIZE))
+                            && (reasonLen > 0))
                     {
                         byeReason = new String(data, offset + RTCPHeader.SIZE
-                                + 1, len);
+                                + 1, reasonLen);
                     }
                 }
             }
