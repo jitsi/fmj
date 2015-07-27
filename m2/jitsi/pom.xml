@@ -4,7 +4,13 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.jitsi</groupId>
+  <parent>
+    <groupId>org.jitsi</groupId>
+    <artifactId>jitsi-universe</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../../../jitsi-universe/pom.xml</relativePath>
+  </parent>
+
   <artifactId>fmj</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -12,15 +18,11 @@
   <name>fmj</name>
   <url>http://sourceforge.net/projects/fmj/</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
   <dependencies>
+    <!-- test -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.8.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
