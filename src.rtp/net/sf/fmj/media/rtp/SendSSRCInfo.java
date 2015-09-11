@@ -17,7 +17,7 @@ public class SendSSRCInfo extends SSRCInfo implements SenderReport, SendStream
     private long totalSamples = 0;
     private long lastSeq = -1;
     private long lastBufSeq = -1;
-    protected RTPTransStats stats;
+    public RTPTransStats stats;
     static AudioFormat dviAudio = new AudioFormat("dvi/rtp");
     static AudioFormat gsmAudio = new AudioFormat("gsm/rtp");
     static AudioFormat g723Audio = new AudioFormat("g723/rtp");

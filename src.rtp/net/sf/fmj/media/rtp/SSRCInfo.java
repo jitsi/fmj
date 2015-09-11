@@ -18,13 +18,13 @@ public abstract class SSRCInfo implements Report
     boolean byeReceived;
     long byeTime;
     String byereason;
-    RTPSourceInfo sourceInfo;
-    SourceDescription name;
-    SourceDescription email;
-    SourceDescription phone;
-    SourceDescription loc;
-    SourceDescription tool;
-    SourceDescription note;
+    public RTPSourceInfo sourceInfo;
+    public SourceDescription name;
+    public SourceDescription email;
+    public SourceDescription phone;
+    public SourceDescription loc;
+    public SourceDescription tool;
+    public SourceDescription note;
     SourceDescription priv;
     public long lastSRntptimestamp;
     long lastSRrtptimestamp;
@@ -54,8 +54,8 @@ public abstract class SSRCInfo implements Report
     public int prevmaxseq;
     public int prevlost;
     long starttime;
-    long rtptime;
-    long systime;
+    public long rtptime;
+    public long systime;
     InetAddress address;
     int port;
     RTCPReporter reporter;
@@ -74,7 +74,7 @@ public abstract class SSRCInfo implements Report
     long lasttimestamp;
     int lastPayloadType;
     public double jitter;
-    int bytesreceived;
+    public int bytesreceived;
     RTPStats stats;
     int clockrate;
 
@@ -465,7 +465,7 @@ public abstract class SSRCInfo implements Report
         alive = bealive;
     }
 
-    void setOurs(boolean beours)
+    public void setOurs(boolean beours)
     {
         if (ours == beours)
             return;

@@ -47,8 +47,6 @@ public class RTCPReporter implements Runnable
     public void releasessrc(String reason)
     {
         transmit.bye(reason);
-        transmit.ssrcInfo.setOurs(false);
-        transmit.ssrcInfo = null;
     }
 
     public void run()
@@ -64,7 +62,6 @@ public class RTCPReporter implements Runnable
             {
                 logger.finest(new StringBuilder()
                         .append("RTCP reporting for ")
-                        .append(cache.audio ? "audio " : "video ")
                         .append("running again after ")
                         .append(delay)
                         .append(" ms.")

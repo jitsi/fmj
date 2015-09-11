@@ -6,7 +6,12 @@ public class RTPTransStats implements TransmissionStats
 {
     protected int total_pdu;
     protected int total_bytes;
-    protected int total_rtcp;
+
+    /**
+     * Updated by the <tt>RTPTransmitter</tt> or the <tt>RTCPTransmitter</tt>
+     * when an RTCP packet is transmitted.
+     */
+    public int total_rtcp;
 
     public RTPTransStats()
     {

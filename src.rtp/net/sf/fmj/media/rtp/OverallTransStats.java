@@ -6,10 +6,19 @@ public class OverallTransStats implements GlobalTransmissionStats
 {
     protected int rtp_sent;
     protected int bytes_sent;
-    protected int rtcp_sent;
+
+    /**
+     * Updated by the <tt>RTCPTransmitter</tt> when an RTCP packet is sent.
+     */
+    public int rtcp_sent;
     protected int local_coll;
     protected int remote_coll;
-    protected int transmit_failed;
+
+    /**
+     * Updated by the <tt>RTPTransmitter</tt> or the <tt>RTCPTransmitter</tt>
+     * when an RTP or an RTCP packet fails to transmit.
+     */
+    public int transmit_failed;
 
     public OverallTransStats()
     {

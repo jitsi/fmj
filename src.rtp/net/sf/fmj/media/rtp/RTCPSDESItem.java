@@ -29,6 +29,12 @@ public class RTCPSDESItem
     {
     }
 
+    public RTCPSDESItem(int type, byte[] data)
+    {
+        this.type = type;
+        this.data = data;
+    }
+
     public RTCPSDESItem(int type, String s)
     {
         this.type = type;

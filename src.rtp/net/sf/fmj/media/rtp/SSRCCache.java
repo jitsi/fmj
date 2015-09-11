@@ -29,11 +29,11 @@ public class SSRCCache
     private int rtcp_min_time = 5000;
     private static final int NOTIFYPERIOD = 500;
     int sessionbandwidth = 0;
-    boolean initial = true;
-    boolean byestate = false;
-    boolean rtcpsent = false;
+    public boolean initial = true;
+    public boolean byestate = false;
+    public boolean rtcpsent = false;
     private int avgrtcpsize = 128;
-    SSRCInfo ourssrc;
+    public SSRCInfo ourssrc;
     public final RTPSessionMgr sm;
 
     SSRCCache(RTPSessionMgr sm)
@@ -58,7 +58,7 @@ public class SSRCCache
         eventhandler = new RTPEventHandler(sm);
     }
 
-    int aliveCount()
+    public int aliveCount()
     {
         int tot = 0;
         synchronized (cache)
@@ -73,12 +73,8 @@ public class SSRCCache
         return tot;
     }
 
-    public boolean audio = true;
-
-    double calcReportInterval(boolean sender, boolean recvfromothers)
+    public double calcReportInterval(boolean sender, boolean recvfromothers)
     {
-        if (audio)
-        {
             /*
              * Minimum average time between RTCP packets from this site (in
              * milliseconds). This time prevents the reports from `clumping'
@@ -87,8 +83,8 @@ public class SSRCCache
              * interval from becoming ridiculously small during transient
              * outages like a network partition.
              */
-            rtcp_min_time = 5000;
-            double rtcp_bw = rtcp_bw_fraction;
+        rtcp_min_time = 5000;
+        double rtcp_bw = rtcp_bw_fraction;
 
             /*
              * Very first call at application start-up uses half the min delay
@@ -97,42 +93,44 @@ public class SSRCCache
              * the report interval will converge to the correct interval more
              * quickly.
              */
-            if (initial)
-                rtcp_min_time = rtcp_min_time / 2;
+        if (initial)
+            rtcp_min_time = rtcp_min_time / 2;
 
             /*
              * Dedicate a fraction of the RTCP bandwidth to senders unless the
              * number of senders is large enough that their share is more than
              * that fraction.
              */
-            int n = aliveCount(); /* no. of members for computation */
-            if (sendercount > 0 && sendercount < n * rtcp_sender_bw_fraction)
+        int n = aliveCount(); /* no. of members for computation */
+        if (sendercount > 0 && sendercount < n * rtcp_sender_bw_fraction)
+            if (sender)
+            {
+                rtcp_bw *= rtcp_sender_bw_fraction;
+                n = sendercount;
+            }
+            else
+            {
+                rtcp_bw *= 1.0D - rtcp_sender_bw_fraction;
+                n -= sendercount;
+            }
+        if (recvfromothers && rtcp_bw == 0.0D)
+        {
+            rtcp_bw = 0.050000000000000003D;
+            if (sendercount > 0 && sendercount < n * 0.25D)
                 if (sender)
                 {
-                    rtcp_bw *= rtcp_sender_bw_fraction;
+                    rtcp_bw *= 0.25D;
                     n = sendercount;
-                } else
+                }
+                else
                 {
-                    rtcp_bw *= 1.0D - rtcp_sender_bw_fraction;
+                    rtcp_bw *= 0.75D;
                     n -= sendercount;
                 }
-            if (recvfromothers && rtcp_bw == 0.0D)
-            {
-                rtcp_bw = 0.050000000000000003D;
-                if (sendercount > 0 && sendercount < n * 0.25D)
-                    if (sender)
-                    {
-                        rtcp_bw *= 0.25D;
-                        n = sendercount;
-                    } else
-                    {
-                        rtcp_bw *= 0.75D;
-                        n -= sendercount;
-                    }
-            }
-            double time = 0.0D; /* interval */
-            if (rtcp_bw != 0.0D)
-            {
+        }
+        double time = 0.0D; /* interval */
+        if (rtcp_bw != 0.0D)
+        {
                 /*
                  * The effective number of sites times the average packet size
                  * is the total number of octets sent when each site sends a
@@ -142,28 +140,21 @@ public class SSRCCache
                  * that time interval we send one report so this time is also
                  * our average time between reports.
                  */
-                time = (avgrtcpsize * n) / rtcp_bw;
-                if (time < rtcp_min_time)
-                    time = rtcp_min_time;
-            }
-            if (recvfromothers)
-                return time;
-            else
-            {
+            time = (avgrtcpsize * n) / rtcp_bw;
+            if (time < rtcp_min_time)
+                time = rtcp_min_time;
+        }
+        if (recvfromothers)
+            return time;
+        else
+        {
                  /*
                   * To avoid traffic bursts from unintended synchronization with
                   * other sites, we then pick our actual next report interval as
                   * a random number uniformly distributed between 0.5*time and
                   * 1.5*time.
                   */
-                return time * (Math.random() + 0.5D);
-            }
-        }
-        else
-        {
-            // TODO(gp) adapt the above algorithm so that it yields values close
-            // to 1s for video.
-            return 1000;
+            return time * (Math.random() + 0.5D);
         }
     }
 
@@ -389,7 +380,7 @@ public class SSRCCache
 
     }
 
-    synchronized void updateavgrtcpsize(int size)
+    public synchronized void updateavgrtcpsize(int size)
     {
         avgrtcpsize = (int) (0.0625D * size + 0.9375D * avgrtcpsize);
     }

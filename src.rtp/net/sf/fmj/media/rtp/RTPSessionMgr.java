@@ -29,6 +29,44 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
 
     private static final String SOURCE_DESC_TOOL = "FMJ RTP Player";
 
+    /**
+     * The factory that creates the <tt>RTCPTransmitter</tt> of this
+     * <tt>RTPSessionMgr</tt>.
+     */
+    private RTCPTransmitterFactory rtcpTransmitterFactory;
+
+    /**
+     * Gets or creates the <tt>RTCPTransmitterFactory</tt> of this
+     * <tt>RTPSessionMgr</tt>.
+     *
+     * @return the <tt>RTCPTransmitterFactory</tt> of this
+     * <tt>RTPSessionMgr</tt>.
+     */
+    public RTCPTransmitterFactory getOrCreateRTCPTransmitterFactory()
+    {
+        if (rtcpTransmitterFactory == null)
+        {
+            // If no {@link rtcpTransmitterFactory} is set, use the default
+            // one.
+            rtcpTransmitterFactory = new DefaultRTCPTransmitterFactory();
+        }
+
+        return rtcpTransmitterFactory;
+    }
+
+    /**
+     * Sets the <tt>RTCPTransmitterFactory</tt> to use with this
+     * <tt>RTPSessionMgr</tt>.
+     *
+     * @param rtcpTransmitterFactory  the <tt>RTCPTransmitterFactory</tt> to
+     * use with this <tt>RTPSessionMgr</tt>.
+     */
+    public void setRTCPTransmitterFactory(
+        RTCPTransmitterFactory rtcpTransmitterFactory)
+    {
+        this.rtcpTransmitterFactory = rtcpTransmitterFactory;
+    }
+
     public static boolean formatSupported(Format format)
     {
         if (supportedList == null)
@@ -70,7 +108,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     private SessionAddress localReceiverAddress = null;
     UDPPacketSender udpsender = null;
     RTPPacketSender rtpsender = null;
-    RTCPRawSender sender = null;
+    RTCPRawSender sender = null; // it seems like this is never used in a meaningful way. The variable name is misleading as well.
     SSRCCacheCleaner cleaner = null;
     private boolean unicast = false;
     private boolean startedparticipating = false;
@@ -93,12 +131,11 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     PushBufferStream defaultstream = null;
     Format defaultformat = null;
     BufferControl buffercontrol = null;
-    OverallStats defaultstats = null;
-    OverallTransStats transstats = null;
+    public OverallStats defaultstats = null;
+    public OverallTransStats transstats = null;
     int defaultsourceid = 0;
     Vector sendstreamlist = null;
     RTPTransmitter rtpTransmitter = null;
-    private RTCPReportBuilder rtcpReportBuilder;
     boolean bds = false;
     Vector peerlist = null;
     boolean multi_unicast = false;
@@ -114,9 +151,9 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     private PacketForwarder rtpForwarder = null;
     private PacketForwarder rtcpForwarder = null;
     private RTPDemultiplexer rtpDemultiplexer = null;
-    private OverallStats overallStats = null;
+    private OverallStats overallStats = null; // it seems like this is never used.
     private boolean participating = false;
-    private UDPPacketSender udpPacketSender = null;
+    private UDPPacketSender udpPacketSender = null; // it seems like this is never used.
     private Vector remoteAddresses = null;
     private RTCPTransmitter rtcpTransmitter = null;
     private RTPConnector rtpConnector = null;
@@ -478,10 +515,10 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                 cache.ourssrc.reporter = startParticipating(k,
                         inetaddress.getHostAddress(), cache.ourssrc);
             }
-            if (cache.ourssrc.reporter.transmit.sender.peerlist == null)
-                cache.ourssrc.reporter.transmit.sender.peerlist = new Vector();
+            if (cache.ourssrc.reporter.transmit.getSender().peerlist == null)
+                cache.ourssrc.reporter.transmit.getSender().peerlist = new Vector();
         }
-        cache.ourssrc.reporter.transmit.sender.peerlist.addElement(
+        cache.ourssrc.reporter.transmit.getSender().peerlist.addElement(
                 sessionaddress);
         if (cache != null)
         {
@@ -491,12 +528,12 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                 SSRCInfo ssrcinfo = elements.nextElement();
                 if (ssrcinfo instanceof SendSSRCInfo)
                 {
-                    ssrcinfo.reporter.transmit.sender.control = true;
-                    if (ssrcinfo.reporter.transmit.sender.peerlist == null)
+                    ssrcinfo.reporter.transmit.getSender().control = true;
+                    if (ssrcinfo.reporter.transmit.getSender().peerlist == null)
                     {
-                        ssrcinfo.reporter.transmit.sender.peerlist
+                        ssrcinfo.reporter.transmit.getSender().peerlist
                             = new Vector();
-                        ssrcinfo.reporter.transmit.sender.peerlist.addElement(
+                        ssrcinfo.reporter.transmit.getSender().peerlist.addElement(
                                 sessionaddress);
                     }
                 }
@@ -893,14 +930,14 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                         SSRCInfo ssrcinfo1 = elements.nextElement();
                         if (ssrcinfo1 instanceof SendSSRCInfo)
                         {
-                            ssrcinfo1.reporter.transmit.sender.control = true;
-                            if (ssrcinfo1.reporter.transmit.sender.peerlist
+                            ssrcinfo1.reporter.transmit.getSender().control = true;
+                            if (ssrcinfo1.reporter.transmit.getSender().peerlist
                                     == null)
                             {
-                                ssrcinfo1.reporter.transmit.sender.peerlist
+                                ssrcinfo1.reporter.transmit.getSender().peerlist
                                     = new Vector();
                             }
-                            ssrcinfo1.reporter.transmit.sender.peerlist
+                            ssrcinfo1.reporter.transmit.getSender().peerlist
                                 .addElement(sessionaddress1);
                         }
                     }
@@ -1347,7 +1384,14 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         return 0;
     }
 
-    SSRCCache getSSRCCache()
+    /**
+     * Exposes the <tt>SSRCCache</tt> of this <tt>RTPSessionMgr</tt>. At the
+     * time of this writing this is used to allow alternate implementations of
+     * <tt>RTCPTransmitter</tt>.
+     *
+     * @return
+     */
+    public SSRCCache getSSRCCache()
     {
         return cache;
     }
@@ -2224,11 +2268,6 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         }
     }
 
-    public void setRTCPReportBuilder(RTCPReportBuilder rtcpReportBuilder)
-    {
-        this.rtcpReportBuilder = rtcpReportBuilder;
-    }
-
     void setSessionBandwidth(int i)
     {
         cache.sessionbandwidth = i;
@@ -2304,9 +2343,8 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         RTCPRawSender rtcprawsender = new RTCPRawSender(
                 remoteAddress.getControlPort(), remoteAddress
                         .getControlAddress().getHostAddress(), udppacketsender);
-        rtcpTransmitter = new RTCPTransmitter(cache, rtcprawsender);
+        rtcpTransmitter = getOrCreateRTCPTransmitterFactory().newRTCPTransmitter(cache, rtcprawsender);
         rtcpTransmitter.setSSRCInfo(cache.ourssrc);
-        rtcpTransmitter.setReportBuilder(rtcpReportBuilder);
         RTCPReporter rtcpreporter = new RTCPReporter(cache, rtcpTransmitter);
         startedparticipating = true;
         return rtcpreporter;
@@ -2332,10 +2370,9 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
             udppacketsender.setttl(ttl);
         }
         RTCPRawSender rtcprawsender = new RTCPRawSender(i, s, udppacketsender);
-        RTCPTransmitter rtcptransmitter = new RTCPTransmitter(cache,
+        RTCPTransmitter rtcptransmitter = getOrCreateRTCPTransmitterFactory().newRTCPTransmitter(cache,
                 rtcprawsender);
         rtcptransmitter.setSSRCInfo(ssrcinfo);
-        rtcptransmitter.setReportBuilder(rtcpReportBuilder);
         return new RTCPReporter(cache, rtcptransmitter);
     }
 
@@ -2354,10 +2391,9 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
 
         }
         RTCPRawSender rtcprawsender = new RTCPRawSender(rtpsender);
-        RTCPTransmitter rtcptransmitter = new RTCPTransmitter(cache,
+        RTCPTransmitter rtcptransmitter = getOrCreateRTCPTransmitterFactory().newRTCPTransmitter(cache,
                 rtcprawsender);
         rtcptransmitter.setSSRCInfo(ssrcinfo);
-        rtcptransmitter.setReportBuilder(rtcpReportBuilder);
         return new RTCPReporter(cache, rtcptransmitter);
     }
 
@@ -2367,10 +2403,9 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         startedparticipating = true;
         rtpsender = new RTPPacketSender(rtppushdatasource);
         RTCPRawSender rtcprawsender = new RTCPRawSender(rtpsender);
-        RTCPTransmitter rtcptransmitter = new RTCPTransmitter(cache,
+        RTCPTransmitter rtcptransmitter = getOrCreateRTCPTransmitterFactory().newRTCPTransmitter(cache,
                 rtcprawsender);
         rtcptransmitter.setSSRCInfo(ssrcinfo);
-        rtcptransmitter.setReportBuilder(rtcpReportBuilder);
         return new RTCPReporter(cache, rtcptransmitter);
     }
 
@@ -2406,10 +2441,9 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         // controladdress.getHostName(), udppacketsender);
         RTCPRawSender rtcprawsender = new RTCPRawSender(controlport,
                 controladdress.getHostAddress(), udppacketsender);
-        RTCPTransmitter rtcptransmitter = new RTCPTransmitter(cache,
+        RTCPTransmitter rtcptransmitter = getOrCreateRTCPTransmitterFactory().newRTCPTransmitter(cache,
                 rtcprawsender);
         rtcptransmitter.setSSRCInfo(ssrcinfo);
-        rtcptransmitter.setReportBuilder(rtcpReportBuilder);
         return new RTCPReporter(cache, rtcptransmitter);
     }
 
