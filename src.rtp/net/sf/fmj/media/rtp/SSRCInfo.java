@@ -636,4 +636,49 @@ public abstract class SSRCInfo implements Report
 
         return receiverReport;
     }
+
+    /**
+     * Extends a specific 16-bit unsigned sequence number i.e. unaware of
+     * cycles/wrapping into a 32-bit signed sequence number i.e. aware of
+     * cycles/wrapping.
+     *
+     * @param seqnum the 16-bit unsigned sequence number to extend
+     * @return the 32-bit signed sequence number extended from {@code seqnum}
+     */
+    public int extendSequenceNumber(int seqnum)
+    {
+        int cycles = this.cycles;
+        int maxseq = this.maxseq;
+
+        int delta = seqnum - maxseq;
+
+        if (delta >= 0)
+        {
+            // Unless we look at the timestamps associated with seqnum and
+            // maxseq, we could presume that seqnum is in the same cycle as
+            // maxseq. However, packets i.e. sequence numbers may be
+            // retransmitted. Consequently, the positive delta may signify
+            // either the same cycle as maxseq or the cycle right before the
+            // cycle of maxseq. In the reset of the source code, we
+            // differentiate the tow cases by splitting the sequence number
+            // space in half.
+            if (delta > 0xFFFF / 2)
+                cycles -= 0x10000;
+        }
+        else
+        {
+            // Unless we look at the timestamps associated with seqnum and
+            // maxseq, we could presume that seqnum is in the cycle right
+            // after the cycle of maxseq. However, disorder of packets i.e.
+            // sequence numbers may be introduced by the (network) transport.
+            // Consequently, the negative delta may signify either the same
+            // cycle as maxseq or the cycle right after the cycle of maxseq. In
+            // the rest of the source code, we differentiate the two cases by
+            // splitting the sequence number space in half.
+            if (delta < -0xFFFF / 2)
+                cycles += 0x10000;
+        }
+
+        return seqnum + cycles;
+    }
 }
