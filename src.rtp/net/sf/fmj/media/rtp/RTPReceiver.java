@@ -63,15 +63,15 @@ public class RTPReceiver extends PacketFilter
     public RTPReceiver(SSRCCache ssrccache, RTPDemultiplexer rtpdemultiplexer1,
             DatagramSocket datagramsocket)
     {
-        this(ssrccache, rtpdemultiplexer1, (new RTPRawReceiver(datagramsocket,
-                ssrccache.sm.defaultstats)));
+        this(ssrccache, rtpdemultiplexer1, new RTPRawReceiver(datagramsocket,
+                ssrccache.sm.defaultstats));
     }
 
     public RTPReceiver(SSRCCache ssrccache, RTPDemultiplexer rtpdemultiplexer1,
             int i, String s) throws UnknownHostException, IOException
     {
-        this(ssrccache, rtpdemultiplexer1, (new RTPRawReceiver(i & -2, s,
-                ssrccache.sm.defaultstats)));
+        this(ssrccache, rtpdemultiplexer1, new RTPRawReceiver(i & -2, s,
+                ssrccache.sm.defaultstats));
     }
 
     public RTPReceiver(SSRCCache ssrccache, RTPDemultiplexer rtpdemultiplexer1,
@@ -162,6 +162,253 @@ public class RTPReceiver extends PacketFilter
             ssrcinfo.initsource(rtppacket.seqnum);
             ssrcinfo.payloadType = pt;
         }
+
+        int oldprobation = ssrcinfo.probation;
+        updateStats(ssrcinfo, rtppacket);
+        int newprobation = ssrcinfo.probation;
+
+        if (cache.sm.isUnicast())
+        {
+            InetAddress remoteAddress = udppacket.remoteAddress;
+            if (!rtcpstarted)
+            {
+                cache.sm.startRTCPReports(remoteAddress);
+                rtcpstarted = true;
+                byte abyte0[] = cache.sm.controladdress.getAddress();
+                int k = abyte0[3] & 0xff;
+                if ((k & 0xff) == 255)
+                {
+                    cache.sm.addUnicastAddr(cache.sm.controladdress);
+                } else
+                {
+                    InetAddress inetaddress1 = null;
+                    boolean flag2 = true;
+                    try
+                    {
+                        inetaddress1 = InetAddress.getLocalHost();
+                    } catch (UnknownHostException unknownhostexception)
+                    {
+                        flag2 = false;
+                    }
+                    if (flag2)
+                        cache.sm.addUnicastAddr(inetaddress1);
+                }
+            } else if (!cache.sm.isSenderDefaultAddr(remoteAddress))
+            {
+                cache.sm.addUnicastAddr(remoteAddress);
+            }
+        }
+
+        ssrcinfo.received++;
+        ssrcinfo.stats.update(RTPStats.PDUPROCSD);
+        if (newprobation > 0)
+        {
+            probationList.put(ssrcinfo.ssrc, rtppacket.clone());
+            return null;
+        }
+        ssrcinfo.maxseq = rtppacket.seqnum;
+
+        fireRemotePayloadChangeEvent(ssrcinfo, pt); // if necessary
+
+        if (!assertCurrentformat(ssrcinfo, pt))
+            return rtppacket;
+
+        if (ssrcinfo.dsource != null)
+        {
+            RTPControlImpl rtpcontrolimpl1
+                = (RTPControlImpl)
+                    ssrcinfo.dsource.getControl(RTP_CONTROL_CLASS_NAME);
+            if (rtpcontrolimpl1 != null)
+                rtpcontrolimpl1.currentformat = cache.sm.formatinfo.get(pt);
+        }
+        if (!initBC)
+        {
+            ((BufferControlImpl) cache.sm.buffercontrol).initBufferControl(
+                    ssrcinfo.currentformat);
+            initBC = true;
+        }
+
+        streamconnect(ssrcinfo, pt); // if necessary
+
+        if (ssrcinfo.dsource != null)
+            ssrcinfo.active = true;
+        if (!ssrcinfo.newrecvstream)
+        {
+            NewReceiveStreamEvent newreceivestreamevent
+                = new NewReceiveStreamEvent(cache.sm, (ReceiveStream) ssrcinfo);
+            ssrcinfo.newrecvstream = true;
+            cache.eventhandler.postEvent(newreceivestreamevent);
+        }
+
+        updateJitter(ssrcinfo, rtppacket, pt);
+
+        ssrcinfo.lastRTPReceiptTime = rtppacket.receiptTime;
+        ssrcinfo.lasttimestamp = rtppacket.timestamp;
+        ssrcinfo.payloadType = pt;
+        ssrcinfo.lastPayloadType = pt;
+        ssrcinfo.bytesreceived += rtppacket.payloadlength;
+        ssrcinfo.lastHeardFrom = rtppacket.receiptTime;
+        if (ssrcinfo.quiet)
+        {
+            ssrcinfo.quiet = false;
+            ActiveReceiveStreamEvent activereceivestreamevent
+                = new ActiveReceiveStreamEvent(
+                        cache.sm,
+                        ssrcinfo.sourceInfo,
+                        (ssrcinfo instanceof ReceiveStream)
+                            ? (ReceiveStream) ssrcinfo
+                            : null);
+            cache.eventhandler.postEvent(activereceivestreamevent);
+        }
+
+        demuxpayload(
+                ssrcinfo,
+                /* wasOnProbation */ oldprobation > 0 && newprobation == 0,
+                rtppacket);
+
+        return rtppacket;
+    }
+
+    private boolean assertCurrentformat(SSRCInfo ssrcinfo, int pt)
+    {
+        if (ssrcinfo.currentformat == null)
+        {
+            ssrcinfo.currentformat = cache.sm.formatinfo.get(pt);
+            if (ssrcinfo.currentformat == null)
+            {
+                if (errorPayload != pt)
+                {
+                    errorPayload = pt;
+                    Log.error(
+                            "No format has been registered for RTP payload type "
+                                + pt);
+                }
+                return false;
+            }
+            if (ssrcinfo.dstream != null)
+                ssrcinfo.dstream.setFormat(ssrcinfo.currentformat);
+        }
+        return true;
+    }
+
+    private void demuxpayload(
+            SSRCInfo ssrcinfo,
+            boolean wasOnProbation,
+            RTPPacket rtppacket)
+    {
+        if (ssrcinfo.dsource != null)
+        {
+            if (wasOnProbation)
+            {
+                RTPPacket rtppacket1 = probationList.remove(ssrcinfo.ssrc);
+                if (rtppacket1 != null)
+                    rtpdemultiplexer.demuxpayload(
+                            new SourceRTPPacket(rtppacket1, ssrcinfo));
+            }
+            rtpdemultiplexer.demuxpayload(
+                    new SourceRTPPacket(rtppacket, ssrcinfo));
+        }
+    }
+
+    private void fireRemotePayloadChangeEvent(SSRCInfo ssrcinfo, int newpayload)
+    {
+        int oldpayload = ssrcinfo.lastPayloadType;
+
+        if (oldpayload != -1 && oldpayload != newpayload)
+        {
+            ssrcinfo.currentformat = null;
+            if (ssrcinfo.dsource != null)
+            {
+                RTPControlImpl rtpcontrolimpl
+                    = (RTPControlImpl)
+                        ssrcinfo.dsource.getControl(RTP_CONTROL_CLASS_NAME);
+                if (rtpcontrolimpl != null)
+                {
+                    rtpcontrolimpl.currentformat = null;
+                    rtpcontrolimpl.payload = -1;
+                }
+            }
+
+            if (ssrcinfo.dsource != null)
+            {
+                try
+                {
+                    Log.warning(
+                            "Stopping stream because of payload type mismatch:"
+                                + " expecting pt=" + oldpayload + ", got pt="
+                                + newpayload);
+                    ssrcinfo.dsource.stop();
+                }
+                catch (IOException ioexception)
+                {
+                    System.err.println("Stopping DataSource after PCE "
+                            + ioexception.getMessage());
+                }
+            }
+            ssrcinfo.lastPayloadType = newpayload;
+            RemotePayloadChangeEvent remotepayloadchangeevent
+                = new RemotePayloadChangeEvent(
+                        cache.sm, (ReceiveStream) ssrcinfo,
+                        oldpayload, newpayload);
+            cache.eventhandler.postEvent(remotepayloadchangeevent);
+        }
+    }
+
+    private void streamconnect(SSRCInfo ssrcinfo, int pt)
+    {
+        if (!ssrcinfo.streamconnect)
+        {
+            DataSource datasource = cache.sm.dslist.get(ssrcinfo.ssrc);
+            if (datasource == null)
+            {
+                DataSource datasource1 = cache.sm.getDataSource(null);
+                if (datasource1 == null)
+                {
+                    datasource = cache.sm.createNewDS(null);
+                    cache.sm.setDefaultDSassigned(ssrcinfo.ssrc);
+                } else if (!cache.sm.isDefaultDSassigned())
+                {
+                    datasource = datasource1;
+                    cache.sm.setDefaultDSassigned(ssrcinfo.ssrc);
+                } else
+                {
+                    datasource = cache.sm.createNewDS(ssrcinfo.ssrc);
+                }
+            }
+            javax.media.protocol.PushBufferStream apushbufferstream[]
+                    = datasource.getStreams();
+            ssrcinfo.dsource = datasource;
+            ssrcinfo.dstream = (RTPSourceStream) apushbufferstream[0];
+            ssrcinfo.dstream.setContentDescriptor(content);
+            ssrcinfo.dstream.setFormat(ssrcinfo.currentformat);
+            RTPControlImpl rtpcontrolimpl2
+                = (RTPControlImpl)
+                    ssrcinfo.dsource.getControl(RTP_CONTROL_CLASS_NAME);
+            if (rtpcontrolimpl2 != null)
+            {
+                rtpcontrolimpl2.currentformat = cache.sm.formatinfo.get(pt);
+                rtpcontrolimpl2.stream = ssrcinfo;
+            }
+            ssrcinfo.streamconnect = true;
+        }
+    }
+
+    private void updateJitter(SSRCInfo ssrcinfo, RTPPacket rtppacket, int pt)
+    {
+        if (ssrcinfo.lastRTPReceiptTime != 0L && ssrcinfo.lastPayloadType == pt)
+        {
+            long l = rtppacket.receiptTime - ssrcinfo.lastRTPReceiptTime;
+            l = (l * cache.clockrate[ssrcinfo.payloadType]) / 1000L;
+            long l1 = rtppacket.timestamp - ssrcinfo.lasttimestamp;
+            double d = l - l1;
+            if (d < 0.0D)
+                d = -d;
+            ssrcinfo.jitter += 0.0625D * (d - ssrcinfo.jitter);
+        }
+    }
+
+    private void updateStats(SSRCInfo ssrcinfo, RTPPacket rtppacket)
+    {
         int diff = rtppacket.seqnum - ssrcinfo.maxseq;
         if (diff > 0)
         {
@@ -177,15 +424,12 @@ public class RTPReceiver extends PacketFilter
         }
         if (ssrcinfo.wrapped)
             ssrcinfo.wrapped = false;
-        boolean flag = false;
         if (ssrcinfo.probation > 0)
         {
             if (rtppacket.seqnum == ssrcinfo.maxseq + 1)
             {
                 ssrcinfo.probation--;
                 ssrcinfo.maxseq = rtppacket.seqnum;
-                if (ssrcinfo.probation == 0)
-                    flag = true;
             } else
             {
                 ssrcinfo.probation = 1;
@@ -222,209 +466,5 @@ public class RTPReceiver extends PacketFilter
         {
             ssrcinfo.stats.update(RTPStats.PDUDUP);
         }
-        if (cache.sm.isUnicast())
-        {
-            InetAddress remoteAddress = udppacket.remoteAddress;
-            if (!rtcpstarted)
-            {
-                cache.sm.startRTCPReports(remoteAddress);
-                rtcpstarted = true;
-                byte abyte0[] = cache.sm.controladdress.getAddress();
-                int k = abyte0[3] & 0xff;
-                if ((k & 0xff) == 255)
-                {
-                    cache.sm.addUnicastAddr(cache.sm.controladdress);
-                } else
-                {
-                    InetAddress inetaddress1 = null;
-                    boolean flag2 = true;
-                    try
-                    {
-                        inetaddress1 = InetAddress.getLocalHost();
-                    } catch (UnknownHostException unknownhostexception)
-                    {
-                        flag2 = false;
-                    }
-                    if (flag2)
-                        cache.sm.addUnicastAddr(inetaddress1);
-                }
-            } else if (!cache.sm.isSenderDefaultAddr(remoteAddress))
-            {
-                cache.sm.addUnicastAddr(remoteAddress);
-            }
-        }
-
-        ssrcinfo.received++;
-        ssrcinfo.stats.update(RTPStats.PDUPROCSD);
-        if (ssrcinfo.probation > 0)
-        {
-            probationList.put(ssrcinfo.ssrc, rtppacket.clone());
-            return null;
-        }
-        ssrcinfo.maxseq = rtppacket.seqnum;
-        if (ssrcinfo.lastPayloadType != -1 && ssrcinfo.lastPayloadType != pt)
-        {
-            ssrcinfo.currentformat = null;
-            if (ssrcinfo.dsource != null)
-            {
-                RTPControlImpl rtpcontrolimpl
-                    = (RTPControlImpl)
-                        ssrcinfo.dsource.getControl(RTP_CONTROL_CLASS_NAME);
-                if (rtpcontrolimpl != null)
-                {
-                    rtpcontrolimpl.currentformat = null;
-                    rtpcontrolimpl.payload = -1;
-                }
-            }
-
-            if (ssrcinfo.dsource != null)
-            {
-                try
-                {
-                    Log.warning(
-                            "Stopping stream because of payload type mismatch:"
-                                + " expecting pt=" + ssrcinfo.lastPayloadType
-                                + ", got pt=" + pt);
-                    ssrcinfo.dsource.stop();
-                }
-                catch (IOException ioexception)
-                {
-                    System.err.println("Stopping DataSource after PCE "
-                            + ioexception.getMessage());
-                }
-            }
-            ssrcinfo.lastPayloadType = pt;
-            RemotePayloadChangeEvent remotepayloadchangeevent
-                = new RemotePayloadChangeEvent(
-                        cache.sm, (ReceiveStream) ssrcinfo,
-                        ssrcinfo.lastPayloadType, pt);
-            cache.eventhandler.postEvent(remotepayloadchangeevent);
-        }
-        if (ssrcinfo.currentformat == null)
-        {
-            ssrcinfo.currentformat = cache.sm.formatinfo.get(pt);
-            if (ssrcinfo.currentformat == null)
-            {
-                if (errorPayload != pt)
-                {
-                    Log.error(
-                            "No format has been registered for RTP payload type "
-                                + pt);
-                    errorPayload = pt;
-                }
-                return rtppacket;
-            }
-            if (ssrcinfo.dstream != null)
-                ssrcinfo.dstream.setFormat(ssrcinfo.currentformat);
-        }
-        if (ssrcinfo.currentformat == null)
-        {
-            System.err.println("No Format for PT= " + pt);
-            return rtppacket;
-        }
-        if (ssrcinfo.dsource != null)
-        {
-            RTPControlImpl rtpcontrolimpl1
-                = (RTPControlImpl)
-                    ssrcinfo.dsource.getControl(RTP_CONTROL_CLASS_NAME);
-            if (rtpcontrolimpl1 != null)
-            {
-                javax.media.Format format = cache.sm.formatinfo.get(pt);
-                rtpcontrolimpl1.currentformat = format;
-            }
-        }
-        if (!initBC)
-        {
-            ((BufferControlImpl) cache.sm.buffercontrol).initBufferControl(
-                    ssrcinfo.currentformat);
-            initBC = true;
-        }
-        if (!ssrcinfo.streamconnect)
-        {
-            DataSource datasource = cache.sm.dslist.get(ssrcinfo.ssrc);
-            if (datasource == null)
-            {
-                DataSource datasource1 = cache.sm.getDataSource(null);
-                if (datasource1 == null)
-                {
-                    datasource = cache.sm.createNewDS(null);
-                    cache.sm.setDefaultDSassigned(ssrcinfo.ssrc);
-                } else if (!cache.sm.isDefaultDSassigned())
-                {
-                    datasource = datasource1;
-                    cache.sm.setDefaultDSassigned(ssrcinfo.ssrc);
-                } else
-                {
-                    datasource = cache.sm.createNewDS(ssrcinfo.ssrc);
-                }
-            }
-            javax.media.protocol.PushBufferStream apushbufferstream[]
-                = datasource.getStreams();
-            ssrcinfo.dsource = datasource;
-            ssrcinfo.dstream = (RTPSourceStream) apushbufferstream[0];
-            ssrcinfo.dstream.setContentDescriptor(content);
-            ssrcinfo.dstream.setFormat(ssrcinfo.currentformat);
-            RTPControlImpl rtpcontrolimpl2
-                = (RTPControlImpl)
-                    ssrcinfo.dsource.getControl(RTP_CONTROL_CLASS_NAME);
-            if (rtpcontrolimpl2 != null)
-            {
-                javax.media.Format format1 = cache.sm.formatinfo.get(pt);
-                rtpcontrolimpl2.currentformat = format1;
-                rtpcontrolimpl2.stream = ssrcinfo;
-            }
-            ssrcinfo.streamconnect = true;
-        }
-        if (ssrcinfo.dsource != null)
-            ssrcinfo.active = true;
-        if (!ssrcinfo.newrecvstream)
-        {
-            NewReceiveStreamEvent newreceivestreamevent
-                = new NewReceiveStreamEvent(cache.sm, (ReceiveStream) ssrcinfo);
-            ssrcinfo.newrecvstream = true;
-            cache.eventhandler.postEvent(newreceivestreamevent);
-        }
-        if (ssrcinfo.lastRTPReceiptTime != 0L && ssrcinfo.lastPayloadType == pt)
-        {
-            long l = rtppacket.receiptTime - ssrcinfo.lastRTPReceiptTime;
-            l = (l * cache.clockrate[ssrcinfo.payloadType]) / 1000L;
-            long l1 = rtppacket.timestamp - ssrcinfo.lasttimestamp;
-            double d = l - l1;
-            if (d < 0.0D)
-                d = -d;
-            ssrcinfo.jitter += 0.0625D * (d - ssrcinfo.jitter);
-        }
-        ssrcinfo.lastRTPReceiptTime = rtppacket.receiptTime;
-        ssrcinfo.lasttimestamp = rtppacket.timestamp;
-        ssrcinfo.payloadType = pt;
-        ssrcinfo.lastPayloadType = pt;
-        ssrcinfo.bytesreceived += rtppacket.payloadlength;
-        ssrcinfo.lastHeardFrom = rtppacket.receiptTime;
-        if (ssrcinfo.quiet)
-        {
-            ssrcinfo.quiet = false;
-            ActiveReceiveStreamEvent activereceivestreamevent
-                = new ActiveReceiveStreamEvent(
-                        cache.sm,
-                        ssrcinfo.sourceInfo,
-                        (ssrcinfo instanceof ReceiveStream)
-                            ? (ReceiveStream) ssrcinfo
-                            : null);
-            cache.eventhandler.postEvent(activereceivestreamevent);
-        }
-        if (ssrcinfo.dsource != null)
-        {
-            if (flag)
-            {
-                RTPPacket rtppacket1 = probationList.remove(ssrcinfo.ssrc);
-                if (rtppacket1 != null)
-                    rtpdemultiplexer.demuxpayload(
-                            new SourceRTPPacket(rtppacket1, ssrcinfo));
-            }
-            rtpdemultiplexer.demuxpayload(
-                    new SourceRTPPacket(rtppacket, ssrcinfo));
-        }
-
-        return rtppacket;
     }
 }
