@@ -9,7 +9,6 @@ import javax.media.protocol.*;
 
 import net.sf.fmj.registry.*;
 import net.sf.fmj.utility.*;
-import net.sf.fmj.utility.PlugInInfo;
 
 import com.lti.utils.*;
 
@@ -22,7 +21,6 @@ import com.lti.utils.*;
  * FMJ's. Making it the same as JMF's is useful for unit testing.
  *
  * @author Ken Larson
- *
  */
 public class RegistryDefaults
 {
@@ -97,7 +95,7 @@ public class RegistryDefaults
         return contentPrefixList;
     }
 
-    public static final int getDefaultFlags()
+    public static int getDefaultFlags()
     {
         if (defaultFlags == -1)
         {
@@ -884,7 +882,6 @@ public class RegistryDefaults
         }
 
         PackageManager.setProtocolPrefixList(v);
-
     }
 
     private static List<String> removePluginsFromList(int flags, List v)
@@ -1002,7 +999,6 @@ public class RegistryDefaults
             for (String className : vRemove)
                 PlugInManager.removePlugIn(className, type);
         }
-
     }
 
     public static void unRegisterProtocolPrefixList(int flags)
@@ -1019,7 +1015,5 @@ public class RegistryDefaults
         }
 
         PackageManager.setProtocolPrefixList(v);
-
     }
-
 }

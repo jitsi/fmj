@@ -932,7 +932,7 @@ public class ProcessEngine extends PlaybackEngine
          */
         Format[] verifyMuxInputs(ContentDescriptor cd, Format inputs[])
         {
-            if (cd == null || cd.getEncoding() == ContentDescriptor.RAW)
+            if (cd == null || ContentDescriptor.RAW.equals(cd.getEncoding()))
                 return inputs;
 
             // Instantiate all the multiplexers that support the
