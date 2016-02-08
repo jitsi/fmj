@@ -8,7 +8,6 @@ import javax.media.*;
  * target="_blank">this class in the JMF Javadoc</a>. Complete.
  *
  * @author Ken Larson
- *
  */
 public interface RTPControl extends Control
 {

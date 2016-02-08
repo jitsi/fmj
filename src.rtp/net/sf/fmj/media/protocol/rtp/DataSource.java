@@ -9,6 +9,10 @@ import javax.media.rtp.*;
 import net.sf.fmj.media.protocol.*;
 import net.sf.fmj.media.rtp.*;
 
+/**
+ *
+ * @author Lyubomir Marinov
+ */
 public class DataSource extends BasicPushBufferDataSource implements
         Streamable, RTPSource
 {
@@ -32,20 +36,29 @@ public class DataSource extends BasicPushBufferDataSource implements
         }
     }
 
+    /**
+     * The name of the class {@link javax.media.rtp.RTPControl}.
+     * {@link Class#getName()} will very likely cache the value it returns so
+     * invoking the method in question multiple times should not be much of a
+     * performance issue. Anyway, utilizing a constant is somewhat more flexible
+     * because it allows the flexibility to choose whether to invoke the method
+     * at all.
+     */
+    public static final String RTP_CONTROL_CLASS_NAME
+        = RTPControl.class.getName();
+
     static int SSRC_UNDEFINED = 0; // RTPMediaLocator.SSRC_UNDEFINED
-    private final RTPSourceStream[] srcStreams;
+    private final RTPSourceStream[] srcStreams = new RTPSourceStream[1];
 
     Player streamplayer = null;
     RTPSessionMgr mgr = null;
-    RTPControl rtpcontrol = null;
+    RTPControl rtpcontrol = new MyRTPControl();
     DataSource childsrc = null;
 
     int ssrc = SSRC_UNDEFINED;
 
     public DataSource()
     {
-        srcStreams = new RTPSourceStream[1];
-        rtpcontrol = new MyRTPControl();
         // setContentType(ContentDescriptor.RAW);
         setContentType("rtp");
     }
@@ -68,10 +81,10 @@ public class DataSource extends BasicPushBufferDataSource implements
          */
         if (srcStreams != null)
         {
-            for (int i = 0; i < srcStreams.length; i++)
+            for (RTPSourceStream srcStream : srcStreams)
             {
-                if (srcStreams[i] != null)
-                    srcStreams[i].connect();
+                if (srcStream != null)
+                    srcStream.connect();
             }
         }
         connected = true;
@@ -96,8 +109,8 @@ public class DataSource extends BasicPushBufferDataSource implements
         // session manager is closed by using the RTPAPI
         if (srcStreams != null)
         {
-            for (int i = 0; i < srcStreams.length; i++)
-                srcStreams[i].close();
+            for (RTPSourceStream srcStream : srcStreams)
+                srcStream.close();
         }
         
 //        if (mgr != null)
@@ -130,42 +143,76 @@ public class DataSource extends BasicPushBufferDataSource implements
     }
 
     /**
-     * Returns <tt>null</tt> because no controls are implemented.
+     * Returns a control over this instance of a specific runtime type.
      *
-     * @return <tt>null</tt>.
+     * @param type the runtime type of the control over this instance to be
+     * returned
+     * @return a control of the specific runtime {@code type} if such a control
+     * is provider by this instance; otherwise, {@code null}.
      */
     @Override
     public Object getControl(String type)
     {
-        Class<?> cls;
-        try
+        // XXX Class.forName(String) is (very) expensive (in terms of CPU at
+        // least). I will optimize the implementation for the case of
+        // javax.media.rtp.RTPControl because that is the only control the class
+        // net.sf.fmj.media.protocol.rtp.DataSource provides. If extenders
+        // provide other controls, they should better not rely on the default
+        // implementation in performance sensitive scenarios.
+        Class<?> clazz;
+
+        if (RTP_CONTROL_CLASS_NAME.equals(type))
         {
-            cls = Class.forName(type);
-        } catch (ClassNotFoundException e)
-        {
-            return null;
+            clazz = RTPControl.class;
         }
-        Object cs[] = getControls();
-        for (int i = 0; i < cs.length; i++)
+        else
         {
-            if (cls.isInstance(cs[i]))
-                return cs[i];
+            try
+            {
+                clazz = Class.forName(type);
+            }
+            catch (ClassNotFoundException e)
+            {
+                return null;
+            }
+        }
+
+        return getControl(clazz);
+    }
+
+    /**
+     * Returns a control over this instance of a specific runtime type.
+     *
+     * @param clazz the runtime type of the control over this instance to be
+     * returned
+     * @return a control of the specific runtime type {@code clazz} if such a
+     * control is provider by this instance; otherwise, {@code null}.
+     */
+    public <T> T getControl(Class<T> clazz)
+    {
+        for (Object control : getControls())
+        {
+            if (clazz.isInstance(control))
+            {
+                @SuppressWarnings("unchecked")
+                T t = (T) control;
+
+                return t;
+            }
         }
         return null;
     }
 
     /**
-     * Returns an zero length array because no controls are supported.
+     * Returns a one element array of {@link #rtpcontrol} object.
      *
-     * @return a zero length <tt>Object</tt> array.
+     * @return a one element array of {@code rtpcontrol} object.
      */
     @Override
     public Object[] getControls()
     {
         // return a one element array of rtpcontrol object
-        RTPControl[] controls = new RTPControl[1];
-        controls[0] = rtpcontrol;
-        return controls;
+        return new RTPControl[] { rtpcontrol };
     }
 
     public RTPSessionMgr getMgr()
@@ -283,8 +330,8 @@ public class DataSource extends BasicPushBufferDataSource implements
             childsrc.start();
         if (srcStreams != null)
         {
-            for (int i = 0; i < srcStreams.length; i++)
-                srcStreams[i].start();
+            for (RTPSourceStream srcStream : srcStreams)
+                srcStream.start();
         }
     }
 
@@ -301,8 +348,8 @@ public class DataSource extends BasicPushBufferDataSource implements
             childsrc.stop();
         if (srcStreams != null)
         {
-            for (int i = 0; i < srcStreams.length; i++)
-                srcStreams[i].stop();
+            for (RTPSourceStream srcStream : srcStreams)
+                srcStream.stop();
         }
     }
 }

@@ -18,11 +18,27 @@ import net.sf.fmj.media.rtp.util.*;
  */
 public class RTPReceiver extends PacketFilter
 {
+    static final int MAX_DROPOUT = 3000;
+
+    static final int MAX_MISORDER = 100;
+
+    static final int MIN_SEQUENTIAL = 2;
+
+    static final int SEQ_MOD = 0x10000;
+
     /**
-     * The name of the class {@link javax.media.rtp.RTPControl}.
+     * Gets an {@link RTPControlImpl} control over the {@code dsource} of a
+     * specific {@link SSRCInfo}.
+     *
+     * @param ssrcinfo the {@code SSRCInfo} whose {@code dsource} is to be
+     * queried for a {@code RTPControlImpl} control
+     * @return an {@code RTPControlImpl} control over the {@code dsource} of the
+     * specified {@code ssrcinfo}
      */
-    private static final String RTP_CONTROL_CLASS_NAME
-        = "javax.media.rtp.RTPControl";
+    private RTPControlImpl getDsourceRTPControlImpl(SSRCInfo ssrcinfo)
+    {
+        return ssrcinfo.dsource.getControl(RTPControlImpl.class);
+    }
 
     final SSRCCache cache;
 
@@ -35,13 +51,6 @@ public class RTPReceiver extends PacketFilter
     private final String content;
 
     final SSRCTable<RTPPacket> probationList;
-
-    static final int MAX_DROPOUT = 3000;
-
-    static final int MAX_MISORDER = 100;
-
-    static final int SEQ_MOD = 0x10000;
-    static final int MIN_SEQUENTIAL = 2;
 
     //BufferControl initialized
     private boolean initBC = false;
@@ -215,9 +224,7 @@ public class RTPReceiver extends PacketFilter
 
         if (ssrcinfo.dsource != null)
         {
-            RTPControlImpl rtpcontrolimpl1
-                = (RTPControlImpl)
-                    ssrcinfo.dsource.getControl(RTP_CONTROL_CLASS_NAME);
+            RTPControlImpl rtpcontrolimpl1 = getDsourceRTPControlImpl(ssrcinfo);
             if (rtpcontrolimpl1 != null)
                 rtpcontrolimpl1.currentformat = cache.sm.formatinfo.get(pt);
         }
@@ -314,23 +321,22 @@ public class RTPReceiver extends PacketFilter
     {
         int oldpayload = ssrcinfo.lastPayloadType;
 
-        if (oldpayload != -1 && oldpayload != newpayload)
+        if (oldpayload == -1)
+            return;
+
+        if (oldpayload != newpayload)
         {
             ssrcinfo.currentformat = null;
             if (ssrcinfo.dsource != null)
             {
                 RTPControlImpl rtpcontrolimpl
-                    = (RTPControlImpl)
-                        ssrcinfo.dsource.getControl(RTP_CONTROL_CLASS_NAME);
+                    = getDsourceRTPControlImpl(ssrcinfo);
                 if (rtpcontrolimpl != null)
                 {
                     rtpcontrolimpl.currentformat = null;
                     rtpcontrolimpl.payload = -1;
                 }
-            }
 
-            if (ssrcinfo.dsource != null)
-            {
                 try
                 {
                     Log.warning(
@@ -345,12 +351,14 @@ public class RTPReceiver extends PacketFilter
                             + ioexception.getMessage());
                 }
             }
+
             ssrcinfo.lastPayloadType = newpayload;
-            RemotePayloadChangeEvent remotepayloadchangeevent
-                = new RemotePayloadChangeEvent(
-                        cache.sm, (ReceiveStream) ssrcinfo,
-                        oldpayload, newpayload);
-            cache.eventhandler.postEvent(remotepayloadchangeevent);
+
+            cache.eventhandler.postEvent(
+                    new RemotePayloadChangeEvent(
+                            cache.sm,
+                            (ReceiveStream) ssrcinfo,
+                            oldpayload, newpayload));
         }
     }
 
@@ -381,9 +389,7 @@ public class RTPReceiver extends PacketFilter
             ssrcinfo.dstream = (RTPSourceStream) apushbufferstream[0];
             ssrcinfo.dstream.setContentDescriptor(content);
             ssrcinfo.dstream.setFormat(ssrcinfo.currentformat);
-            RTPControlImpl rtpcontrolimpl2
-                = (RTPControlImpl)
-                    ssrcinfo.dsource.getControl(RTP_CONTROL_CLASS_NAME);
+            RTPControlImpl rtpcontrolimpl2 = getDsourceRTPControlImpl(ssrcinfo);
             if (rtpcontrolimpl2 != null)
             {
                 rtpcontrolimpl2.currentformat = cache.sm.formatinfo.get(pt);
