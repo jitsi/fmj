@@ -8,9 +8,9 @@ public class RTPPacketParser
     {
         RTPPacket rtppacket = new RTPPacket(packet);
         DataInputStream datainputstream = new DataInputStream(
-                new ByteArrayInputStream(((Packet) (rtppacket)).data,
-                        ((Packet) (rtppacket)).offset,
-                        ((Packet) (rtppacket)).length));
+                new ByteArrayInputStream(rtppacket.data,
+                        rtppacket.offset,
+                        rtppacket.length));
         try
         {
             int firstByte = datainputstream.readUnsignedByte();
@@ -20,7 +20,7 @@ public class RTPPacketParser
                 rtppacket.extensionPresent = true;
             int paddingLength = 0;
             if ((firstByte & 0x20) != 0)
-                paddingLength = ((Packet) (rtppacket)).data[(((Packet) (rtppacket)).offset + ((Packet) (rtppacket)).length) - 1] & 0xff;
+                paddingLength = rtppacket.data[rtppacket.offset + rtppacket.length - 1] & 0xff;
             firstByte &= 0xf;
             rtppacket.payloadType = datainputstream.readUnsignedByte();
             rtppacket.marker = rtppacket.payloadType >> 7;
@@ -43,10 +43,10 @@ public class RTPPacketParser
                 datainputstream.readFully(rtppacket.extension);
                 offset += l + 4;
             }
-            rtppacket.payloadlength = ((Packet) (rtppacket)).length - (offset + paddingLength);
+            rtppacket.payloadlength = rtppacket.length - (offset + paddingLength);
             if (rtppacket.payloadlength < 0)
                 throw new BadFormatException();
-            rtppacket.payloadoffset = offset + ((Packet) (rtppacket)).offset;
+            rtppacket.payloadoffset = offset + rtppacket.offset;
         } catch (EOFException eofexception)
         {
             throw new BadFormatException("Unexpected end of RTP packet");
