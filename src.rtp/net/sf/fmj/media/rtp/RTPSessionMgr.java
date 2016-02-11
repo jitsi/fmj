@@ -2836,7 +2836,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
                         = rtpcontrolimpl.codeclist.keys();
                     enumeration.hasMoreElements();
                     formatinfo.add(
-                            integer.intValue(),
+                            integer,
                             rtpcontrolimpl.codeclist.get(integer)))
             {
                 integer = enumeration.nextElement();

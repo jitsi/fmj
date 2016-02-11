@@ -33,7 +33,7 @@ public abstract class RTPControlImpl implements RTPControl, RTPInfo
 
     public void addFormat(Format info, int payload)
     {
-        codeclist.put(new Integer(payload), info);
+        codeclist.put(payload, info);
     }
 
     public abstract String getCNAME();
@@ -50,7 +50,7 @@ public abstract class RTPControlImpl implements RTPControl, RTPInfo
 
     public Format getFormat(int payload)
     {
-        return codeclist.get(new Integer(payload));
+        return codeclist.get(payload);
     }
 
     public Format[] getFormatList()

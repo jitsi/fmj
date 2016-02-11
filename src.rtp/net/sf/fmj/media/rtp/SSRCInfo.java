@@ -72,7 +72,7 @@ public abstract class SSRCInfo implements Report
     int lastbadseq;
     public int received;
     long lasttimestamp;
-    int lastPayloadType;
+    int lastPayloadType = -1;
     public double jitter;
     public int bytesreceived;
     RTPStats stats;
@@ -123,7 +123,6 @@ public abstract class SSRCInfo implements Report
         maxseq = 0;
         cycles = 0;
         lasttimestamp = 0L;
-        lastPayloadType = -1;
         jitter = 0.0D;
         clockrate = 0;
         this.cache = cache;
@@ -171,7 +170,6 @@ public abstract class SSRCInfo implements Report
         maxseq = 0;
         cycles = 0;
         lasttimestamp = 0L;
-        lastPayloadType = -1;
         jitter = 0.0D;
         clockrate = 0;
         cache = info.cache;
@@ -443,14 +441,8 @@ public abstract class SSRCInfo implements Report
 
     void setAging(boolean beaging)
     {
-        if (aging == beaging)
-        {
-            return;
-        } else
-        {
+        if (aging != beaging)
             aging = beaging;
-            return;
-        }
     }
 
     void setAlive(boolean bealive)
@@ -496,12 +488,11 @@ public abstract class SSRCInfo implements Report
         if (userdesclist == null)
             return;
         String cname = null;
-        for (int i = 0; i < userdesclist.length; i++)
+        for (SourceDescription currdesc : userdesclist)
         {
-            SourceDescription currdesc = userdesclist[i];
             if (currdesc == null || currdesc.getType() != 1)
                 continue;
-            cname = userdesclist[i].getDescription();
+            cname = currdesc.getDescription();
             break;
         }
 
@@ -519,9 +510,8 @@ public abstract class SSRCInfo implements Report
             sourceInfo = cache.sourceInfoCache.get(cname, true);
             sourceInfo.addSSRC(this);
         }
-        for (int j = 0; j < userdesclist.length; j++)
+        for (SourceDescription currdesc : userdesclist)
         {
-            SourceDescription currdesc = userdesclist[j];
             if (currdesc != null)
                 switch (currdesc.getType())
                 {
