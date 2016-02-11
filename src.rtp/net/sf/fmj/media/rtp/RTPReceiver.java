@@ -3,6 +3,7 @@ package net.sf.fmj.media.rtp;
 import java.io.*;
 import java.net.*;
 
+import javax.media.Format;
 import javax.media.rtp.*;
 import javax.media.rtp.event.*;
 
@@ -22,10 +23,6 @@ public class RTPReceiver extends PacketFilter
 
     static final int MAX_MISORDER = 100;
 
-    static final int MIN_SEQUENTIAL = 2;
-
-    static final int SEQ_MOD = 0x10000;
-
     /**
      * Gets an {@link RTPControlImpl} control over the {@code dsource} of a
      * specific {@link SSRCInfo}.
@@ -44,49 +41,59 @@ public class RTPReceiver extends PacketFilter
 
     final RTPDemultiplexer rtpdemultiplexer;
 
-    int lastseqnum;
+    int lastseqnum = -1;
 
-    private boolean rtcpstarted;
+    private boolean rtcpstarted = false;
 
-    private final String content;
+    private final String content = "";
 
-    final SSRCTable<RTPPacket> probationList;
+    final SSRCTable<RTPPacket> probationList = new SSRCTable<RTPPacket>();
 
-    //BufferControl initialized
+    /**
+     * The indicator which signifies whether
+     * {@link BufferControlImpl#initBufferControl(Format)} has been invoked.
+     */
     private boolean initBC = false;
 
-    private int errorPayload;
+    private int errorPayload = -1;
 
     public RTPReceiver(SSRCCache ssrccache, RTPDemultiplexer rtpdemultiplexer1)
     {
-        lastseqnum = -1;
-        rtcpstarted = false;
-        content = "";
-        probationList = new SSRCTable<RTPPacket>();
-        errorPayload = -1;
         cache = ssrccache;
         rtpdemultiplexer = rtpdemultiplexer1;
         setConsumer(null);
     }
 
-    public RTPReceiver(SSRCCache ssrccache, RTPDemultiplexer rtpdemultiplexer1,
+    public RTPReceiver(
+            SSRCCache ssrccache,
+            RTPDemultiplexer rtpdemultiplexer,
             DatagramSocket datagramsocket)
     {
-        this(ssrccache, rtpdemultiplexer1, new RTPRawReceiver(datagramsocket,
-                ssrccache.sm.defaultstats));
+        this(
+                ssrccache,
+                rtpdemultiplexer,
+                new RTPRawReceiver(datagramsocket, ssrccache.sm.defaultstats));
     }
 
-    public RTPReceiver(SSRCCache ssrccache, RTPDemultiplexer rtpdemultiplexer1,
-            int i, String s) throws UnknownHostException, IOException
+    public RTPReceiver(
+            SSRCCache ssrccache,
+            RTPDemultiplexer rtpdemultiplexer,
+            int i,
+            String s)
+        throws IOException
     {
-        this(ssrccache, rtpdemultiplexer1, new RTPRawReceiver(i & -2, s,
-                ssrccache.sm.defaultstats));
+        this(
+                ssrccache,
+                rtpdemultiplexer,
+                new RTPRawReceiver(i & -2, s, ssrccache.sm.defaultstats));
     }
 
-    public RTPReceiver(SSRCCache ssrccache, RTPDemultiplexer rtpdemultiplexer1,
+    public RTPReceiver(
+            SSRCCache ssrccache,
+            RTPDemultiplexer rtpdemultiplexer,
             PacketSource packetsource)
     {
-        this(ssrccache, rtpdemultiplexer1);
+        this(ssrccache, rtpdemultiplexer);
         setSource(packetsource);
     }
 
@@ -114,12 +121,6 @@ public class RTPReceiver extends PacketFilter
         return null;
     }
 
-    public Packet handlePacket(Packet packet, SessionAddress sessionaddress,
-            boolean flag)
-    {
-        return null;
-    }
-
     public Packet handlePacket(RTPPacket rtppacket)
     {
         // damencho: Do not process silence packets and buggy X-Lite.
@@ -130,26 +131,23 @@ public class RTPReceiver extends PacketFilter
         if (pt == 126)
             return null;
 
-        final UDPPacket udppacket;
         final InetAddress address;
         final int port;
 
         if (rtppacket.base instanceof UDPPacket)
         {
-            udppacket = (UDPPacket) rtppacket.base;
-            InetAddress inetaddress = udppacket.remoteAddress;
+            UDPPacket udppacket = (UDPPacket) rtppacket.base;
+            address = udppacket.remoteAddress;
             if (cache.sm.bindtome
                     && !cache.sm.isBroadcast(cache.sm.dataaddress)
-                    && !inetaddress.equals(cache.sm.dataaddress))
+                    && !address.equals(cache.sm.dataaddress))
             {
                 return null;
             }
-            address = udppacket.remoteAddress;
             port = udppacket.remotePort;
         }
         else
         {
-            udppacket = null;
             address = null;
             port = 0;
         }
@@ -159,11 +157,11 @@ public class RTPReceiver extends PacketFilter
             return null;
 
         // update lastHeardFrom fields in the cache for csrc's
-        for (int i = 0; i < rtppacket.csrc.length; i++)
+        for (int csrc : rtppacket.csrc)
         {
-            SSRCInfo ssrcinfo1 = cache.get(rtppacket.csrc[i], address, port, 1);
-            if (ssrcinfo1 != null)
-                ssrcinfo1.lastHeardFrom = rtppacket.receiptTime;
+            SSRCInfo csrcinfo = cache.get(csrc, address, port, 1);
+            if (csrcinfo != null)
+                csrcinfo.lastHeardFrom = rtppacket.receiptTime;
         }
 
         if (!ssrcinfo.sender)
@@ -178,33 +176,33 @@ public class RTPReceiver extends PacketFilter
 
         if (cache.sm.isUnicast())
         {
-            InetAddress remoteAddress = udppacket.remoteAddress;
             if (!rtcpstarted)
             {
-                cache.sm.startRTCPReports(remoteAddress);
+                cache.sm.startRTCPReports(address);
                 rtcpstarted = true;
-                byte abyte0[] = cache.sm.controladdress.getAddress();
-                int k = abyte0[3] & 0xff;
-                if ((k & 0xff) == 255)
+                byte[] controladdress = cache.sm.controladdress.getAddress();
+                if ((controladdress[3] & 0xff) == 255)
                 {
                     cache.sm.addUnicastAddr(cache.sm.controladdress);
                 } else
                 {
-                    InetAddress inetaddress1 = null;
-                    boolean flag2 = true;
+                    InetAddress localhost;
+                    boolean addUnicastAddr;
                     try
                     {
-                        inetaddress1 = InetAddress.getLocalHost();
+                        localhost = InetAddress.getLocalHost();
+                        addUnicastAddr = true;
                     } catch (UnknownHostException unknownhostexception)
                     {
-                        flag2 = false;
+                        localhost = null;
+                        addUnicastAddr = false;
                     }
-                    if (flag2)
-                        cache.sm.addUnicastAddr(inetaddress1);
+                    if (addUnicastAddr)
+                        cache.sm.addUnicastAddr(localhost);
                 }
-            } else if (!cache.sm.isSenderDefaultAddr(remoteAddress))
+            } else if (!cache.sm.isSenderDefaultAddr(address))
             {
-                cache.sm.addUnicastAddr(remoteAddress);
+                cache.sm.addUnicastAddr(address);
             }
         }
 
@@ -217,17 +215,11 @@ public class RTPReceiver extends PacketFilter
         }
         ssrcinfo.maxseq = rtppacket.seqnum;
 
-        fireRemotePayloadChangeEvent(ssrcinfo, pt); // if necessary
+        int lastPayloadType = updateLastPayloadType(ssrcinfo, rtppacket);
 
         if (!assertCurrentformat(ssrcinfo, pt))
             return rtppacket;
 
-        if (ssrcinfo.dsource != null)
-        {
-            RTPControlImpl rtpcontrolimpl1 = getDsourceRTPControlImpl(ssrcinfo);
-            if (rtpcontrolimpl1 != null)
-                rtpcontrolimpl1.currentformat = cache.sm.formatinfo.get(pt);
-        }
         if (!initBC)
         {
             ((BufferControlImpl) cache.sm.buffercontrol).initBufferControl(
@@ -235,37 +227,38 @@ public class RTPReceiver extends PacketFilter
             initBC = true;
         }
 
-        streamconnect(ssrcinfo, pt); // if necessary
+        streamconnect(ssrcinfo); // if necessary
 
         if (ssrcinfo.dsource != null)
             ssrcinfo.active = true;
         if (!ssrcinfo.newrecvstream)
         {
-            NewReceiveStreamEvent newreceivestreamevent
-                = new NewReceiveStreamEvent(cache.sm, (ReceiveStream) ssrcinfo);
             ssrcinfo.newrecvstream = true;
-            cache.eventhandler.postEvent(newreceivestreamevent);
+            cache.eventhandler.postEvent(
+                    new NewReceiveStreamEvent(
+                            cache.sm,
+                            (ReceiveStream) ssrcinfo));
         }
 
-        updateJitter(ssrcinfo, rtppacket, pt);
+        updateJitter(ssrcinfo, lastPayloadType, rtppacket);
 
         ssrcinfo.lastRTPReceiptTime = rtppacket.receiptTime;
         ssrcinfo.lasttimestamp = rtppacket.timestamp;
-        ssrcinfo.payloadType = pt;
-        ssrcinfo.lastPayloadType = pt;
+
+        updatePayloadType(ssrcinfo, rtppacket);
+
         ssrcinfo.bytesreceived += rtppacket.payloadlength;
         ssrcinfo.lastHeardFrom = rtppacket.receiptTime;
         if (ssrcinfo.quiet)
         {
             ssrcinfo.quiet = false;
-            ActiveReceiveStreamEvent activereceivestreamevent
-                = new ActiveReceiveStreamEvent(
-                        cache.sm,
-                        ssrcinfo.sourceInfo,
-                        (ssrcinfo instanceof ReceiveStream)
-                            ? (ReceiveStream) ssrcinfo
-                            : null);
-            cache.eventhandler.postEvent(activereceivestreamevent);
+            cache.eventhandler.postEvent(
+                    new ActiveReceiveStreamEvent(
+                            cache.sm,
+                            ssrcinfo.sourceInfo,
+                            (ssrcinfo instanceof ReceiveStream)
+                                ? (ReceiveStream) ssrcinfo
+                                : null));
         }
 
         demuxpayload(
@@ -287,14 +280,31 @@ public class RTPReceiver extends PacketFilter
                 {
                     errorPayload = pt;
                     Log.error(
-                            "No format has been registered for RTP payload type "
-                                + pt);
+                            "No format has been registered for RTP payload type"
+                                + " (number) " + pt + "!");
                 }
                 return false;
             }
             if (ssrcinfo.dstream != null)
                 ssrcinfo.dstream.setFormat(ssrcinfo.currentformat);
         }
+
+        if (ssrcinfo.dsource != null)
+        {
+            RTPControlImpl rtpcontrolimpl = getDsourceRTPControlImpl(ssrcinfo);
+            if (rtpcontrolimpl != null)
+            {
+                // XXX Querying cache.sm.formatinfo for pt seems kind of
+                // convoluted given that the intent is to keep
+                // rtpcontrolimpl.currentformat in sync with
+                // ssrcinfo.currentformat (which is itself kept in sync with
+                // pt). Besides, ssrcinfo.currentformat is in use elsewhere.
+                // Moreover, the query makes the logic less flexible with
+                // respect to pt.
+                rtpcontrolimpl.currentformat = ssrcinfo.currentformat;
+            }
+        }
+
         return true;
     }
 
@@ -317,15 +327,38 @@ public class RTPReceiver extends PacketFilter
         }
     }
 
-    private void fireRemotePayloadChangeEvent(SSRCInfo ssrcinfo, int newpayload)
+    /**
+     * Updates the value of the field {@code lastPayloadType} of
+     * {@code ssrcinfo} based on the information carried by {@code rtppacket}.
+     *
+     * @param ssrcinfo the {@code SSRCInfo} to update
+     * @param rtppacket the {@code RTPPacket} with which {@code ssrcinfo} is to
+     * be updated
+     * @return the value of the field {@code lastPayloadType} of
+     * {@code ssrcinfo} before the update
+     */
+    private int updateLastPayloadType(
+            SSRCInfo ssrcinfo,
+            RTPPacket rtppacket)
     {
         int oldpayload = ssrcinfo.lastPayloadType;
+        int newpayload = rtppacket.payloadType;
 
-        if (oldpayload == -1)
-            return;
-
-        if (oldpayload != newpayload)
+        if (oldpayload != -1 && oldpayload != newpayload)
         {
+            // XXX Google Chrome/WebRTC uses zero-payload (more specifically,
+            // the whole payload is padding) RTP packets to probe bandwidth
+            // availability. Since such packets carry no payload significant to
+            // ssrcinfo.dsource, ignore them (as far as ssrcinfo.dsource is
+            // concerned, of course).
+            if (rtppacket.payloadlength == 0)
+            {
+                // To repeat the javadoc for the sake of clarity, the return
+                // value is the value of the field lastPayloadType of ssrcinfo
+                // BEFORE the update.
+                return oldpayload;
+            }
+
             ssrcinfo.currentformat = null;
             if (ssrcinfo.dsource != null)
             {
@@ -345,10 +378,10 @@ public class RTPReceiver extends PacketFilter
                                 + newpayload);
                     ssrcinfo.dsource.stop();
                 }
-                catch (IOException ioexception)
+                catch (IOException ioe)
                 {
-                    System.err.println("Stopping DataSource after PCE "
-                            + ioexception.getMessage());
+                    System.err.println(
+                            "Stopping DataSource after PCE "+ ioe.getMessage());
                 }
             }
 
@@ -360,9 +393,47 @@ public class RTPReceiver extends PacketFilter
                             (ReceiveStream) ssrcinfo,
                             oldpayload, newpayload));
         }
+        else
+        {
+            ssrcinfo.lastPayloadType = newpayload;
+        }
+
+        // To repeat the javadoc for the sake of clarity, the return value is
+        // the value of the field lastPayloadType of ssrcinfo BEFORE the update.
+        return oldpayload;
     }
 
-    private void streamconnect(SSRCInfo ssrcinfo, int pt)
+    /**
+     * Updates the value of the field {@code payloadType} of {@code ssrcinfo}
+     * based on the information carried by {@code rtppacket}.
+     *
+     * @param ssrcinfo the {@code SSRCInfo} to update
+     * @param rtppacket the {@code RTPPacket} with which {@code ssrcinfo} is to
+     * be updated
+     * @return the value of the field {@code payloadType} of {@code ssrcinfo}
+     * before the update
+     */
+    private int updatePayloadType(SSRCInfo ssrcinfo, RTPPacket rtppacket)
+    {
+        int oldpayload = ssrcinfo.payloadType;
+        int newpayload = rtppacket.payloadType;
+
+        if (oldpayload == -1
+                || (oldpayload != newpayload
+                    // XXX Google Chrome/WebRTC uses zero-payload (more
+                    // specifically, the whole payload is padding) RTP packets
+                    // to probe bandwidth availability.
+                    && rtppacket.payloadlength != 0))
+        {
+            ssrcinfo.payloadType = rtppacket.payloadType;
+        }
+
+        // To repeat the javadoc for the sake of clarity, the return value is
+        // the value of the field payloadType of ssrcinfo BEFORE the update.
+        return oldpayload;
+    }
+
+    private void streamconnect(SSRCInfo ssrcinfo)
     {
         if (!ssrcinfo.streamconnect)
         {
@@ -383,42 +454,57 @@ public class RTPReceiver extends PacketFilter
                     datasource = cache.sm.createNewDS(ssrcinfo.ssrc);
                 }
             }
-            javax.media.protocol.PushBufferStream apushbufferstream[]
-                    = datasource.getStreams();
+            javax.media.protocol.PushBufferStream[] pushbufferstreams
+                = datasource.getStreams();
             ssrcinfo.dsource = datasource;
-            ssrcinfo.dstream = (RTPSourceStream) apushbufferstream[0];
+            ssrcinfo.dstream = (RTPSourceStream) pushbufferstreams[0];
             ssrcinfo.dstream.setContentDescriptor(content);
             ssrcinfo.dstream.setFormat(ssrcinfo.currentformat);
-            RTPControlImpl rtpcontrolimpl2 = getDsourceRTPControlImpl(ssrcinfo);
-            if (rtpcontrolimpl2 != null)
+            RTPControlImpl rtpcontrolimpl = getDsourceRTPControlImpl(ssrcinfo);
+            if (rtpcontrolimpl != null)
             {
-                rtpcontrolimpl2.currentformat = cache.sm.formatinfo.get(pt);
-                rtpcontrolimpl2.stream = ssrcinfo;
+                // XXX Querying cache.sm.formatinfo for pt seems kind of
+                // convoluted given that the intent is to keep
+                // rtpcontrolimpl.currentformat in sync with
+                // ssrcinfo.currentformat (which is itself kept in sync with
+                // pt). Besides, ssrcinfo.currentformat is in use elsewhere.
+                // Moreover, the query makes the logic less flexible with
+                // respect to pt.
+                rtpcontrolimpl.currentformat = ssrcinfo.currentformat;
+                rtpcontrolimpl.stream = ssrcinfo;
             }
             ssrcinfo.streamconnect = true;
         }
     }
 
-    private void updateJitter(SSRCInfo ssrcinfo, RTPPacket rtppacket, int pt)
+    private void updateJitter(
+            SSRCInfo ssrcinfo,
+            int lastPayloadType,
+            RTPPacket rtppacket)
     {
-        if (ssrcinfo.lastRTPReceiptTime != 0L && ssrcinfo.lastPayloadType == pt)
+        if (ssrcinfo.lastRTPReceiptTime != 0L
+                // XXX Google Chrome/WebRTC uses zero-payload (more specifically,
+                // the whole payload is padding) RTP packets to probe bandwidth
+                // availability. At present it sounds better to not do anything
+                // about it here and allow jitter to be updated based on
+                // subsequent packets of one and the same payload type (number).
+                && lastPayloadType == rtppacket.payloadType)
         {
             long l = rtppacket.receiptTime - ssrcinfo.lastRTPReceiptTime;
             l = (l * cache.clockrate[ssrcinfo.payloadType]) / 1000L;
             long l1 = rtppacket.timestamp - ssrcinfo.lasttimestamp;
-            double d = l - l1;
-            if (d < 0.0D)
-                d = -d;
+            double d = Math.abs((double) (l - l1));
             ssrcinfo.jitter += 0.0625D * (d - ssrcinfo.jitter);
         }
     }
 
     private void updateStats(SSRCInfo ssrcinfo, RTPPacket rtppacket)
     {
-        int diff = rtppacket.seqnum - ssrcinfo.maxseq;
+        int seqnum = rtppacket.seqnum;
+        int diff = seqnum - ssrcinfo.maxseq;
         if (diff > 0)
         {
-            if (ssrcinfo.maxseq + 1 != rtppacket.seqnum)
+            if (ssrcinfo.maxseq + 1 != seqnum)
                 ssrcinfo.stats.update(RTPStats.PDULOST, diff - 1);
         }
         else if (diff < 0)
@@ -432,19 +518,19 @@ public class RTPReceiver extends PacketFilter
             ssrcinfo.wrapped = false;
         if (ssrcinfo.probation > 0)
         {
-            if (rtppacket.seqnum == ssrcinfo.maxseq + 1)
+            if (seqnum == ssrcinfo.maxseq + 1)
             {
                 ssrcinfo.probation--;
-                ssrcinfo.maxseq = rtppacket.seqnum;
+                ssrcinfo.maxseq = seqnum;
             } else
             {
                 ssrcinfo.probation = 1;
-                ssrcinfo.maxseq = rtppacket.seqnum;
+                ssrcinfo.maxseq = seqnum;
                 ssrcinfo.stats.update(RTPStats.PDUMISORD);
             }
         } else if (diff < MAX_DROPOUT && diff != 0)
         {
-            if (rtppacket.seqnum < ssrcinfo.baseseq)
+            if (seqnum < ssrcinfo.baseseq)
             {
                 // Vincent Lucas: Without any lost, the seqnum cycles when
                 // passing from 65535 to 0. Thus, diff is equal to -65535. But
@@ -460,14 +546,14 @@ public class RTPReceiver extends PacketFilter
                     ssrcinfo.wrapped = true;
                 }
             }
-            ssrcinfo.maxseq = rtppacket.seqnum;
+            ssrcinfo.maxseq = seqnum;
         } else if (diff <= 65536 - MAX_MISORDER && diff != 0)
         {
             ssrcinfo.stats.update(RTPStats.PDUINVALID);
-            if (rtppacket.seqnum == ssrcinfo.lastbadseq)
-                ssrcinfo.initsource(rtppacket.seqnum);
+            if (seqnum == ssrcinfo.lastbadseq)
+                ssrcinfo.initsource(seqnum);
             else
-                ssrcinfo.lastbadseq = rtppacket.seqnum + 1 & 0xffff;
+                ssrcinfo.lastbadseq = seqnum + 1 & 0xffff;
         } else
         {
             ssrcinfo.stats.update(RTPStats.PDUDUP);
