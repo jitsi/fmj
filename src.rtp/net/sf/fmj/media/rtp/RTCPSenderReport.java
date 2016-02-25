@@ -103,7 +103,7 @@ public class RTCPSenderReport extends RTCPReport implements SenderReport
      */
     public long getRTPTimeStamp()
     {
-        return senderInformation.getTimestamp();
+        return senderInformation.getRtpTimestamp();
     }
 
     /**
