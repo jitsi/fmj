@@ -128,8 +128,6 @@ public class RTPReceiver extends PacketFilter
 
         if (pt == 13)
             return rtppacket;
-        if (pt == 126)
-            return null;
 
         final InetAddress address;
         final int port;
