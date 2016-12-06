@@ -438,7 +438,7 @@ chunk  |                          SSRC/CSRC_2                          |
             throw new BadFormatException("Unexpected end of RTCP packet");
         } catch (IOException e)
         {
-            throw new IllegalArgumentException("Impossible Exception");
+            throw new IllegalArgumentException("Impossible Exception: ", e);
         }
         base.packets = new RTCPPacket[subpackets.size()];
         subpackets.copyInto(base.packets);
