@@ -172,7 +172,7 @@ header |V=2|P|    NA   |      PT       |             length            |
                 int inlength = length - padlen;
 
                 // discard version and padding from firstbyte.
-                firstbyte &= 0x1f;
+                int rc = firstbyte & 0x1f;
                 RTCPPacket p;
                 switch (type)
                 {
@@ -215,7 +215,7 @@ block  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  */
                         onEnterSenderReport();
-                        if (inlength != 28 + 24 * firstbyte)
+                        if (inlength != 28 + 24 * rc)
                         {
                             onMalformedSenderReport();
                             System.out.println("bad format.");
@@ -230,7 +230,7 @@ block  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                         srp.rtptimestamp = in.readInt() & 0xffffffffL;
                         srp.packetcount = in.readInt() & 0xffffffffL;
                         srp.octetcount = in.readInt() & 0xffffffffL;
-                        srp.reports = new RTCPReportBlock[firstbyte];
+                        srp.reports = new RTCPReportBlock[rc];
                         onVisitSenderReport(srp);
                         readRTCPReportBlock(in, srp.reports);
                         break;
@@ -263,7 +263,7 @@ block  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
        |                  profile-specific extensions                  |
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  */
-                        if (inlength != 8 + 24 * firstbyte)
+                        if (inlength != 8 + 24 * rc)
                         {
                             onMalformedReceiverReport();
                             throw new BadFormatException(
@@ -272,7 +272,7 @@ block  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                         RTCPRRPacket rrp = new RTCPRRPacket(base);
                         p = rrp;
                         rrp.ssrc = in.readInt();
-                        rrp.reports = new RTCPReportBlock[firstbyte];
+                        rrp.reports = new RTCPReportBlock[rc];
                         readRTCPReportBlock(in, rrp.reports);
                         break;
 
@@ -296,7 +296,7 @@ chunk  |                          SSRC/CSRC_2                          |
  */
                         RTCPSDESPacket sdesp = new RTCPSDESPacket(base);
                         p = sdesp;
-                        sdesp.sdes = new RTCPSDES[firstbyte];
+                        sdesp.sdes = new RTCPSDES[rc];
                         int sdesoff = 4;
                         for (int i = 0; i < sdesp.sdes.length; i++)
                         {
@@ -363,12 +363,12 @@ chunk  |                          SSRC/CSRC_2                          |
  */
                         RTCPBYEPacket byep = new RTCPBYEPacket(base);
                         p = byep;
-                        byep.ssrc = new int[firstbyte];
+                        byep.ssrc = new int[rc];
                         for (int i = 0; i < byep.ssrc.length; i++)
                             byep.ssrc[i] = in.readInt();
 
                         int reasonlen;
-                        if (inlength > 4 + 4 * firstbyte)
+                        if (inlength > 4 + 4 * rc)
                         {
                             reasonlen = in.readUnsignedByte();
                             byep.reason = new byte[reasonlen];
@@ -379,7 +379,7 @@ chunk  |                          SSRC/CSRC_2                          |
                             byep.reason = new byte[0];
                         }
                         reasonlen = reasonlen + 3 & -4;
-                        if (inlength != 4 + 4 * firstbyte + reasonlen)
+                        if (inlength != 4 + 4 * rc + reasonlen)
                         {
                             onMalformedEndOfParticipation();
                             throw new BadFormatException(
@@ -409,7 +409,7 @@ chunk  |                          SSRC/CSRC_2                          |
                         p = appp;
                         appp.ssrc = in.readInt();
                         appp.name = in.readInt();
-                        appp.subtype = firstbyte;
+                        appp.subtype = rc;
                         appp.data = new byte[inlength - 12];
                         in.readFully(appp.data);
                         in.skip(inlength - 12 - appp.data.length);
@@ -454,7 +454,7 @@ chunk  |                          SSRC/CSRC_2                          |
             throws BadFormatException, IOException
     {
         onPayloadUknownType();
-        throw new BadFormatException("Uknown payload type");
+        throw new BadFormatException("Unknown payload type");
     }
 
     private void readRTCPReportBlock(
