@@ -435,10 +435,13 @@ chunk  |                          SSRC/CSRC_2                          |
 
         } catch (EOFException e)
         {
-            throw new BadFormatException("Unexpected end of RTCP packet");
-        } catch (IOException e)
+            throw new BadFormatException(
+                "Failed to parse an RTCP packet: " + e.getMessage());
+        }
+        catch (IOException e)
         {
-            throw new IllegalArgumentException("Impossible Exception: ", e);
+            throw new IllegalArgumentException(
+                "Failed to parse an RTCP packet: ", e);
         }
         base.packets = new RTCPPacket[subpackets.size()];
         subpackets.copyInto(base.packets);
