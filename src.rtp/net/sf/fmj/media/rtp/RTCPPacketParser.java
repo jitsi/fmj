@@ -417,7 +417,7 @@ chunk  |                          SSRC/CSRC_2                          |
                     default:
 
                         // Give a chance to an extended parser to parse the packet.
-                        p = parse(base, firstbyte, type, length, in);
+                        p = parse(base, firstbyte, type, inlength, in);
 
                         if (p == null)
                         {
