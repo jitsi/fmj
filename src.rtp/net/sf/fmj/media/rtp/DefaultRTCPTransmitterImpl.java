@@ -82,6 +82,11 @@ public class DefaultRTCPTransmitterImpl
 
     public void bye(String reason)
     {
+        // allow calling bye twice without throwing NPE
+        if (ssrcInfo == null)
+        {
+            return;
+        }
         if (reason != null)
             bye(ssrcInfo.ssrc, reason.getBytes());
         else
