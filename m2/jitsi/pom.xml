@@ -4,12 +4,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.jitsi</groupId>
-    <artifactId>jitsi-universe</artifactId>
-    <version>1.0-20160204.002115-13</version>
-  </parent>
-
+  <groupId>org.jitsi</groupId>
   <artifactId>fmj</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
@@ -17,11 +12,16 @@
   <name>fmj</name>
   <url>http://sourceforge.net/projects/fmj/</url>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <dependencies>
     <!-- test -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -32,6 +32,8 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <version>3.0.1</version>
+        <extensions>true</extensions>
         <configuration>
           <instructions>
             <Fragment-Host>org.jitsi.libjitsi</Fragment-Host>
@@ -41,7 +43,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
         <configuration>
+          <compilerArgs>
+            <arg>-Xlint:all</arg>
+          </compilerArgs>
           <excludes>
             <exclude>**/civil/**</exclude>
             <exclude>net/sf/fmj/capture/**</exclude>
@@ -71,6 +77,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -83,6 +90,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
