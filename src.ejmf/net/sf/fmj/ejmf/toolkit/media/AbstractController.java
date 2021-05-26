@@ -56,7 +56,7 @@ import net.sf.fmj.utility.*;
  * <p>
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * </p>
+ 
  *
  * @see AbstractPlayer
  *

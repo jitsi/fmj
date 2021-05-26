@@ -3,10 +3,10 @@ package net.iharder;
 /**
  * <p>
  * Encodes and decodes to and from Base64 notation.
- * </p>
+ 
  * <p>
  * Homepage: <a href="http://iharder.net/base64">http://iharder.net/base64</a>.
- * </p>
+ 
  *
  * <p>
  * The <tt>options</tt> parameter, which appears in a few places, is used to
@@ -15,24 +15,24 @@ package net.iharder;
  * used to indicate such things as first gzipping the bytes before encoding
  * them, not inserting linefeeds (though that breaks strict Base64
  * compatibility), and encoding using the URL-safe and Ordered dialects.
- * </p>
+ 
  *
  * <p>
  * The constants defined in Base64 can be OR-ed together to combine options, so
  * you might make a call like this:
- * </p>
+ 
  *
  * <tt>String encoded = Base64.encodeBytes( mybytes, Base64.GZIP | Base64.DONT_BREAK_LINES );</tt>
  *
  * <p>
  * to compress the data before encoding it and then making the output have no
  * newline characters.
- * </p>
+ 
  *
  *
  * <p>
  * Change Log:
- * </p>
+ 
  * <ul>
  * <li>v2.2.2 - Fixed encodeFileToFile and decodeFileToFile to use the
  * Base64.InputStream class to encode and decode on the fly which uses less
@@ -92,7 +92,7 @@ package net.iharder;
  * well-wishing instead! Please visit <a
  * href="http://iharder.net/base64">http://iharder.net/base64</a> periodically
  * to check for updates or to contribute improvements.
- * </p>
+ 
  *
  * @author Robert Harder
  * @author rob@iharder.net
@@ -1021,7 +1021,7 @@ public class Base64
      * <p>
      * This is the lowest level of the decoding methods with all possible
      * parameters.
-     * </p>
+     
      *
      *
      * @param source
@@ -1350,11 +1350,11 @@ public class Base64
      * <var>destOffset</var> + 4 for the <var>destination</var> array. The
      * actual number of significant bytes in your array is given by
      * <var>numSigBytes</var>.
-     * </p>
+     
      * <p>
      * This is the lowest level of the encoding methods with all possible
      * parameters.
-     * </p>
+     
      *
      * @param source
      *            the array to convert

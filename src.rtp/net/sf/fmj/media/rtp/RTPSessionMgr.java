@@ -1253,7 +1253,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
      * Note: <tt>Long.MAX_VALUE</tt> is used instead of <tt>-1</tt> because the
      * synchronization source (SSRC) ID is internally stored as a 32-bit signed
      * integer.
-     * </p>
+     
      *
      * @return the synchronization source (SSRC) ID used by this
      * <tt>RTPSessionMgr</tt> or <tt>Long.MAX_VALUE</tt> if no such SSRC has

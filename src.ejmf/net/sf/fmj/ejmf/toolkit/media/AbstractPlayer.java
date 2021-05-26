@@ -62,7 +62,7 @@ import net.sf.fmj.ejmf.toolkit.media.event.*;
  * <p>
  * From the book: Essential JMF, Gordon, Talley (ISBN 0130801046). Used with
  * permission.
- * </p>
+ 
  *
  * @author Steve Talley
  */

@@ -767,13 +767,17 @@ public class BasicRendererModule extends BasicSinkModule implements
             }
         }
 
-        if (started)
+        if (started && renderer != null)
         {
             renderer.stop();
             renderer.reset();
         }
 
-        renderer.close();
+        if (renderer != null)
+        {
+            renderer.close();
+        }
+
         renderer = null;
 
         Renderer r;

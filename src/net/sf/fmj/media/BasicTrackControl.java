@@ -187,14 +187,14 @@ public class BasicTrackControl implements javax.media.control.TrackControl
     {
         Log.error("  Unable to handle format: " + getOriginalFormat());
         Log.write("\n");
-    };
+    }
 
     protected ProgressControl progressControl()
     {
         return null;
-    };
+    }
 
-    public void setCodecChain(Codec codec[]) throws NotConfiguredError,
+    public void setCodecChain(Codec[] codec) throws NotConfiguredError,
             UnsupportedPlugInException
     {
         if (engine.getState() > BasicController.Configured)

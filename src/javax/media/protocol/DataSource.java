@@ -30,12 +30,6 @@ public abstract class DataSource implements Controls, Duration
 
     public abstract String getContentType();
 
-    public abstract Object getControl(String controlType);
-
-    public abstract Object[] getControls();
-
-    public abstract Time getDuration();
-
     public MediaLocator getLocator()
     {
         return locator;

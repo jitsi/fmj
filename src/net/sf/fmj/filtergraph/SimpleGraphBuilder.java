@@ -387,7 +387,7 @@ public class SimpleGraphBuilder
     {
         Log.comment("Input: " + tc.getOriginalFormat());
 
-        Vector candidates = new Vector();
+        Vector<GraphNode> candidates = new Vector<>();
         GraphNode node = new GraphNode(null, (PlugIn) null,
                 tc.getOriginalFormat(), null, 0);
         indent = 1;
@@ -431,7 +431,7 @@ public class SimpleGraphBuilder
     {
         Log.comment("Input: " + input);
 
-        Vector candidates = new Vector();
+        Vector<GraphNode> candidates = new Vector<>();
         GraphNode node = new GraphNode(null, (PlugIn) null, input, null, 0);
         indent = 1;
         Log.setIndent(indent);
@@ -472,7 +472,7 @@ public class SimpleGraphBuilder
      * Given the intermediate search candidates, build a graph until it reaches
      * a target.
      */
-    protected GraphNode buildGraph(Vector candidates)
+    protected GraphNode buildGraph(Vector<GraphNode> candidates)
     {
         GraphNode node;
         while ((node = doBuildGraph(candidates)) == null)
