@@ -7,8 +7,6 @@ import net.sf.fmj.media.rtp.*;
 
 public class RTPSyncBufferMux extends RawSyncBufferMux
 {
-    FormatInfo rtpFormats = new FormatInfo();
-
     public RTPSyncBufferMux()
     {
         super();

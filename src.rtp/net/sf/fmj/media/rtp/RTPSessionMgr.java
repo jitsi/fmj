@@ -374,7 +374,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         {
             formatinfo.add(i, format);
         }
-        if (format != null)
+        if (format != null && !addedList.contains(format))
         {
             addedList.addElement(format);
         }
@@ -1528,10 +1528,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         }
         InetAddress ainetaddress[] = null;
         InetAddress inetaddress;
-        Object aobj[];
-        Object aobj1[];
-        Object aobj2[];
-        Object aobj3[];
+
         try
         {
             inetaddress = localAddress.getDataAddress();
@@ -1724,10 +1721,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         localControlPort = sessionaddress.getControlPort();
         InetAddress ainetaddress[] = null;
         InetAddress inetaddress;
-        Object aobj[];
-        Object aobj1[];
-        Object aobj2[];
-        Object aobj3[];
+
         try
         {
             inetaddress = localAddress.getDataAddress();
@@ -1835,8 +1829,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         formatinfo.setCache(cache);
         cache.rtcp_bw_fraction = d;
         cache.rtcp_sender_bw_fraction = d1;
-        Object aobj[];
-        Object aobj1[];
+
         try
         {
             inetaddress = InetAddress.getLocalHost();
@@ -2558,8 +2551,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
         RTCPRawReceiver rtcprawreceiver;
         RTPRawReceiver rtprawreceiver;
         InetAddress inetaddress;
-        Object aobj[];
-        Object aobj1[];
+
         if (started)
         {
             return -1;
@@ -2692,8 +2684,7 @@ public class RTPSessionMgr extends RTPManager implements SessionManager
     {
         RTCPRawReceiver rtcprawreceiver;
         RTPRawReceiver rtprawreceiver;
-        Object aobj[];
-        Object aobj1[];
+
         if (started)
         {
             return -1;
