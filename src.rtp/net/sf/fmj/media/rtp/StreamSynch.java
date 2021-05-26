@@ -4,7 +4,7 @@ import net.sf.fmj.media.rtp.util.*;
 
 public class StreamSynch
 {
-    private static SSRCTable<SynchSource> sources;
+    private SSRCTable<SynchSource> sources;
 
     public StreamSynch()
     {
