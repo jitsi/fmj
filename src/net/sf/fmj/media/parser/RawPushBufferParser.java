@@ -22,11 +22,11 @@ public class RawPushBufferParser extends RawStreamParser
         Demultiplexer parser;
         PushBufferStream pbs;
         boolean enabled = true;
-        CircularBuffer bufferQ;
+        final CircularBuffer bufferQ;
         Format format = null;
         TrackListener listener;
-        boolean stopped = true;
-        boolean closed = false;
+        volatile boolean stopped = true;
+        volatile boolean closed = false;
         boolean keyFrameFound = false;
         boolean checkDepacketizer = false;
         Depacketizer depacketizer = null;

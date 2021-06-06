@@ -205,7 +205,7 @@ public class RawSyncBufferMux extends RawBufferMux
         synchronized (waitLock)
         {
             resetted = true;
-            waitLock.notify();
+            waitLock.notifyAll();
         }
     }
 

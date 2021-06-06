@@ -1114,7 +1114,7 @@ public class PlaybackEngine extends BasicController implements ModuleListener
      */
     protected boolean doRealize1()
     {
-        Log.comment("Building flow graph for: " + dsource.getLocator() + "\n");
+        Log.comment("Building flow graph for: " + dsource + dsource.getLocator() + "\n");
 
         realizeTime = System.currentTimeMillis();
 

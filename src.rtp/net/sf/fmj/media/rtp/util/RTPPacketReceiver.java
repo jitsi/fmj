@@ -65,7 +65,7 @@ public class RTPPacketReceiver
             if (dataRead)
             {
                 bufQue.readReport();
-                bufQue.notify();
+                bufQue.notifyAll();
             }
             while (!bufQue.canRead() && !closed)
             {
@@ -187,7 +187,7 @@ public class RTPPacketReceiver
         synchronized (bufQue)
         {
             bufQue.writeReport();
-            bufQue.notify();
+            bufQue.notifyAll();
         }
     }
 }

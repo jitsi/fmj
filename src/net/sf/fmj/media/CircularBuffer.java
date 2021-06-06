@@ -104,7 +104,7 @@ public class CircularBuffer
 
     public void print()
     {
-        System.err.println("CircularQueue : head=" + head + " tail=" + tail
+        Log.error("CircularQueue: size=" + size + ", head=" + head + " tail=" + tail
                 + " canRead=" + availableFramesForReading + " canWrite="
                 + availableFramesForWriting + " lockedRead="
                 + lockedFramesForReading + " lockedWrite="

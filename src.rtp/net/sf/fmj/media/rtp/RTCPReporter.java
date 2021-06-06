@@ -38,7 +38,7 @@ public class RTCPReporter implements Runnable
         synchronized (reportthread)
         {
             closed = true;
-            reportthread.notify();
+            reportthread.notifyAll();
         }
         releasessrc(reason);
         transmit.close();

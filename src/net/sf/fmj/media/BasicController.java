@@ -681,7 +681,7 @@ public abstract class BasicController implements Controller, Duration
         synchronized (interruptSync)
         {
             interrupted = true;
-            interruptSync.notify();
+            interruptSync.notifyAll();
         }
     }
 
@@ -833,7 +833,7 @@ public abstract class BasicController implements Controller, Duration
         synchronized (interruptSync)
         {
             interrupted = false;
-            interruptSync.notify();
+            interruptSync.notifyAll();
         }
     }
 

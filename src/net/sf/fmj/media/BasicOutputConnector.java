@@ -140,7 +140,7 @@ public class BasicOutputConnector extends BasicConnector implements
                 return;
             }
         default:
-            throw new RuntimeException();
+            throw new RuntimeException("Unknown protocol: " + protocol);
         }
 
     }

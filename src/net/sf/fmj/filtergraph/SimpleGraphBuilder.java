@@ -387,7 +387,7 @@ public class SimpleGraphBuilder
     {
         Log.comment("Input: " + tc.getOriginalFormat());
 
-        Vector<GraphNode> candidates = new Vector<>();
+        Vector<GraphNode> candidates = new Vector<GraphNode>();
         GraphNode node = new GraphNode(null, (PlugIn) null,
                 tc.getOriginalFormat(), null, 0);
         indent = 1;
@@ -431,7 +431,7 @@ public class SimpleGraphBuilder
     {
         Log.comment("Input: " + input);
 
-        Vector<GraphNode> candidates = new Vector<>();
+        Vector<GraphNode> candidates = new Vector<GraphNode>();
         GraphNode node = new GraphNode(null, (PlugIn) null, input, null, 0);
         indent = 1;
         Log.setIndent(indent);

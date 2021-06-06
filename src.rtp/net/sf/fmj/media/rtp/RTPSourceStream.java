@@ -644,7 +644,8 @@ public class RTPSourceStream
 
     public void start()
     {
-        Log.info("Starting RTPSourceStream.");
+        Log.info("Starting RTPSourceStream " + datasource + ", SSRC=" + datasource
+            .getSSRC());
         synchronized (startSyncRoot)
         {
             started = true;
@@ -685,7 +686,8 @@ public class RTPSourceStream
                 RTPMediaThread thread
                     = new RTPMediaThread(
                             new TransferDataRunnable(this),
-                            RTPSourceStream.class.getName());
+                            RTPSourceStream.class.getName() + " " + datasource + ", SSRC=" + datasource
+                                .getSSRC());
 
                 thread.setDaemon(true);
                 thread.useControlPriority();
