@@ -38,6 +38,7 @@ public class AudioFormat extends Format
     public static final String ULAW_RTP = "ULAW/rtp";
 
     public static final String ALAW = "alaw";
+    public static final String ALAW_RTP = "ALAW/rtp";
 
     public static final String IMA4 = "ima4";
     public static final String IMA4_MS = "ima4/ms";
@@ -237,7 +238,8 @@ public class AudioFormat extends Format
                 multiplier = (1000000 * 8) / sampleSizeInBits / channels
                         / sampleRate;
 
-        } else if (encoding.equalsIgnoreCase(AudioFormat.ULAW_RTP))
+        } else if (encoding.equalsIgnoreCase(AudioFormat.ULAW_RTP) 
+                || encoding.equalsIgnoreCase(AudioFormat.ALAW_RTP))
         {
             if (sampleSizeInBits > 0 && channels > 0 && sampleRate > 0)
                 multiplier = (1000000 * 8) / sampleSizeInBits / channels
